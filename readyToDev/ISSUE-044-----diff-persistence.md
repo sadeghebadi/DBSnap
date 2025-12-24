@@ -18,6 +18,7 @@ You are an expert software engineer. You have the DBSnap README.md and ISSUE_MAS
 Do NOT invent new features. Follow the frozen MVP scope strictly.
 
 Instructions:
+
 1. Read this file completely.
 2. **Git Workflow**:
    - Implement the requirements.
@@ -29,4 +30,3 @@ Instructions:
 6. Provide outputs in a format ready for direct commit or review.
 
 Reply ONLY with the code/files/folder structure relevant to this Issue.
-

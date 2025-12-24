@@ -3,7 +3,7 @@ const tseslint = require("typescript-eslint");
 const prettier = require("eslint-config-prettier");
 
 module.exports = tseslint.config(
-    { ignores: ["**/node_modules", "**/dist", "**/.turbo", "**/.next"] },
+    { ignores: ["**/node_modules", "**/dist", "**/.turbo", "**/.next", "**/jest.config.js", "**/jest.config.cjs"] },
     js.configs.recommended,
     ...tseslint.configs.recommended,
     prettier
