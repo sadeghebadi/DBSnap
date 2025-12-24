@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: dbsnap-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: dbsnap
+      POSTGRES_PASSWORD: dbsnap_password
+      POSTGRES_DB: dbsnap
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

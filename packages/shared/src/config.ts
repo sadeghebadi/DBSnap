@@ -12,6 +12,7 @@ const configSchema = z.object({
     API_PORT: z.string().transform((v) => parseInt(v, 10)),
     API_URL: z.string().url().default('http://localhost:4000'),
     WORKER_PORT: z.string().transform((v) => parseInt(v, 10)).default(4001),
+    DATABASE_URL: z.string().url().optional(),
 });
 
 export type Config = z.infer<typeof configSchema>;
