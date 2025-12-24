@@ -1,2 +1,2 @@
-export * from './config.js';
-const VERSION = '0.0.1';
+export * from "./config.js";
+export const VERSION = "0.0.1";

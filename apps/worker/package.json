@@ -5,7 +5,9 @@
     "type": "module",
     "scripts": {
         "dev": "ts-node src/index.ts",
-        "build": "tsc"
+        "build": "tsc",
+        "lint": "eslint .",
+        "test": "jest"
     },
     "devDependencies": {
         "ts-node": "latest",

@@ -3,14 +3,17 @@
 ## Goal / Requirements / Acceptance Criteria / Out of Scope
 
 ISSUE-020 — DB Connection Schema
+
 Level: L2 | Type: Core
 
 Supports:
+
 - MongoDB
 - PostgreSQL
 - MySQL
 
 Requirements:
+
 - Encrypted credentials
 
 ---
@@ -24,9 +27,8 @@ Do NOT invent new features. Follow the frozen MVP scope strictly.
 Instructions:
 1. Read this file completely.
 2. **Git Workflow**:
-   - Create a new branch named EXACTLY like this filename: `ISSUE-020-----db-connection-schema.md`.
    - Implement the requirements.
-   - Commit and push the branch.
+   - Commit and push the branch main.
    - Copy this task file from `readyToDev/` to `issues_done/`.
 3. Follow Goal, Requirements, Acceptance Criteria, and Out of Scope.
 4. Prepare a folder / file structure and placeholder code (if applicable) for this issue.

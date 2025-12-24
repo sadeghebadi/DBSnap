@@ -3,17 +3,20 @@
 ## Goal / Requirements / Acceptance Criteria / Out of Scope
 
 ISSUE-017 — Multi-Factor Authentication (MFA)
+
 Level: L3 | Type: Product
 
 Goal:
 Add an extra layer of security for user accounts.
 
 Requirements:
+
 - TOTP (Google Authenticator) support
 - QR code generation
 - Backup recovery codes
 
 Acceptance Criteria:
+
 - User can enable MFA and it is enforced at login
 
 ---
@@ -27,9 +30,8 @@ Do NOT invent new features. Follow the frozen MVP scope strictly.
 Instructions:
 1. Read this file completely.
 2. **Git Workflow**:
-   - Create a new branch named EXACTLY like this filename: `ISSUE-017-----multi-factor-authentication-mfa.md`.
    - Implement the requirements.
-   - Commit and push the branch.
+   - Commit and push the branch main.
    - Copy this task file from `readyToDev/` to `issues_done/`.
 3. Follow Goal, Requirements, Acceptance Criteria, and Out of Scope.
 4. Prepare a folder / file structure and placeholder code (if applicable) for this issue.

@@ -3,17 +3,20 @@
 ## Goal / Requirements / Acceptance Criteria / Out of Scope
 
 ISSUE-026 — SSL/TLS Certificate Support
+
 Level: L2 | Type: Core
 
 Goal:
 Support databases requiring custom CA or client certificates.
 
 Requirements:
+
 - CA, Certificate, and Key file upload
 - Secure storage of certificates
 - Connector integration for TLS
 
 Acceptance Criteria:
+
 - Connect successfully to a DB requiring mutual TLS (mTLS)
 
 ---
@@ -29,9 +32,8 @@ Do NOT invent new features. Follow the frozen MVP scope strictly.
 Instructions:
 1. Read this file completely.
 2. **Git Workflow**:
-   - Create a new branch named EXACTLY like this filename: `ISSUE-026-----ssltls-certificate-support.md`.
    - Implement the requirements.
-   - Commit and push the branch.
+   - Commit and push the branch main.
    - Copy this task file from `readyToDev/` to `issues_done/`.
 3. Follow Goal, Requirements, Acceptance Criteria, and Out of Scope.
 4. Prepare a folder / file structure and placeholder code (if applicable) for this issue.

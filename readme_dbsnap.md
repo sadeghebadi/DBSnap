@@ -7,6 +7,7 @@
 ## 1. Purpose
 
 DBSnap is a lightweight, developer-first tool that provides:
+
 - Automated database backups
 - Versioned snapshots
 - Visual diffs between backups
@@ -21,10 +22,12 @@ The goal is to give developers **clarity instead of complexity** when working wi
 This repository implements **DBSnap v1**.
 
 ### Supported Databases
+
 - MongoDB (ReplicaSet / Atlas)
 - PostgreSQL
 
 ### In-Scope Features
+
 - Connect database using read-only credentials
 - Manual backups
 - Scheduled backups (daily / weekly)
@@ -36,6 +39,7 @@ This repository implements **DBSnap v1**.
 - Selective restore (collection / table)
 
 ### Explicitly Out-of-Scope (v1)
+
 - MySQL
 - Point-in-time recovery
 - Multi-user teams
@@ -50,6 +54,7 @@ This repository implements **DBSnap v1**.
 ## 3. Architecture Overview
 
 ### High-Level Components
+
 - Web App (Next.js)
 - API Server (NestJS)
 - Background Workers
@@ -62,6 +67,7 @@ This repository implements **DBSnap v1**.
 ## 4. Tech Stack
 
 ### Frontend
+
 - Next.js (App Router)
 - TypeScript
 - Tailwind CSS
@@ -69,12 +75,14 @@ This repository implements **DBSnap v1**.
 - Monaco Editor (diff viewer)
 
 ### Backend
+
 - Node.js
 - NestJS
 - Prisma ORM
 - PostgreSQL (metadata)
 
 ### Workers & Infrastructure
+
 - BullMQ + Redis
 - Docker / Docker Compose
 - S3-compatible storage
@@ -104,19 +112,23 @@ This repository implements **DBSnap v1**.
 ## 6. Core Modules
 
 ### Authentication
+
 - JWT + refresh tokens
 - OAuth (GitHub, Google)
 
 ### Project Management
+
 - Create / delete projects
 - Environment tagging (prod / staging / dev)
 
 ### Database Connectors
+
 - MongoDB connector (cursor-based streaming)
 - PostgreSQL connector (ordered dump)
 - Read-only permission validation
 
 ### Backup Engine
+
 - Snapshot orchestration
 - Chunking & streaming
 - Compression
@@ -124,12 +136,14 @@ This repository implements **DBSnap v1**.
 - Upload to object storage
 
 ### Diff Engine (Critical Path)
+
 - Hash-based comparison
 - MongoDB JSON diff
 - PostgreSQL row & column diff
 - Diff summary generation
 
 ### Restore Engine
+
 - Full restore
 - Selective restore
 - Safety confirmations
@@ -139,12 +153,14 @@ This repository implements **DBSnap v1**.
 ## 7. Diff Logic Summary
 
 ### MongoDB
+
 - Document normalization (sorted keys)
 - Per-document hashing
 - Merkle tree per collection
 - JSON patch for changed documents
 
 ### PostgreSQL
+
 - Primary-key-based row hashing
 - Column-level value diff
 
@@ -163,10 +179,12 @@ This repository implements **DBSnap v1**.
 ## 9. Development Workflow
 
 ### Local Development
+
 - Docker Compose for full stack
 - Seed demo databases
 
 ### Environments
+
 - Development
 - Staging
 - Production
@@ -197,6 +215,7 @@ This repository implements **DBSnap v1**.
 **Product name:** DBSnap
 
 **Positioning statement:**
+
 > Git-style snapshots and diffs for your database
 
 ---
@@ -206,6 +225,7 @@ This repository implements **DBSnap v1**.
 This README is intentionally explicit.
 
 When generating code:
+
 - Follow the frozen MVP scope strictly
 - Do not introduce new features
 - Prefer clarity over premature optimization

@@ -3,6 +3,7 @@
 ## Goal / Requirements / Acceptance Criteria / Out of Scope
 
 ISSUE-062 — Rate Limiting
+
 Level: L2 | Type: Security
 
 Goal:
@@ -21,9 +22,8 @@ Do NOT invent new features. Follow the frozen MVP scope strictly.
 Instructions:
 1. Read this file completely.
 2. **Git Workflow**:
-   - Create a new branch named EXACTLY like this filename: `ISSUE-062-----rate-limiting.md`.
    - Implement the requirements.
-   - Commit and push the branch.
+   - Commit and push the branch main.
    - Copy this task file from `readyToDev/` to `issues_done/`.
 3. Follow Goal, Requirements, Acceptance Criteria, and Out of Scope.
 4. Prepare a folder / file structure and placeholder code (if applicable) for this issue.

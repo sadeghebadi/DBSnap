@@ -1,6 +1,7 @@
 # Product Requirements Document (PRD)
 
 ## Product Name (Working Title)
+
 **DBSnap** – Simple Database Backup & Visual Compare
 
 ---
@@ -8,21 +9,26 @@
 ## 1. Overview
 
 ### 1.1 Problem Statement
+
 Small teams, startups, and solo developers rely on MongoDB / SQL databases but:
+
 - Backups are often manual, inconsistent, or forgotten
 - Existing tools are too complex (enterprise-level)
 - Comparing backups is extremely hard (no visual diff)
 - Debugging data corruption or accidental deletes is painful
 
 ### 1.2 Solution
+
 A **lightweight Micro-SaaS** that:
+
 - Takes automated backups of MongoDB & SQL databases
 - Stores versioned snapshots
 - Visually compares backups (diffs at table/collection & row/document level)
 - Allows fast restore or export
-- Focuses on *clarity, speed, and simplicity*
+- Focuses on _clarity, speed, and simplicity_
 
 ### 1.3 Target Audience
+
 - Indie hackers
 - Small startups
 - Backend developers
@@ -30,6 +36,7 @@ A **lightweight Micro-SaaS** that:
 - Early-stage SaaS teams
 
 ### 1.4 Value Proposition
+
 > “See exactly what changed in your database — before it breaks production.”
 
 ---
@@ -37,6 +44,7 @@ A **lightweight Micro-SaaS** that:
 ## 2. Goals & Non‑Goals
 
 ### 2.1 Goals
+
 - Extremely easy onboarding (≤ 5 minutes)
 - Human‑readable visual diffs
 - Safe, encrypted backups
@@ -44,6 +52,7 @@ A **lightweight Micro-SaaS** that:
 - Support MongoDB & PostgreSQL/MySQL in v1
 
 ### 2.2 Non‑Goals (v1)
+
 - Real‑time replication
 - Enterprise HA / clustering
 - Data analytics or BI
@@ -54,16 +63,19 @@ A **lightweight Micro-SaaS** that:
 ## 3. User Personas
 
 ### 3.1 Solo Developer
+
 - Needs peace of mind
 - Wants simple UI
 - Budget‑sensitive
 
 ### 3.2 Startup Engineer
+
 - Needs rollback & debugging
 - Multiple environments (staging/prod)
 - Wants alerts
 
 ### 3.3 Freelancer
+
 - Manages multiple client DBs
 - Needs separation & access control
 
@@ -72,6 +84,7 @@ A **lightweight Micro-SaaS** that:
 ## 4. Core Features (MVP)
 
 ### 4.1 Authentication & Accounts
+
 - Email/password login
 - OAuth (GitHub, Google)
 - Email verification
@@ -82,10 +95,12 @@ A **lightweight Micro-SaaS** that:
 ### 4.2 Project & Database Management
 
 #### Create Project
+
 - Project name
 - Environment (prod / staging / dev)
 
 #### Add Database
+
 - Database type: MongoDB / PostgreSQL / MySQL
 - Connection method:
   - URI / host + port + credentials
@@ -97,19 +112,23 @@ A **lightweight Micro-SaaS** that:
 ### 4.3 Backup Engine
 
 #### Backup Types
+
 - Manual backup
 - Scheduled backup (cron‑like)
 
 #### Backup Scope
+
 - Full database
 - Selected collections/tables
 
 #### Storage
+
 - Encrypted at rest (AES‑256)
 - Cloud object storage (S3 compatible)
 - Retention rules
 
 #### Metadata
+
 - Timestamp
 - Size
 - Duration
@@ -120,20 +139,24 @@ A **lightweight Micro-SaaS** that:
 ### 4.4 Visual Compare (Core Differentiator)
 
 #### Compare Modes
+
 - Backup vs Backup
 - Backup vs Live DB
 
 #### MongoDB Diff
+
 - Collection‑level changes
 - Document added / removed
 - Field‑level diff (JSON diff)
 
 #### SQL Diff
+
 - Table‑level changes
 - Row added / deleted
 - Column value changes
 
 #### UI Requirements
+
 - Side‑by‑side view
 - Color‑coded diffs:
   - Green = added
@@ -146,11 +169,13 @@ A **lightweight Micro-SaaS** that:
 ### 4.5 Restore & Export
 
 #### Restore Options
+
 - Full restore
 - Selective restore (collection/table)
 - Restore to new database
 
 #### Export
+
 - JSON / SQL dump download
 
 ---
@@ -166,27 +191,32 @@ A **lightweight Micro-SaaS** that:
 ## 5. Admin Panel (Internal)
 
 ### 5.1 Admin Dashboard
+
 - Total users
 - Active projects
 - Storage usage
 - Backup frequency
 
 ### 5.2 User Management
+
 - View users
 - Disable / enable accounts
 - Force password reset
 
 ### 5.3 Project Oversight
+
 - View projects & databases
 - Backup logs
 - Error diagnostics
 
 ### 5.4 Billing & Plans
+
 - View subscriptions
 - Storage usage per user
 - Manual plan override
 
 ### 5.5 System Health
+
 - Worker status
 - Queue depth
 - Backup failure rate
@@ -196,17 +226,20 @@ A **lightweight Micro-SaaS** that:
 ## 6. Billing & Pricing (Proposed)
 
 ### Free
+
 - 1 DB
 - Manual backups
 - 7‑day retention
 
 ### Pro ($10–15/month)
+
 - 3–5 DBs
 - Scheduled backups
 - Visual diff
 - 30‑day retention
 
 ### Team ($30+/month)
+
 - Unlimited DBs
 - Multi‑user
 - Webhooks
@@ -227,20 +260,24 @@ A **lightweight Micro-SaaS** that:
 ## 8. Technical Architecture (High Level)
 
 ### Frontend
+
 - Next.js
 - Tailwind
 - Monaco / custom diff viewer
 
 ### Backend
+
 - Node.js (NestJS)
 - PostgreSQL (metadata)
 - Redis (queues)
 
 ### Workers
+
 - Backup workers
 - Diff workers
 
 ### Storage
+
 - S3 compatible storage
 
 ---
@@ -277,12 +314,15 @@ A **lightweight Micro-SaaS** that:
 ## 12. Risks & Mitigations
 
 ### Risk: Large DB size
+
 - Mitigation: Sampling + pagination
 
 ### Risk: Security concerns
+
 - Mitigation: Read‑only access + encryption
 
 ### Risk: Slow diffs
+
 - Mitigation: Background diff workers
 
 ---
@@ -320,28 +360,33 @@ A **lightweight Micro-SaaS** that:
 ### 16.1 System Components
 
 #### Frontend
+
 - Next.js (App Router)
 - Tailwind CSS
 - Auth-protected routes
 - Diff Viewer (custom JSON/SQL diff renderer)
 
 #### Backend API
+
 - NestJS (modular architecture)
 - REST + internal worker APIs
 - Auth (JWT + refresh tokens)
 
 #### Workers
+
 - Backup Worker (cron-based)
 - Diff Worker (async, heavy processing)
 - Restore Worker
 
 #### Queue & Messaging
+
 - Redis + BullMQ
 - Job retry & dead-letter queue
 
 ---
 
 ### 16.2 Data Flow – Backup
+
 1. Scheduler triggers backup job
 2. Worker pulls DB connection (decrypted in-memory)
 3. Snapshot taken (dump or cursor streaming)
@@ -353,6 +398,7 @@ A **lightweight Micro-SaaS** that:
 ---
 
 ### 16.3 Data Flow – Diff
+
 1. User selects two backups
 2. Diff job queued
 3. Worker loads snapshots
@@ -366,24 +412,28 @@ A **lightweight Micro-SaaS** that:
 ### 16.4 Database Schema (High-Level)
 
 #### users
+
 - id
 - email
 - password_hash
 - plan
 
 #### projects
+
 - id
 - user_id
 - name
 - environment
 
 #### databases
+
 - id
 - project_id
 - type
 - connection_encrypted
 
 #### backups
+
 - id
 - database_id
 - size
@@ -391,6 +441,7 @@ A **lightweight Micro-SaaS** that:
 - created_at
 
 #### diffs
+
 - id
 - backup_a
 - backup_b
@@ -401,32 +452,38 @@ A **lightweight Micro-SaaS** that:
 ## 17. UX / UI Wireframes (Textual Specification)
 
 ### 17.1 Dashboard
+
 - Project list
 - Last backup status
 - CTA: Backup now
 
 ### 17.2 Project View
+
 - Databases list
 - Backup schedule controls
 - Retention settings
 
 ### 17.3 Backup History
+
 - Timeline view
 - Status icons
 - Compare button
 
 ### 17.4 Visual Compare Screen
+
 - Left: Backup A
 - Right: Backup B
 - Diff highlights
 - Filter (added / removed / changed)
 
 ### 17.5 Restore Flow
+
 - Select scope
 - Warning modal
 - Progress indicator
 
 ### 17.6 Admin Panel
+
 - Metrics cards
 - User table
 - Storage usage graph
@@ -436,6 +493,7 @@ A **lightweight Micro-SaaS** that:
 ## 18. MVP Task Breakdown (Jira-Ready)
 
 ### Backend Tasks
+
 - Auth module
 - Project CRUD
 - DB connection validation
@@ -445,6 +503,7 @@ A **lightweight Micro-SaaS** that:
 - Restore logic
 
 ### Frontend Tasks
+
 - Auth pages
 - Dashboard UI
 - Project screens
@@ -452,6 +511,7 @@ A **lightweight Micro-SaaS** that:
 - Diff viewer UI
 
 ### DevOps
+
 - CI/CD
 - Env secrets
 - Monitoring
@@ -461,18 +521,22 @@ A **lightweight Micro-SaaS** that:
 ## 19. Development Timeline (30 Days)
 
 ### Week 1
+
 - Auth + project setup
 - DB models
 
 ### Week 2
+
 - Backup engine
 - Storage
 
 ### Week 3
+
 - Diff engine
 - UI compare
 
 ### Week 4
+
 - Restore
 - Admin panel
 - Polish & beta
@@ -484,20 +548,24 @@ A **lightweight Micro-SaaS** that:
 ### 20.1 MongoDB Diff Strategy
 
 #### Snapshot Strategy
+
 - Cursor-based streaming per collection
 - Chunk size: configurable (e.g. 1k docs)
 - Each document normalized (sorted keys)
 
 #### Hashing
+
 - Per-document hash (xxhash / murmur)
 - Collection-level Merkle tree
 
 #### Diff Levels
+
 1. Collection added / removed
 2. Document added / removed
 3. Field-level diff (JSON patch)
 
 #### Performance Optimizations
+
 - Skip unchanged chunks via hash match
 - Paginated diff loading in UI
 
@@ -506,14 +574,17 @@ A **lightweight Micro-SaaS** that:
 ### 20.2 SQL Diff Strategy
 
 #### Snapshot Strategy
+
 - Per-table ordered dump (PK required)
 - Optional row sampling for large tables
 
 #### Comparison
+
 - Row hash comparison by PK
 - Column-level value diff
 
 #### Edge Cases
+
 - Missing PK → fallback to full row hash
 - Schema changes detected separately
 
@@ -522,12 +593,14 @@ A **lightweight Micro-SaaS** that:
 ## 21. Security Threat Model
 
 ### 21.1 Attack Surfaces
+
 - Stored DB credentials
 - Backup files
 - Restore endpoints
 - Admin panel
 
 ### 21.2 Mitigations
+
 - Credentials encrypted (KMS)
 - Read-only DB users
 - Time-limited credential decryption
@@ -535,6 +608,7 @@ A **lightweight Micro-SaaS** that:
 - Full audit logs
 
 ### 21.3 Compliance Readiness
+
 - Data deletion on request
 - Region-based storage (future)
 - SOC2-ready architecture
@@ -546,6 +620,7 @@ A **lightweight Micro-SaaS** that:
 ### 22.1 In-Scope (MVP – Must Have)
 
 #### Core
+
 - MongoDB & PostgreSQL support
 - Manual backup
 - Scheduled backup (daily / weekly)
@@ -557,6 +632,7 @@ A **lightweight Micro-SaaS** that:
 - Selective restore (collection/table)
 
 #### UI
+
 - Dashboard
 - Project view
 - Backup timeline
@@ -564,6 +640,7 @@ A **lightweight Micro-SaaS** that:
 - Restore flow
 
 #### Platform
+
 - Email + OAuth auth
 - Single-user per account
 - One environment per project
@@ -573,6 +650,7 @@ A **lightweight Micro-SaaS** that:
 ---
 
 ### 22.2 Out-of-Scope (Explicitly Excluded v1)
+
 - MySQL support
 - Point-in-time recovery
 - Multi-user teams
@@ -587,15 +665,19 @@ A **lightweight Micro-SaaS** that:
 ## 23. README.md (Developer & AI-Friendly Specification)
 
 ### Project Name
+
 DBSnap
 
 ### Tagline
+
 Visual database backups & diffs for developers
 
 ---
 
 ## 1. Purpose
+
 DBSnap is a lightweight developer-first SaaS that provides:
+
 - Automated database backups
 - Versioned snapshots
 - Visual diffs between backups
@@ -610,10 +692,12 @@ Designed for MongoDB and SQL users who want **clarity instead of complexity**.
 This repository implements **DBSnap v1**.
 
 ### Supported Databases
+
 - MongoDB (ReplicaSet / Atlas)
 - PostgreSQL
 
 ### Core Capabilities
+
 - Connect database using read-only credentials
 - Run manual & scheduled backups
 - Encrypt and store snapshots
@@ -626,6 +710,7 @@ This repository implements **DBSnap v1**.
 ## 3. Architecture Overview
 
 ### High-Level Diagram (Logical)
+
 - Web App (Next.js)
 - API Server (NestJS)
 - Worker Services
@@ -638,6 +723,7 @@ This repository implements **DBSnap v1**.
 ## 4. Tech Stack
 
 ### Frontend
+
 - Next.js (App Router)
 - TypeScript
 - Tailwind CSS
@@ -645,12 +731,14 @@ This repository implements **DBSnap v1**.
 - Monaco Editor (diff viewer)
 
 ### Backend
+
 - Node.js
 - NestJS
 - Prisma ORM
 - PostgreSQL (metadata)
 
 ### Workers & Infra
+
 - BullMQ + Redis
 - Docker
 - S3-compatible storage
@@ -680,19 +768,23 @@ This repository implements **DBSnap v1**.
 ## 6. Core Modules (What to Build)
 
 ### Auth Module
+
 - JWT + refresh token
 - OAuth (GitHub, Google)
 
 ### Project Module
+
 - Create / delete project
 - Environment tagging
 
 ### Database Connector Module
+
 - Mongo connector (cursor streaming)
 - Postgres connector (ordered dump)
 - Read-only validation
 
 ### Backup Engine
+
 - Snapshot orchestration
 - Chunking
 - Compression
@@ -700,12 +792,14 @@ This repository implements **DBSnap v1**.
 - Upload to storage
 
 ### Diff Engine
+
 - Hash-based comparison
 - Mongo JSON diff
 - SQL row diff
 - Summary generation
 
 ### Restore Engine
+
 - Full restore
 - Selective restore
 - Safety confirmation
@@ -715,12 +809,14 @@ This repository implements **DBSnap v1**.
 ## 7. Diff Logic (Summary)
 
 ### MongoDB
+
 - Normalize documents
 - Hash per document
 - Merkle-tree per collection
 - JSON patch for changed docs
 
 ### PostgreSQL
+
 - PK-based row hashing
 - Column diff
 
@@ -739,10 +835,12 @@ This repository implements **DBSnap v1**.
 ## 9. Development Workflow
 
 ### Local Setup
+
 - Docker Compose
 - Seed demo DBs
 
 ### Environments
+
 - dev
 - staging
 - prod
@@ -782,6 +880,7 @@ Positioning:
 This README is intentionally explicit.
 
 When generating code:
+
 - Follow the frozen scope
 - Do not add extra features
 - Prefer clarity over optimization
@@ -790,4 +889,3 @@ When generating code:
 ---
 
 **End of README / PRD**
-

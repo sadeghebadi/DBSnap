@@ -3,16 +3,19 @@
 ## Goal / Requirements / Acceptance Criteria / Out of Scope
 
 ISSUE-045 — Live Diff Mode
+
 Level: L3 | Type: Core
 
 Goal:
 Compare backup against current database state.
 
 Requirements:
+
 - Efficient streaming from live DB
 - No impact on live DB performance
 
 Acceptance Criteria:
+
 - Accurate diff between static snapshot and live data
 
 ---
@@ -26,9 +29,8 @@ Do NOT invent new features. Follow the frozen MVP scope strictly.
 Instructions:
 1. Read this file completely.
 2. **Git Workflow**:
-   - Create a new branch named EXACTLY like this filename: `ISSUE-045-----live-diff-mode.md`.
    - Implement the requirements.
-   - Commit and push the branch.
+   - Commit and push the branch main.
    - Copy this task file from `readyToDev/` to `issues_done/`.
 3. Follow Goal, Requirements, Acceptance Criteria, and Out of Scope.
 4. Prepare a folder / file structure and placeholder code (if applicable) for this issue.
