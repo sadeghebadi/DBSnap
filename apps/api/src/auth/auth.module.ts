@@ -4,6 +4,7 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth.service.js';
 import { AuthController } from './auth.controller.js';
 import { JwtStrategy } from './strategies/jwt.strategy.js';
+import { MailModule } from '../mail/mail.module.js';
 import { getConfig } from '@dbsnap/shared';
 
 const config = getConfig();
@@ -15,6 +16,7 @@ const config = getConfig();
             secret: config.JWT_SECRET || 'fallback_secret',
             signOptions: { expiresIn: '1h' },
         }),
+        MailModule,
     ],
     controllers: [AuthController],
     providers: [AuthService, JwtStrategy],
