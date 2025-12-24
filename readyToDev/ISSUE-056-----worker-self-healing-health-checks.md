@@ -3,17 +3,20 @@
 ## Goal / Requirements / Acceptance Criteria / Out of Scope
 
 ISSUE-056 — Worker Self-Healing & Health Checks
+
 Level: L2 | Type: Infra
 
 Goal:
 Ensure high availability of worker processes.
 
 Requirements:
+
 - Health check API per worker
 - Auto-restart logic on hung processes
 - Liveness/Readiness probes (K8s compatible)
 
 Acceptance Criteria:
+
 - System detects and recovers a crashed worker within 30s
 
 ---
@@ -28,7 +31,7 @@ Instructions:
 1. Read this file completely.
 2. **Git Workflow**:
    - Implement the requirements.
-   - Commit and push the branch.
+   - Commit and push the branch main.
    - Copy this task file from `readyToDev/` to `issues_done/`.
 3. Follow Goal, Requirements, Acceptance Criteria, and Out of Scope.
 4. Prepare a folder / file structure and placeholder code (if applicable) for this issue.

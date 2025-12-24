@@ -3,9 +3,11 @@
 ## Goal / Requirements / Acceptance Criteria / Out of Scope
 
 ISSUE-073 — Diff Viewer (Simple)
+
 Level: L3 | Type: UI
 
 Features:
+
 - Added / Removed / Changed
 - Collapsible sections
 
@@ -23,7 +25,7 @@ Instructions:
 1. Read this file completely.
 2. **Git Workflow**:
    - Implement the requirements.
-   - Commit and push the branch.
+   - Commit and push the branch main.
    - Copy this task file from `readyToDev/` to `issues_done/`.
 3. Follow Goal, Requirements, Acceptance Criteria, and Out of Scope.
 4. Prepare a folder / file structure and placeholder code (if applicable) for this issue.

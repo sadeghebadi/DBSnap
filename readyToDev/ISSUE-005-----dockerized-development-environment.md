@@ -3,17 +3,20 @@
 ## Goal / Requirements / Acceptance Criteria / Out of Scope
 
 ISSUE-005 — Dockerized Development Environment
+
 Level: L2 | Type: Infra
 
 Goal:
 Standardize local development with all dependencies.
 
 Requirements:
+
 - docker-compose.yml for local infrastructure
 - Services: PostgreSQL, MongoDB, Redis
 - Health checks for each service
 
 Acceptance Criteria:
+
 - `docker-compose up` provides a fully working local infra
 
 ---
@@ -28,7 +31,7 @@ Instructions:
 1. Read this file completely.
 2. **Git Workflow**:
    - Implement the requirements.
-   - Commit and push the branch.
+   - Commit and push the branch main.
    - Copy this task file from `readyToDev/` to `issues_done/`.
 3. Follow Goal, Requirements, Acceptance Criteria, and Out of Scope.
 4. Prepare a folder / file structure and placeholder code (if applicable) for this issue.

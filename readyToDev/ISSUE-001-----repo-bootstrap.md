@@ -3,22 +3,26 @@
 ## Goal / Requirements / Acceptance Criteria / Out of Scope
 
 ISSUE-001 — Repo Bootstrap
+
 Level: L3 | Type: Meta
 
 Goal:
 Initialize DBSnap monorepo with base structure.
 
 Requirements:
+
 - /apps/api
 - /apps/web
 - /apps/worker
 - /packages/shared
 
 Acceptance Criteria:
+
 - Repo installs without errors
 - All services start with placeholder code
 
 Out of Scope:
+
 - Business logic
 
 ---
@@ -33,7 +37,7 @@ Instructions:
 1. Read this file completely.
 2. **Git Workflow**:
    - Implement the requirements.
-   - Commit and push the branch.
+   - Commit and push the branch main.
    - Copy this task file from `readyToDev/` to `issues_done/`.
 3. Follow Goal, Requirements, Acceptance Criteria, and Out of Scope.
 4. Prepare a folder / file structure and placeholder code (if applicable) for this issue.

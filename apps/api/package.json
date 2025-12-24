@@ -5,7 +5,9 @@
     "type": "module",
     "scripts": {
         "dev": "ts-node src/main.ts",
-        "build": "tsc"
+        "build": "tsc",
+        "lint": "eslint .",
+        "test": "jest"
     },
     "dependencies": {
         "@dbsnap/shared": "^0.0.0",

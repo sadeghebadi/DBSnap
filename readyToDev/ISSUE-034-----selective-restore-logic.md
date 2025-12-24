@@ -3,16 +3,19 @@
 ## Goal / Requirements / Acceptance Criteria / Out of Scope
 
 ISSUE-034 — Selective Restore Logic
+
 Level: L3 | Type: Core
 
 Goal:
 Restore specific parts of a database.
 
 Requirements:
+
 - Selection by collection/table
 - Overwrite vs Append options
 
 Acceptance Criteria:
+
 - Targeted data is restored without affecting others
 
 ---
@@ -27,7 +30,7 @@ Instructions:
 1. Read this file completely.
 2. **Git Workflow**:
    - Implement the requirements.
-   - Commit and push the branch.
+   - Commit and push the branch main.
    - Copy this task file from `readyToDev/` to `issues_done/`.
 3. Follow Goal, Requirements, Acceptance Criteria, and Out of Scope.
 4. Prepare a folder / file structure and placeholder code (if applicable) for this issue.

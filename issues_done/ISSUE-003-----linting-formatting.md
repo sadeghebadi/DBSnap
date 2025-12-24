@@ -9,14 +9,17 @@ Goal:
 Ensure consistent code style.
 
 Requirements:
+
 - ESLint
 - Prettier
 - Shared config
 
 Acceptance Criteria:
+
 - Lint passes in CI
 
 Out of Scope:
+
 - Custom lint rules
 
 ---
@@ -28,9 +31,9 @@ You are an expert software engineer. You have the DBSnap README.md and ISSUE_MAS
 Do NOT invent new features. Follow the frozen MVP scope strictly.
 
 Instructions:
+
 1. Read this file completely.
 2. **Git Workflow**:
-   - Create a new branch named EXACTLY like this filename: `ISSUE-003-----linting-formatting.md`.
    - Implement the requirements.
    - Commit and push the branch.
    - Copy this task file from `readyToDev/` to `issues_done/`.
@@ -40,4 +43,3 @@ Instructions:
 6. Provide outputs in a format ready for direct commit or review.
 
 Reply ONLY with the code/files/folder structure relevant to this Issue.
-

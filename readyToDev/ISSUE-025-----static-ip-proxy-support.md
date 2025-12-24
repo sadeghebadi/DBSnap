@@ -3,16 +3,19 @@
 ## Goal / Requirements / Acceptance Criteria / Out of Scope
 
 ISSUE-025 — Static IP / Proxy Support
+
 Level: L2 | Type: Infra
 
 Goal:
 Support IP whitelisting for strict DB firewalls.
 
 Requirements:
+
 - Outbound traffic routing through static IP
 - Proxy configuration in DB connectors
 
 Acceptance Criteria:
+
 - All backup traffic originates from a known, fixed IP address
 
 ---
@@ -27,7 +30,7 @@ Instructions:
 1. Read this file completely.
 2. **Git Workflow**:
    - Implement the requirements.
-   - Commit and push the branch.
+   - Commit and push the branch main.
    - Copy this task file from `readyToDev/` to `issues_done/`.
 3. Follow Goal, Requirements, Acceptance Criteria, and Out of Scope.
 4. Prepare a folder / file structure and placeholder code (if applicable) for this issue.

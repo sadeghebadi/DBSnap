@@ -9,11 +9,13 @@ Goal:
 Standardize local development with all dependencies.
 
 Requirements:
+
 - docker-compose.yml for local infrastructure
 - Services: PostgreSQL, MongoDB, Redis
 - Health checks for each service
 
 Acceptance Criteria:
+
 - `docker-compose up` provides a fully working local infra
 
 ---
@@ -25,9 +27,9 @@ You are an expert software engineer. You have the DBSnap README.md and ISSUE_MAS
 Do NOT invent new features. Follow the frozen MVP scope strictly.
 
 Instructions:
+
 1. Read this file completely.
 2. **Git Workflow**:
-   - Create a new branch named EXACTLY like this filename: `ISSUE-005-----dockerized-development-environment.md`.
    - Implement the requirements.
    - Commit and push the branch.
    - Copy this task file from `readyToDev/` to `issues_done/`.
@@ -37,4 +39,3 @@ Instructions:
 6. Provide outputs in a format ready for direct commit or review.
 
 Reply ONLY with the code/files/folder structure relevant to this Issue.
-

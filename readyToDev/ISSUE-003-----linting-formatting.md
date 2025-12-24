@@ -3,20 +3,24 @@
 ## Goal / Requirements / Acceptance Criteria / Out of Scope
 
 ISSUE-003 — Linting & Formatting
+
 Level: L2 | Type: Meta
 
 Goal:
 Ensure consistent code style.
 
 Requirements:
+
 - ESLint
 - Prettier
 - Shared config
 
 Acceptance Criteria:
+
 - Lint passes in CI
 
 Out of Scope:
+
 - Custom lint rules
 
 ---
@@ -31,7 +35,7 @@ Instructions:
 1. Read this file completely.
 2. **Git Workflow**:
    - Implement the requirements.
-   - Commit and push the branch.
+   - Commit and push the branch main.
    - Copy this task file from `readyToDev/` to `issues_done/`.
 3. Follow Goal, Requirements, Acceptance Criteria, and Out of Scope.
 4. Prepare a folder / file structure and placeholder code (if applicable) for this issue.

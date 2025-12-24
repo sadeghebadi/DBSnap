@@ -3,17 +3,21 @@
 ## Goal / Requirements / Acceptance Criteria / Out of Scope
 
 ISSUE-012 — Auth API (JWT)
+
 Level: L3 | Type: Product
 
 Endpoints:
+
 - Login
 - Logout
 - Refresh token
 
 Acceptance Criteria:
+
 - Protected routes require token
 
 Out of Scope:
+
 - OAuth
 
 ---
@@ -28,7 +32,7 @@ Instructions:
 1. Read this file completely.
 2. **Git Workflow**:
    - Implement the requirements.
-   - Commit and push the branch.
+   - Commit and push the branch main.
    - Copy this task file from `readyToDev/` to `issues_done/`.
 3. Follow Goal, Requirements, Acceptance Criteria, and Out of Scope.
 4. Prepare a folder / file structure and placeholder code (if applicable) for this issue.

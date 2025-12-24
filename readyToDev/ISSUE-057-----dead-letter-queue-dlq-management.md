@@ -3,17 +3,20 @@
 ## Goal / Requirements / Acceptance Criteria / Out of Scope
 
 ISSUE-057 — Dead Letter Queue (DLQ) Management
+
 Level: L2 | Type: Admin
 
 Goal:
 Allow admins to inspect and retry failed jobs.
 
 Requirements:
+
 - UI for viewing DLQ contents
 - Inspect error stacks for failed jobs
 - Bulk retry or individual job re-drive
 
 Acceptance Criteria:
+
 - Failed jobs can be analyzed and restarted from the Admin Panel
 
 ---
@@ -28,7 +31,7 @@ Instructions:
 1. Read this file completely.
 2. **Git Workflow**:
    - Implement the requirements.
-   - Commit and push the branch.
+   - Commit and push the branch main.
    - Copy this task file from `readyToDev/` to `issues_done/`.
 3. Follow Goal, Requirements, Acceptance Criteria, and Out of Scope.
 4. Prepare a folder / file structure and placeholder code (if applicable) for this issue.

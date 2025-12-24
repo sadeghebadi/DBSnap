@@ -5,7 +5,9 @@
     "scripts": {
         "dev": "next dev",
         "build": "next build",
-        "start": "next start"
+        "start": "next start",
+        "lint": "eslint .",
+        "test": "jest"
     },
     "dependencies": {
         "@dbsnap/shared": "^0.0.0",

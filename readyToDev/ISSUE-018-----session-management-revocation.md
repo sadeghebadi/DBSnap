@@ -3,17 +3,20 @@
 ## Goal / Requirements / Acceptance Criteria / Out of Scope
 
 ISSUE-018 — Session management & Revocation
+
 Level: L2 | Type: Product
 
 Goal:
 Allow users to see and manage active login sessions.
 
 Requirements:
+
 - List active sessions with IP and User Agent
 - "Logout from all devices" functionality
 - Individual session revocation
 
 Acceptance Criteria:
+
 - Revoking a session immediately invalidates the JWT
 
 ---
@@ -28,7 +31,7 @@ Instructions:
 1. Read this file completely.
 2. **Git Workflow**:
    - Implement the requirements.
-   - Commit and push the branch.
+   - Commit and push the branch main.
    - Copy this task file from `readyToDev/` to `issues_done/`.
 3. Follow Goal, Requirements, Acceptance Criteria, and Out of Scope.
 4. Prepare a folder / file structure and placeholder code (if applicable) for this issue.

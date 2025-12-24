@@ -3,16 +3,19 @@
 ## Goal / Requirements / Acceptance Criteria / Out of Scope
 
 ISSUE-023 — Backup Scheduling & Retention
+
 Level: L2 | Type: Core
 
 Goal:
 Automate periodic backups and cleanup.
 
 Requirements:
+
 - CRON expression support
 - Retention days/count setting
 
 Acceptance Criteria:
+
 - Workers trigger at specified times
 - Old snapshots are purged based on policy
 
@@ -28,7 +31,7 @@ Instructions:
 1. Read this file completely.
 2. **Git Workflow**:
    - Implement the requirements.
-   - Commit and push the branch.
+   - Commit and push the branch main.
    - Copy this task file from `readyToDev/` to `issues_done/`.
 3. Follow Goal, Requirements, Acceptance Criteria, and Out of Scope.
 4. Prepare a folder / file structure and placeholder code (if applicable) for this issue.
