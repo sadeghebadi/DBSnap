@@ -1,6 +1,9 @@
-import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Req, Get } from '@nestjs/common';
 import { AuthService } from './auth.service.js';
 import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
+import { RolesGuard } from './guards/roles.guard.js';
+import { Roles } from './decorators/roles.decorator.js';
+import { UserRole } from '@dbsnap/shared';
 
 @Controller('auth')
 export class AuthController {
@@ -9,7 +12,8 @@ export class AuthController {
     @Post('login')
     async login(@Body() body: any) {
         // In a real app, validate credentials here. For MVP, we'll return a token for any email.
-        return this.authService.login({ email: body.email, id: 'dummy-id' });
+        const role = body.role || UserRole.MEMBER;
+        return this.authService.login({ email: body.email, id: 'dummy-id', role });
     }
 
     @Post('logout')
@@ -24,9 +28,10 @@ export class AuthController {
         return this.authService.refreshToken(req.user);
     }
 
-    @Post('profile')
-    @UseGuards(JwtAuthGuard)
-    async getProfile(@Req() req: any) {
-        return req.user;
+    @Get('admin-only')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(UserRole.ADMIN)
+    async adminOnly() {
+        return { message: 'Welcome, Admin!' };
     }
 }
