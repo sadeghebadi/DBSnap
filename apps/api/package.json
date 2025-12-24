@@ -1,0 +1,17 @@
+{
+    "name": "@dbsnap/api",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "dev": "ts-node src/main.ts",
+        "build": "tsc"
+    },
+    "dependencies": {
+        "@nestjs/common": "latest",
+        "@nestjs/core": "latest"
+    },
+    "devDependencies": {
+        "typescript": "latest",
+        "ts-node": "latest"
+    }
+}

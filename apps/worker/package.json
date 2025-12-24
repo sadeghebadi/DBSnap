@@ -1,0 +1,13 @@
+{
+    "name": "@dbsnap/worker",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "dev": "ts-node src/index.ts",
+        "build": "tsc"
+    },
+    "devDependencies": {
+        "typescript": "latest",
+        "ts-node": "latest"
+    }
+}
