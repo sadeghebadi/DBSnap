@@ -10,10 +10,13 @@
         "test": "jest"
     },
     "devDependencies": {
+        "@types/uuid": "^10.0.0",
         "typescript": "latest"
     },
     "dependencies": {
         "dotenv": "^17.2.3",
+        "uuid": "^13.0.0",
+        "winston": "^3.19.0",
         "zod": "^4.2.1"
     }
 }

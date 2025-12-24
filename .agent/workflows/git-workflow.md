@@ -13,11 +13,11 @@ Follow these steps for every new task:
    ```bash
    cp readyToDev/ISSUE-XXX-----name-of-task.md issues_done/
    ```
-5. **Commit & Push**: Commit all changes (implementation + documentation) and push to main.
+5. **Commit & Push**: Commit all changes (implementation + documentation) and push to development.
    ```bash
    git add .
    git commit -m "feat: implement issue-XXX - brief description"
-   git push origin main
+   git push origin development
    ```
 
 // turbo-all
