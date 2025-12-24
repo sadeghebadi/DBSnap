@@ -76,7 +76,7 @@ node scripts/split-issues-with-prompts.js
 
 ## 🤝 Contributing
 
-Please see [CONTRIBUTING.md](file:///home/sadpc/Documents/DBSnap/Minimal%20CONTRIBUTING.md) for guidelines on how to contribute to this project. One Issue = One PR.
+Please see [CONTRIBUTING.md](./Minimal%20CONTRIBUTING.md) for guidelines on how to contribute to this project. One Issue = One PR.
 
 ---
 Built with ❤️ by the DBSnap Team.

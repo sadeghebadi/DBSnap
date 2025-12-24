@@ -6,6 +6,10 @@ No magic. No hidden behavior.
 
 ## Rules
 - One issue → one PR
+- **Git Workflow**:
+  - Each task MUST be developed in a branch named after its `readyToDev/` filename.
+  - After completion, commit and push the branch.
+  - Copy the completed task file from `readyToDev/` to `issues_done/`.
 - No feature creep
 - No implicit side effects
 
