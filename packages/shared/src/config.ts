@@ -21,6 +21,7 @@ const configSchema = z.object({
     .transform((v) => parseInt(v, 10))
     .default(4001),
   DATABASE_URL: z.string().url().optional(),
+  JWT_SECRET: z.string().default("development_secret_key_change_me_in_production"),
 });
 
 export type Config = z.infer<typeof configSchema>;
