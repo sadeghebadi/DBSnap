@@ -10,6 +10,7 @@
         "test": "jest"
     },
     "dependencies": {
+        "@dbsnap/database": "^0.0.0",
         "@dbsnap/shared": "^0.0.0",
         "@nestjs/common": "latest",
         "@nestjs/core": "latest"
