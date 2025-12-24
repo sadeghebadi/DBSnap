@@ -21,7 +21,6 @@ Do NOT invent new features. Follow the frozen MVP scope strictly.
 Instructions:
 1. Read this file completely.
 2. **Git Workflow**:
-   - Create a new branch named EXACTLY like this filename: `ISSUE-041-----mongo-document-diff.md`.
    - Implement the requirements.
    - Commit and push the branch.
    - Copy this task file from `readyToDev/` to `issues_done/`.

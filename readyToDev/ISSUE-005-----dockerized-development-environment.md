@@ -1,20 +1,20 @@
-# ISSUE-095 — Performance Benchmark Suite
+# ISSUE-005 — Dockerized Development Environment
 
 ## Goal / Requirements / Acceptance Criteria / Out of Scope
 
-ISSUE-095 — Performance Benchmark Suite
-Level: L2 | Type: QA
+ISSUE-005 — Dockerized Development Environment
+Level: L2 | Type: Infra
 
 Goal:
-Track system performance over time.
+Standardize local development with all dependencies.
 
 Requirements:
-- Measure duration for 1GB/10GB backups
-- Measure CPU/Memory usage during diff
-- Historical tracking of performance metrics
+- docker-compose.yml for local infrastructure
+- Services: PostgreSQL, MongoDB, Redis
+- Health checks for each service
 
 Acceptance Criteria:
-- New code must not degrade performance beyond 5% tolerance
+- `docker-compose up` provides a fully working local infra
 
 ---
 

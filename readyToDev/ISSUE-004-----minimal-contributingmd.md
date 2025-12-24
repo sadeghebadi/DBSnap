@@ -1,20 +1,23 @@
-# ISSUE-095 — Performance Benchmark Suite
+# ISSUE-004 — Minimal CONTRIBUTING.md
 
 ## Goal / Requirements / Acceptance Criteria / Out of Scope
 
-ISSUE-095 — Performance Benchmark Suite
-Level: L2 | Type: QA
+ISSUE-004 — Minimal CONTRIBUTING.md
+Level: L1 | Type: Docs
 
 Goal:
-Track system performance over time.
+Define contribution rules.
 
 Requirements:
-- Measure duration for 1GB/10GB backups
-- Measure CPU/Memory usage during diff
-- Historical tracking of performance metrics
+- One issue → one PR
+- AI usage rules
+- Commit conventions
 
 Acceptance Criteria:
-- New code must not degrade performance beyond 5% tolerance
+- CONTRIBUTING.md exists
+
+Out of Scope:
+- Code of conduct
 
 ---
 
