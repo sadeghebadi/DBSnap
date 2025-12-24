@@ -10,7 +10,6 @@ This is a monorepo managed by [Turbo](https://turbo.build/).
 - `apps/web`: The Next.js frontend application.
 - `apps/worker`: Background worker for backups and diffing jobs.
 - `packages/shared`: Shared types, utilities, and business logic.
-- `issues/`: Individualized MVP task descriptions.
 - `readyToDev/`: AI-ready prompts for each issue.
 
 ## 🚀 Getting Started
@@ -64,13 +63,11 @@ npm run format
 
 DBSnap uses a frozen MVP scope defined in `ISSUE_MASTER.md`. To work on an issue:
 
-1. Refer to the corresponding file in `/issues`.
-2. For AI-assisted development, use the corresponding prompt in `/readyToDev`.
+1. For AI-assisted development, use the corresponding prompt in `/readyToDev`.
 
 If you update `ISSUE_MASTER.md`, regenerate the files using:
 
 ```bash
-node scripts/split-issues.js
 node scripts/split-issues-with-prompts.js
 ```
 
