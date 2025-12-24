@@ -1,27 +1,27 @@
-# ISSUE-083 — System Health Dashboard
+# ISSUE-008 — Structured Logging System
 
 ## Goal / Requirements / Acceptance Criteria / Out of Scope
 
-ISSUE-083 — System Health Dashboard
+ISSUE-008 — Structured Logging System
 
-Level: L2 | Type: Admin
+Level: L2 | Type: Infra
 
 Goal:
-Monitor internal system state.
+Enable easier debugging through structured data.
 
-Metrics:
+Requirements:
 
-- Queue depth
-- Worker CPU/Memory
-- Backup success rate
+- Winston or Pino integration
+- JSON format in production
+- Request ID correlation across services
 
 Acceptance Criteria:
 
-- Real-time visibility for admins
+- Logs include TraceID and consistent metadata
 
 ---
 
-## PHASE 9 — HARDENING & QUALITY
+## PHASE 1 — AUTH & TENANCY
 
 ## AI Instructions for Gemini
 

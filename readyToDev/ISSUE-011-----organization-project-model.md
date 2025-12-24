@@ -1,27 +1,21 @@
-# ISSUE-083 — System Health Dashboard
+# ISSUE-011 — Organization / Project Model
 
 ## Goal / Requirements / Acceptance Criteria / Out of Scope
 
-ISSUE-083 — System Health Dashboard
+ISSUE-011 — Organization / Project Model
 
-Level: L2 | Type: Admin
+Level: L2 | Type: Core
 
-Goal:
-Monitor internal system state.
+Requirements:
 
-Metrics:
-
-- Queue depth
-- Worker CPU/Memory
-- Backup success rate
+- User belongs to organization
+- Org owns DB connections
 
 Acceptance Criteria:
 
-- Real-time visibility for admins
+- Referential integrity enforced
 
 ---
-
-## PHASE 9 — HARDENING & QUALITY
 
 ## AI Instructions for Gemini
 

@@ -1,27 +1,23 @@
-# ISSUE-083 — System Health Dashboard
+# ISSUE-010 — User Model
 
 ## Goal / Requirements / Acceptance Criteria / Out of Scope
 
-ISSUE-083 — System Health Dashboard
+ISSUE-010 — User Model
 
-Level: L2 | Type: Admin
+Level: L2 | Type: Core
 
-Goal:
-Monitor internal system state.
+Fields:
 
-Metrics:
-
-- Queue depth
-- Worker CPU/Memory
-- Backup success rate
+- id
+- email
+- passwordHash
+- createdAt
 
 Acceptance Criteria:
 
-- Real-time visibility for admins
+- Model persists correctly
 
 ---
-
-## PHASE 9 — HARDENING & QUALITY
 
 ## AI Instructions for Gemini
 
