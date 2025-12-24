@@ -11,5 +11,3 @@ Acceptance Criteria:
 - Permission checks enforced
 
 ---
-
-## PHASE 3 — SNAPSHOT & BACKUP CORE

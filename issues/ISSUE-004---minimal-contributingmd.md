@@ -16,5 +16,3 @@ Out of Scope:
 - Code of conduct
 
 ---
-
-## PHASE 1 — AUTH & TENANCY

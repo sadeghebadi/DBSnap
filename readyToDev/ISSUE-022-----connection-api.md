@@ -16,8 +16,6 @@ Acceptance Criteria:
 
 ---
 
-## PHASE 3 — SNAPSHOT & BACKUP CORE
-
 ## AI Instructions for Gemini
 
 You are an expert software engineer. You have the DBSnap README.md and ISSUE_MASTER.md as references.

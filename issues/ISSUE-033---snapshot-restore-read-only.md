@@ -5,5 +5,3 @@ Goal:
 Load snapshot without modifying DB.
 
 ---
-
-## PHASE 4 — DIFF ENGINE (CORE VALUE)

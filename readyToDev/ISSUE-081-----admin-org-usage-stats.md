@@ -11,8 +11,6 @@ Metrics:
 
 ---
 
-## PHASE 9 — HARDENING & QUALITY
-
 ## AI Instructions for Gemini
 
 You are an expert software engineer. You have the DBSnap README.md and ISSUE_MASTER.md as references.

@@ -6,5 +6,3 @@ Metrics:
 - Storage usage
 
 ---
-
-## PHASE 9 — HARDENING & QUALITY

@@ -10,5 +10,3 @@ Acceptance Criteria:
 - Permissions enforced on APIs
 
 ---
-
-## PHASE 2 — DATABASE CONNECTIONS
