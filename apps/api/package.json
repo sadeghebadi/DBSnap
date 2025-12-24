@@ -8,11 +8,12 @@
         "build": "tsc"
     },
     "dependencies": {
+        "@dbsnap/shared": "^0.0.0",
         "@nestjs/common": "latest",
         "@nestjs/core": "latest"
     },
     "devDependencies": {
-        "typescript": "latest",
-        "ts-node": "latest"
+        "ts-node": "latest",
+        "typescript": "latest"
     }
 }

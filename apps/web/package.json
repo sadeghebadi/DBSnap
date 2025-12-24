@@ -8,13 +8,14 @@
         "start": "next start"
     },
     "dependencies": {
+        "@dbsnap/shared": "^0.0.0",
         "next": "latest",
         "react": "latest",
         "react-dom": "latest"
     },
     "devDependencies": {
-        "typescript": "latest",
+        "@types/node": "latest",
         "@types/react": "latest",
-        "@types/node": "latest"
+        "typescript": "latest"
     }
 }

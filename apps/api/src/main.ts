@@ -1,7 +1,9 @@
 import { NestFactory } from '@nestjs/core';
+import { getConfig } from '@dbsnap/shared';
 
 async function bootstrap() {
-    console.log('DBSnap API starting...');
+    const config = getConfig();
+    console.log(`DBSnap API starting on port ${config.API_PORT}...`);
     // Minimal placeholder
 }
 bootstrap();
