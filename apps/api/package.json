@@ -13,9 +13,14 @@
         "@dbsnap/database": "^0.0.0",
         "@dbsnap/shared": "^0.0.0",
         "@nestjs/common": "latest",
-        "@nestjs/core": "latest"
+        "@nestjs/core": "latest",
+        "@nestjs/jwt": "^11.0.2",
+        "@nestjs/passport": "^11.0.5",
+        "passport": "^0.7.0",
+        "passport-jwt": "^4.0.1"
     },
     "devDependencies": {
+        "@types/passport-jwt": "^4.0.1",
         "ts-node": "latest",
         "typescript": "latest"
     }

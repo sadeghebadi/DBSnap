@@ -1,28 +1,20 @@
-// import { NestFactory } from '@nestjs/core';
-import { getConfig, createLogger, runWithContext } from "@dbsnap/shared";
-import { User } from "@dbsnap/database";
-import { randomUUID } from 'crypto';
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module.js';
+import { getConfig, createLogger } from "@dbsnap/shared";
 
 const logger = createLogger('api');
 
 async function bootstrap() {
   const config = getConfig();
-  logger.info(`DBSnap API starting on port ${config.API_PORT}...`);
+  const app = await NestFactory.create(AppModule);
 
-  // Simulate a request to demonstrate structured logging and trace ID
-  const traceId = randomUUID();
-  runWithContext({ traceId }, () => {
-    logger.info("Simulated request started", { path: "/health" });
+  const port = config.API_PORT || 3000;
 
-    // Verify User model implementation (Issue-010)
-    const dummyUser: Partial<User> = {
-      email: "test@example.com",
-      createdAt: new Date()
-    };
-    logger.info("User model verification", { dummyUser });
-
-    // ... application logic ...
-    logger.info("Simulated request completed");
-  });
+  await app.listen(port);
+  logger.info(`DBSnap API running on port ${port}`);
 }
-bootstrap();
+
+bootstrap().catch((err) => {
+  logger.error("Failed to bootstrap API", { error: err.message });
+  process.exit(1);
+});
