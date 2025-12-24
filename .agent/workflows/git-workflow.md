@@ -14,7 +14,7 @@ Follow these steps for every new task:
    git add .
    git commit -m "feat: implement issue-XXX - brief description"
    ```
-5. **Push**: Push the branch to the remote repository.
+5. **Push**: Push the changes to the remote repository.
    ```bash
    git push origin main
    ```
