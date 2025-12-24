@@ -8,5 +8,3 @@ States:
 - Completed
 
 ---
-
-## PHASE 6 — API LAYER
