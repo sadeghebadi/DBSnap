@@ -11,7 +11,10 @@ const configSchema = z.object({
     .enum(["development", "production", "test"])
     .default("development"),
   APP_NAME: z.string().default("DBSnap"),
-  API_PORT: z.string().transform((v) => parseInt(v, 10)),
+  API_PORT: z
+    .string()
+    .default("3000")
+    .transform((v) => parseInt(v, 10)),
   API_URL: z.string().url().default("http://localhost:4000"),
   WORKER_PORT: z
     .string()
