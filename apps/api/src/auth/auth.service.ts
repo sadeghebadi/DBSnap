@@ -98,7 +98,7 @@ export class AuthService {
         return { message: 'Password reset successful.' };
     }
 
-    async login(user: { email: string }) {
+    async login(user: any, metadata?: { ip?: string; userAgent?: string }) {
         const dbUser = await this.prisma.user.findUnique({
             where: { email: user.email },
         });
@@ -107,14 +107,67 @@ export class AuthService {
             throw new UnauthorizedException('Invalid credentials');
         }
 
-        if (dbUser.mfaEnabled) {
-            return {
-                mfaRequired: true,
+        // Create a new session
+        const session = await this.prisma.session.create({
+            data: {
                 userId: dbUser.id,
-            };
+                ip: metadata?.ip,
+                userAgent: metadata?.userAgent,
+            },
+        });
+
+        const payload = {
+            email: dbUser.email,
+            sub: dbUser.id,
+            role: dbUser.role,
+            isVerified: dbUser.isVerified,
+            sid: session.id // Include session ID in JWT payload
+        };
+
+        return {
+            access_token: this.jwtService.sign(payload),
+            refresh_token: this.jwtService.sign(payload, { expiresIn: '7d' }),
+        };
+    }
+
+    async listSessions(userId: string) {
+        return this.prisma.session.findMany({
+            where: { userId, isValid: true },
+            orderBy: { createdAt: 'desc' },
+        });
+    }
+
+    async revokeSession(sessionId: string, userId: string) {
+        const session = await this.prisma.session.findUnique({
+            where: { id: sessionId },
+        });
+
+        if (!session || session.userId !== userId) {
+            throw new NotFoundException('Session not found');
         }
 
-        return this.generateTokens(dbUser);
+        await this.prisma.session.update({
+            where: { id: sessionId },
+            data: { isValid: false },
+        });
+
+        return { message: 'Session revoked successfully' };
+    }
+
+    async revokeAllSessions(userId: string) {
+        await this.prisma.session.updateMany({
+            where: { userId, isValid: true },
+            data: { isValid: false },
+        });
+
+        return { message: 'All sessions revoked successfully' };
+    }
+
+    async isSessionValid(sessionId: string): Promise<boolean> {
+        const session = await this.prisma.session.findUnique({
+            where: { id: sessionId },
+        });
+        return !!session && session.isValid;
     }
 
     private generateTokens(user: any) {
