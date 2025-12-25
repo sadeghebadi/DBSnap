@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Req, Get, Query } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Req, Get, Query, Delete, Param } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service.js';
 import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
@@ -32,8 +32,28 @@ export class AuthController {
     }
 
     @Post('login')
-    async login(@Body() body: any) {
-        return this.authService.login(body);
+    async login(@Body() body: any, @Req() req: any) {
+        const ip = req.ip || req.headers['x-forwarded-for'];
+        const userAgent = req.headers['user-agent'];
+        return this.authService.login(body, { ip, userAgent });
+    }
+
+    @Get('sessions')
+    @UseGuards(JwtAuthGuard)
+    async listSessions(@Req() req: any) {
+        return this.authService.listSessions(req.user.userId);
+    }
+
+    @Delete('sessions/:id')
+    @UseGuards(JwtAuthGuard)
+    async revokeSession(@Req() req: any, @Param('id') id: string) {
+        return this.authService.revokeSession(id, req.user.userId);
+    }
+
+    @Delete('sessions')
+    @UseGuards(JwtAuthGuard)
+    async revokeAllSessions(@Req() req: any) {
+        return this.authService.revokeAllSessions(req.user.userId);
     }
 
     @Post('logout')
