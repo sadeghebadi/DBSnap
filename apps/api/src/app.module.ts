@@ -6,7 +6,16 @@ import { ProjectsModule } from './projects/projects.module.js';
 import { ApiKeysModule } from './api-keys/api-keys.module.js';
 import { BackupsModule } from './backups/backups.module.js';
 
+import { ScheduleModule } from '@nestjs/schedule';
+
 @Module({
-    imports: [DatabaseModule, MailModule, AuthModule, ApiKeysModule, BackupsModule],
+    imports: [
+        ScheduleModule.forRoot(),
+        DatabaseModule,
+        MailModule,
+        AuthModule,
+        ApiKeysModule,
+        BackupsModule,
+    ],
 })
 export class AppModule { }
