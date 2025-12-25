@@ -5,6 +5,7 @@ import { MailModule } from './mail/mail.module.js';
 import { ProjectsModule } from './projects/projects.module.js';
 import { ApiKeysModule } from './api-keys/api-keys.module.js';
 import { BackupsModule } from './backups/backups.module.js';
+import { ConnectionsModule } from './connections/connections.module.js';
 
 import { ScheduleModule } from '@nestjs/schedule';
 
