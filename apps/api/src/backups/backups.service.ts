@@ -85,7 +85,27 @@ export class BackupsService {
             }
         }
 
-        // TODO: Implement retentionDays logic
+        // Retention Days logic
+        if (schedule.retentionDays) {
+            const cutoffDate = new Date();
+            cutoffDate.setDate(cutoffDate.getDate() - schedule.retentionDays);
+
+            const oldSnapshots = await this.prisma.backupSnapshot.findMany({
+                where: {
+                    scheduleId,
+                    status: SnapshotStatus.COMPLETED,
+                    createdAt: { lt: cutoffDate }
+                },
+            });
+
+            for (const snapshot of oldSnapshots) {
+                this.logger.log(`Purging snapshot ${snapshot.id} because it is older than ${schedule.retentionDays} days`);
+                await this.prisma.backupSnapshot.update({
+                    where: { id: snapshot.id },
+                    data: { status: SnapshotStatus.PURGED },
+                });
+            }
+        }
     }
 
     async createSchedule(data: {
