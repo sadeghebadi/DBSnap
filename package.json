@@ -24,5 +24,11 @@
     "ts-jest": "^29.4.6",
     "turbo": "latest",
     "typescript-eslint": "^8.50.1"
+  },
+  "dependencies": {
+    "@dbsnap/api": "^0.0.0",
+    "@types/qrcode": "^1.5.6",
+    "otplib": "^12.0.1",
+    "qrcode": "^1.5.4"
   }
 }

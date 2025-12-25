@@ -22,6 +22,12 @@ const configSchema = z.object({
     .default(4001),
   DATABASE_URL: z.string().url().optional(),
   JWT_SECRET: z.string().default("development_secret_key_change_me_in_production"),
+  GITHUB_CLIENT_ID: z.string().optional(),
+  GITHUB_CLIENT_SECRET: z.string().optional(),
+  GITHUB_CALLBACK_URL: z.string().optional(),
+  GOOGLE_CLIENT_ID: z.string().optional(),
+  GOOGLE_CLIENT_SECRET: z.string().optional(),
+  GOOGLE_CALLBACK_URL: z.string().optional(),
 });
 
 export type Config = z.infer<typeof configSchema>;

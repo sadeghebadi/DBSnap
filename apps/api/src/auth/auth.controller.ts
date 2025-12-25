@@ -1,4 +1,5 @@
 import { Controller, Post, Body, UseGuards, Req, Get, Query } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service.js';
 import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
 import { RolesGuard } from './guards/roles.guard.js';
@@ -52,5 +53,52 @@ export class AuthController {
     @Roles(UserRole.ADMIN)
     async adminOnly() {
         return { message: 'Welcome, Admin!' };
+    }
+
+    @Post('mfa/generate')
+    @UseGuards(JwtAuthGuard)
+    async generateMfaSecret(@Req() req: any) {
+        return this.authService.generateMfaSecret(req.user.userId);
+    }
+
+    @Post('mfa/enable')
+    @UseGuards(JwtAuthGuard)
+    async enableMfa(@Req() req: any, @Body('code') code: string) {
+        return this.authService.enableMfa(req.user.userId, code);
+    }
+
+    @Post('mfa/disable')
+    @UseGuards(JwtAuthGuard)
+    async disableMfa(@Req() req: any) {
+        return this.authService.disableMfa(req.user.userId);
+    }
+
+    @Post('mfa/login')
+    async completeMfaLogin(@Body('userId') userId: string, @Body('code') code: string) {
+        return this.authService.completeMfaLogin(userId, code);
+    }
+
+    @Get('github')
+    @UseGuards(AuthGuard('github'))
+    async githubLogin() {
+        // Initiates the GitHub OAuth flow
+    }
+
+    @Get('github/callback')
+    @UseGuards(AuthGuard('github'))
+    async githubLoginCallback(@Req() req: any) {
+        return this.authService.login(req.user);
+    }
+
+    @Get('google')
+    @UseGuards(AuthGuard('google'))
+    async googleLogin() {
+        // Initiates the Google OAuth flow
+    }
+
+    @Get('google/callback')
+    @UseGuards(AuthGuard('google'))
+    async googleLoginCallback(@Req() req: any) {
+        return this.authService.login(req.user);
     }
 }
