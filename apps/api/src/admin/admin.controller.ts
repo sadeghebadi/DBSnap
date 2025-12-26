@@ -77,4 +77,9 @@ export class AdminController {
     async updateConcurrency(@Body('concurrency') concurrency: number) {
         return this.adminService.updateConcurrency(concurrency);
     }
+
+    @Get('usage-stats')
+    async getOrgUsageStats() {
+        return this.adminService.getOrgUsageStats();
+    }
 }

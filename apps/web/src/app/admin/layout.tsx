@@ -21,16 +21,19 @@ export default function AdminLayout({
                             <span>👥</span> Users
                         </a>
                         <a href="/admin/orgs" className="admin-nav-item">
-                            <span>🏢</span> Organizations
+                            <span>🏢</span> Usage Stats
                         </a>
                         <a href="/admin/workers" className="admin-nav-item">
                             <span>⚙️</span> Worker Status
                         </a>
+                        <a href="/admin/billing" className="admin-nav-item">
+                            <span>💳</span> Billing & Plans
+                        </a>
+                        <a href="/admin/promo-codes" className="admin-nav-item">
+                            <span>🎟️</span> Promo Codes
+                        </a>
                         <a href="/admin/audit" className="admin-nav-item">
                             <span>📜</span> Audit Logs
-                        </a>
-                        <a href="/admin/billing" className="admin-nav-item">
-                            <span>💳</span> Billing
                         </a>
                         <a href="/admin/settings" className="admin-nav-item">
                             <span>🛠️</span> System Settings

@@ -194,4 +194,60 @@ export class AdminService {
         }));
         return { success: true };
     }
+
+    async getOrgUsageStats() {
+        const orgs = await this.prisma.organization.findMany({
+            include: {
+                _count: {
+                    select: {
+                        projects: true,
+                    }
+                },
+                projects: {
+                    include: {
+                        connections: {
+                            include: {
+                                _count: {
+                                    select: {
+                                        snapshots: true,
+                                    }
+                                },
+                                snapshots: {
+                                    select: {
+                                        sizeBytes: true,
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        return orgs.map(org => {
+            let totalSnapshots = 0;
+            let totalStorageBytes = 0;
+            let totalConnections = 0;
+
+            org.projects.forEach(project => {
+                totalConnections += project.connections.length;
+                project.connections.forEach(conn => {
+                    totalSnapshots += conn._count.snapshots;
+                    conn.snapshots.forEach(snap => {
+                        totalStorageBytes += Number(snap.sizeBytes || 0);
+                    });
+                });
+            });
+
+            return {
+                id: org.id,
+                name: org.name,
+                projectCount: org._count.projects,
+                connectionCount: totalConnections,
+                snapshotCount: totalSnapshots,
+                storageBytes: totalStorageBytes,
+                createdAt: org.createdAt,
+            };
+        });
+    }
 }

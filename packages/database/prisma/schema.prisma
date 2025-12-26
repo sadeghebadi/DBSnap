@@ -50,14 +50,62 @@ model Session {
 }
 
 model Organization {
-  id        String    @id @default(uuid())
-  name      String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  users     User[]
-  projects  Project[]
+  id           String        @id @default(uuid())
+  name         String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  users        User[]
+  projects     Project[]
+  subscription Subscription?
 
   @@map("organizations")
+}
+
+model Plan {
+  id             String         @id @default(uuid())
+  name           String         @unique
+  stripePriceId  String?        @unique
+  maxSnapshots   Int            @default(10)
+  maxConnections Int            @default(5)
+  maxProjects    Int            @default(3)
+  storageLimitGb Int            @default(5)
+  price          Float          @default(0)
+  subscriptions  Subscription[]
+  promoCodes     PromoCode[]
+
+  @@map("plans")
+}
+
+model Subscription {
+  id                   String       @id @default(uuid())
+  organizationId       String       @unique
+  organization         Organization @relation(fields: [organizationId], references: [id])
+  planId               String
+  plan                 Plan         @relation(fields: [planId], references: [id])
+  stripeSubscriptionId String?      @unique
+  status               String       @default("ACTIVE")
+  currentPeriodEnd     DateTime?
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+
+  @@map("subscriptions")
+}
+
+model PromoCode {
+  id              String    @id @default(uuid())
+  code            String    @unique
+  discountPercent Int?
+  discountAmount  Float?
+  expirationDate  DateTime?
+  usageLimit      Int?
+  usageCount      Int       @default(0)
+  isActive        Boolean   @default(true)
+  planId          String?
+  plan            Plan?     @relation(fields: [planId], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("promo_codes")
 }
 
 model Project {
