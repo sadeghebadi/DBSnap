@@ -32,6 +32,7 @@ model User {
   organization          Organization? @relation(fields: [organizationId], references: [id])
   sessions              Session[]
   apiKeys               ApiKey[]
+  isActive              Boolean       @default(true)
 
   @@map("users")
 }
@@ -57,6 +58,13 @@ model Organization {
   users        User[]
   projects     Project[]
   subscription Subscription?
+  isActive     Boolean       @default(true)
+  
+  // ISSUE-091: Custom Quota Overrides
+  overrideMaxSnapshots   Int?
+  overrideMaxConnections Int?
+  overrideStorageLimitGb Int?
+  ignorePlanLimits       Boolean @default(false)
 
   @@map("organizations")
 }

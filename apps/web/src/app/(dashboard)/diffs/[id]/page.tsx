@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import DiffViewer from "../../../components/DiffViewer";
+import DiffViewer from "../../../../components/DiffViewer";
 
 export default function DiffPage({ params }: { params: { id: string } }) {
     const [diffData, setDiffData] = useState<any>(null);

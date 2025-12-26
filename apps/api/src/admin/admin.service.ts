@@ -250,4 +250,136 @@ export class AdminService {
             };
         });
     }
+    async createUser(email: string, role: string, organizationId?: string) {
+        return this.prisma.user.create({
+            data: {
+                email,
+                passwordHash: 'temp-hash-invite-pending', // In a real app, logic to send invite email would go here
+                role: role as any,
+                isVerified: true,
+                organizationId,
+                isActive: true
+            }
+        });
+    }
+
+    async createOrganization(name: string, planId?: string) {
+        return this.prisma.organization.create({
+            data: {
+                name,
+                isActive: true
+                // planId would be linked here if subscription logic was fully active
+            }
+        });
+    }
+
+    async impersonateUser(userId: string, adminId: string) {
+        const user = await this.prisma.user.findUnique({ where: { id: userId } });
+        if (!user) throw new Error('User not found');
+
+        // Audit log would happen here
+        this.logger.log(`Admin ${adminId} impersonating user ${userId}`);
+
+        // Return a mock token for now. In production, this would sign a new JWT with a short expiration.
+        return {
+            impersonationToken: `mock_jwt_for_${user.email}`,
+            user
+        };
+    }
+
+    async resetMFA(userId: string) {
+        return this.prisma.user.update({
+            where: { id: userId },
+            data: {
+                mfaEnabled: false,
+                mfaSecret: null,
+                mfaRecoveryCodes: []
+            }
+        });
+    }
+
+    async suspendUser(userId: string, reason: string) {
+        this.logger.warn(`Suspending user ${userId}. Reason: ${reason}`);
+        // Invalidate sessions
+        await this.prisma.session.updateMany({
+            where: { userId },
+            data: { isValid: false }
+        });
+
+        return this.prisma.user.update({
+            where: { id: userId },
+            data: { isActive: false }
+        });
+    }
+
+    async reactivateUser(userId: string) {
+        return this.prisma.user.update({
+            where: { id: userId },
+            data: { isActive: true }
+        });
+    }
+
+    async suspendOrg(orgId: string, reason: string) {
+        this.logger.warn(`Suspending org ${orgId}. Reason: ${reason}`);
+        // Pause all backup schedules for this org
+        // This is a simplified logic; real logic would need to iterate projects -> connections -> schedules
+
+        return this.prisma.organization.update({
+            where: { id: orgId },
+            data: { isActive: false }
+        });
+    }
+
+    async reactivateOrg(orgId: string) {
+        return this.prisma.organization.update({
+            where: { id: orgId },
+            data: { isActive: true }
+        });
+    }
+
+    // ISSUE-088: Promo Codes
+    async listPromoCodes() {
+        return this.prisma.promoCode.findMany({
+            orderBy: { createdAt: 'desc' },
+            include: { plan: true }
+        });
+    }
+
+    async createPromoCode(data: any) {
+        return this.prisma.promoCode.create({
+            data: {
+                code: data.code,
+                discountPercent: data.discountPercent ? parseInt(data.discountPercent) : null,
+                discountAmount: data.discountAmount ? parseFloat(data.discountAmount) : null,
+                usageLimit: data.usageLimit ? parseInt(data.usageLimit) : null,
+                expirationDate: data.expirationDate ? new Date(data.expirationDate) : null,
+                planId: data.planId,
+                isActive: true
+            }
+        });
+    }
+
+    async deactivatePromoCode(id: string) {
+        return this.prisma.promoCode.update({
+            where: { id },
+            data: { isActive: false }
+        });
+    }
+
+    // ISSUE-091: Quotas
+    async updateOrgQuotas(orgId: string, data: any) {
+        return this.prisma.organization.update({
+            where: { id: orgId },
+            data: {
+                overrideMaxSnapshots: data.overrideMaxSnapshots,
+                overrideMaxConnections: data.overrideMaxConnections,
+                overrideStorageLimitGb: data.overrideStorageLimitGb,
+                ignorePlanLimits: data.ignorePlanLimits
+            }
+        });
+    }
+
+    async listPlans() {
+        return this.prisma.plan.findMany();
+    }
 }
