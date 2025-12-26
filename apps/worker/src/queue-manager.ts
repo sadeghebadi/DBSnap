@@ -1,5 +1,7 @@
 import { Worker, Job } from 'bullmq';
-import { QueueNames, getRedisConnection, logger } from '@dbsnap/shared';
+import { QueueNames, getRedisConnection, createLogger } from '@dbsnap/shared';
+
+const logger = createLogger('queue-manager');
 
 export type JobProcessor = (job: Job) => Promise<any>;
 

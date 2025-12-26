@@ -1,5 +1,8 @@
+import { processSnapshotJob } from './processors/snapshot.processor.js';
 import { QueueManager } from './queue-manager.js';
-import { QueueNames, logger } from '@dbsnap/shared';
+import { QueueNames, createLogger } from '@dbsnap/shared';
+
+const logger = createLogger('worker');
 
 const queueManager = new QueueManager();
 
@@ -7,15 +10,12 @@ async function main() {
   logger.info('Starting DBSnap Worker...');
 
   await queueManager.start({
-    [QueueNames.BACKUP]: async (job) => {
-      logger.info(`Processing BACKUP job ${job.id}`);
-      // TODO: Implement actual backup logic in ISSUE-051
-    },
-    [QueueNames.RESTORE]: async (job) => {
+    [QueueNames.BACKUP]: processSnapshotJob,
+    [QueueNames.RESTORE]: async (job: any) => {
       logger.info(`Processing RESTORE job ${job.id}`);
       // TODO: Implement actual restore logic
     },
-    [QueueNames.DIFF]: async (job) => {
+    [QueueNames.DIFF]: async (job: any) => {
       logger.info(`Processing DIFF job ${job.id}`);
       // TODO: Implement actual diff logic in ISSUE-052
     }
