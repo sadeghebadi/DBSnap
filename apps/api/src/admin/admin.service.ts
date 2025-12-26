@@ -382,4 +382,64 @@ export class AdminService {
     async listPlans() {
         return this.prisma.plan.findMany();
     }
+
+    // ISSUE-084: Audit Logs
+    async getAuditLogs(params: any) {
+        return this.prisma.auditLog.findMany({
+            take: 50,
+            orderBy: { createdAt: 'desc' }
+        });
+    }
+
+    // ISSUE-092: Global Resource Browser
+    async searchResources(query: string) {
+        // Mock search implementation - ideally would search across models or use a view
+        // For MVP, just returning empty arrays or mocking simple find
+        return {
+            databases: [],
+            snapshots: []
+        };
+    }
+
+    // ISSUE-090: Org Explorer
+    async getOrgDetails(id: string) {
+        return this.prisma.organization.findUnique({
+            where: { id },
+            include: {
+                projects: { include: { databases: true } },
+                users: true,
+                subscription: true
+            }
+        });
+    }
+
+    // ISSUE-094: GDPR
+    async gdprExport(userId: string) {
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId },
+            include: { organizations: true }
+        });
+        return { user, exportedAt: new Date() };
+    }
+
+    async gdprDelete(userId: string) {
+        // Check legal hold
+        // const user = ... if (user.legalHold) throw Error
+        // For now, simple delete placeholder
+        return this.prisma.user.delete({ where: { id: userId } });
+    }
+
+    // ISSUE-095: Support Actions
+    async triggerSupportAction(action: string, resourceId: string, adminId: string) {
+        // Log action
+        await this.prisma.auditLog.create({
+            data: {
+                adminId,
+                action: `SUPPORT_${action}`,
+                resource: resourceId,
+                details: { triggeredByAdmin: true }
+            }
+        });
+        return { success: true, message: `${action} triggered for ${resourceId}` };
+    }
 }

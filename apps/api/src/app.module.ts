@@ -21,6 +21,10 @@ import { MaintenanceMiddleware } from './admin/maintenance.middleware.js';
 
 const config = getConfig();
 
+import { LoggerService } from './common/logger/logger.service.js';
+import { GlobalExceptionFilter } from './common/filters/global-exception.filter.js';
+import { APP_FILTER } from '@nestjs/core';
+
 @Module({
     imports: [
         ScheduleModule.forRoot(),
@@ -43,6 +47,13 @@ const config = getConfig();
         SnapshotsModule,
         NotificationsModule,
         DiffsModule,
+    ],
+    providers: [
+        LoggerService,
+        {
+            provide: APP_FILTER,
+            useClass: GlobalExceptionFilter,
+        },
     ],
 })
 export class AppModule {

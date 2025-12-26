@@ -184,5 +184,54 @@ export const AdminService = {
         const res = await fetch(`${API_URL}/admin/plans`, { headers: getHeaders() });
         if (!res.ok) throw new Error('Failed to fetch plans');
         return res.json();
+    },
+
+    // Phase 4
+    async getAuditLogs() {
+        const res = await fetch(`${API_URL}/admin/audit-logs`, { headers: getHeaders() });
+        if (!res.ok) throw new Error('Failed to fetch audit logs');
+        return res.json();
+    },
+
+    async triggerSupportAction(action: string, resourceId: string) {
+        // Mock admin ID for now
+        const adminId = 'admin-123';
+        const res = await fetch(`${API_URL}/admin/support/action`, {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify({ action, resourceId, adminId })
+        });
+        if (!res.ok) throw new Error('Failed to trigger action');
+        return res.json();
+    },
+
+    async searchResources(query: string) {
+        const res = await fetch(`${API_URL}/admin/resources/search?q=${encodeURIComponent(query)}`, { headers: getHeaders() });
+        if (!res.ok) throw new Error('Failed to search resources');
+        return res.json();
+    },
+
+    async getOrgDetails(id: string) {
+        const res = await fetch(`${API_URL}/admin/orgs/${id}/details`, { headers: getHeaders() });
+        if (!res.ok) throw new Error('Failed to fetch org details');
+        return res.json();
+    },
+
+    async gdprExport(userId: string) {
+        const res = await fetch(`${API_URL}/admin/users/${userId}/gdpr/export`, {
+            method: 'POST',
+            headers: getHeaders()
+        });
+        if (!res.ok) throw new Error('Failed to export data');
+        return res.blob();
+    },
+
+    async gdprDelete(userId: string) {
+        const res = await fetch(`${API_URL}/admin/users/${userId}/gdpr/delete`, {
+            method: 'POST',
+            headers: getHeaders()
+        });
+        if (!res.ok) throw new Error('Failed to delete user');
+        return res.json();
     }
 };

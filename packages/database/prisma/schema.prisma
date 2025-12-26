@@ -65,8 +65,25 @@ model Organization {
   overrideMaxConnections Int?
   overrideStorageLimitGb Int?
   ignorePlanLimits       Boolean @default(false)
+  
+  // ISSUE-094: GDPR Legal Hold
+  legalHold              Boolean @default(false)
 
   @@map("organizations")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  adminId   String?  // If action performed by admin
+  userId    String?  // If action performed by user
+  orgId     String?
+  action    String
+  resource  String?
+  details   Json?
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  @@map("audit_logs")
 }
 
 model Plan {

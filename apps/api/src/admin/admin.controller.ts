@@ -161,4 +161,32 @@ export class AdminController {
     async listPlans() {
         return this.adminService.listPlans();
     }
+
+    // ISSUE-084 & Phase 4 Endpoints
+    @Get('audit-logs')
+    async getAuditLogs(@Query() query: any) {
+        return this.adminService.getAuditLogs(query);
+    }
+
+    @Get('resources/search')
+    async searchResources(@Query('q') q: string) {
+        return this.adminService.searchResources(q);
+    }
+
+    @Get('orgs/:id/details')
+    async getOrgDetails(@Param('id') id: string) {
+        return this.adminService.getOrgDetails(id);
+    }
+
+    @Post('users/:id/gdpr/:action')
+    async gdprAction(@Param('id') id: string, @Param('action') action: string) {
+        if (action === 'export') return this.adminService.gdprExport(id);
+        if (action === 'delete') return this.adminService.gdprDelete(id);
+        throw new Error('Invalid GDPR action');
+    }
+
+    @Post('support/action')
+    async supportAction(@Body() body: { action: string; resourceId: string; adminId: string }) {
+        return this.adminService.triggerSupportAction(body.action, body.resourceId, body.adminId);
+    }
 }
