@@ -32,6 +32,8 @@ const configSchema = z.object({
     .string()
     .length(32)
     .default("v6y2_8_B7&p?R#Lx*G@K5e!Np$W2mZq9"), // 32 characters for AES-256
+  REDIS_URL: z.string().default("redis://localhost:6379"),
+  MAINTENANCE_MODE_KEY: z.string().default("dbsnap:maintenance_mode"),
 });
 
 export type Config = z.infer<typeof configSchema>;

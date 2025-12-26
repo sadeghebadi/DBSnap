@@ -1,5 +1,6 @@
 import { getConfig, createLogger, runWithContext } from "@dbsnap/shared";
 import { randomUUID } from 'crypto';
+import { WorkerTelemetry } from './telemetry.js';
 
 const config = getConfig();
 const logger = createLogger('worker');
@@ -7,6 +8,17 @@ const logger = createLogger('worker');
 logger.info(
   `DBSnap Worker starting with ${config.APP_NAME} config on port ${config.WORKER_PORT}...`,
 );
+
+const telemetry = new WorkerTelemetry(config);
+telemetry.start();
+
+telemetry.listenForControl((command) => {
+  logger.info("Received worker control command", { command });
+  if (command.command === 'RESTART') {
+    logger.warn("Worker restart requested. Exiting...");
+    process.exit(0); // Orchestrator (like Docker/PM2) should restart it
+  }
+});
 
 // Simulate a background job processing loop
 setInterval(() => {

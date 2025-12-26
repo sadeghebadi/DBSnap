@@ -27,7 +27,10 @@
   },
   "dependencies": {
     "@dbsnap/api": "^0.0.0",
+    "@nestjs/bullmq": "^11.0.4",
     "@types/qrcode": "^1.5.6",
+    "bullmq": "^5.66.3",
+    "ioredis": "^5.8.2",
     "otplib": "^12.0.1",
     "qrcode": "^1.5.4"
   }
