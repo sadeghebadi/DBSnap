@@ -46,7 +46,7 @@ export class ConnectionsController {
         return this.validatorService.validate({
             ...connection,
             type: connection.type as any, // Cast to validator's DatabaseType
-        });
+        } as any);
     }
 
     @Delete(':id')

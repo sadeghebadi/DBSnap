@@ -9,6 +9,8 @@ import { ConnectionsModule } from './connections/connections.module.js';
 import { AdminModule } from './admin/admin.module.js';
 import { BillingModule } from './billing/billing.module.js';
 import { PromoCodesModule } from './promo-codes/promo-codes.module.js';
+import { SnapshotsModule } from './snapshots/snapshots.module.js';
+import { JobsModule } from './jobs/jobs.module.js';
 
 import { ScheduleModule } from '@nestjs/schedule';
 import { BullModule } from '@nestjs/bullmq';
@@ -36,6 +38,8 @@ const config = getConfig();
         AdminModule,
         BillingModule,
         PromoCodesModule,
+        JobsModule,
+        SnapshotsModule,
     ],
 })
 export class AppModule {
