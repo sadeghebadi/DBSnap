@@ -17,4 +17,10 @@ export class MailService {
         const resetUrl = `http://localhost:3000/auth/reset-password?token=${token}`;
         logger.info(`Reset URL: ${resetUrl}`);
     }
+
+    async sendEmail(to: string, subject: string, body: string) {
+        logger.info(`Sending email to ${to} | Subject: ${subject}`);
+        // In a real app, use Nodemailer, SendGrid, etc.
+        logger.info(`Body: ${body}`);
+    }
 }

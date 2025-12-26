@@ -1,9 +1,10 @@
-import { Job } from 'bullmq';
+import { Job, Queue } from 'bullmq';
 import { prisma } from '../prisma.js';
 import { SnapshotEngine, DatabaseType } from '../snapshots/snapshot-engine.js';
 import { StorageFactory } from '../storage/storage.factory.js';
-import { decrypt, createLogger, getConfig } from '@dbsnap/shared';
+import { decrypt, createLogger, getConfig, QueueNames, getRedisConnection } from '@dbsnap/shared';
 import { SnapshotStatus } from '@dbsnap/database';
+import { pushNotification } from '../utils/notifications.js';
 
 const logger = createLogger('snapshot-processor');
 
@@ -16,6 +17,17 @@ const storageAdapter = StorageFactory.createAdapter({
     local: { baseDir: './storage' },
     // S3 config would be pulled from env if driver is 's3'
 });
+
+let thresholdQueue: Queue | null = null;
+
+function getThresholdQueue() {
+    if (!thresholdQueue) {
+        thresholdQueue = new Queue(QueueNames.THRESHOLD_CHECK, {
+            connection: getRedisConnection(),
+        });
+    }
+    return thresholdQueue;
+}
 
 export async function processSnapshotJob(job: Job) {
     const { projectId, connectionId } = job.data;
@@ -90,6 +102,19 @@ export async function processSnapshotJob(job: Job) {
             }
         });
 
+        await pushNotification({
+            type: 'snapshot',
+            status: 'completed',
+            connectionId,
+            resultKey: fileKey
+        });
+
+        // Trigger Threshold Check
+        await getThresholdQueue().add('check-threshold', {
+            snapshotId: snapshot.id,
+            connectionId
+        });
+
         logger.info(`Snapshot job ${jobId} completed successfully. Path: ${fileKey}`);
 
     } catch (err: any) {
@@ -102,6 +127,13 @@ export async function processSnapshotJob(job: Job) {
                 errorMessage: err.message,
                 completedAt: new Date()
             }
+        });
+
+        await pushNotification({
+            type: 'snapshot',
+            status: 'failed',
+            connectionId,
+            details: err.message
         });
 
         throw err; // Let BullMQ handle retry if configured

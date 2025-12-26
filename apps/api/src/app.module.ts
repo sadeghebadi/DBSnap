@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module.js';
 import { DatabaseModule } from './database/database.module.js';
 import { MailModule } from './mail/mail.module.js';
@@ -11,12 +11,12 @@ import { BillingModule } from './billing/billing.module.js';
 import { PromoCodesModule } from './promo-codes/promo-codes.module.js';
 import { SnapshotsModule } from './snapshots/snapshots.module.js';
 import { JobsModule } from './jobs/jobs.module.js';
+import { NotificationsModule } from './notifications/notifications.module.js';
 
 import { ScheduleModule } from '@nestjs/schedule';
 import { BullModule } from '@nestjs/bullmq';
 import { getConfig } from '@dbsnap/shared';
 import { MaintenanceMiddleware } from './admin/maintenance.middleware.js';
-import { MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 
 const config = getConfig();
 
@@ -40,6 +40,7 @@ const config = getConfig();
         PromoCodesModule,
         JobsModule,
         SnapshotsModule,
+        NotificationsModule,
     ],
 })
 export class AppModule {

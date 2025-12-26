@@ -37,6 +37,7 @@ const configSchema = z.object({
   STRIPE_SECRET_KEY: z.string().optional(),
   STRIPE_PUBLISHABLE_KEY: z.string().optional(),
   STRIPE_WEBHOOK_SECRET: z.string().optional(),
+  SLACK_WEBHOOK_URL: z.string().url().optional(),
 });
 
 export type Config = z.infer<typeof configSchema>;

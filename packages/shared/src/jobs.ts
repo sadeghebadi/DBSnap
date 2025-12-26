@@ -4,6 +4,8 @@ export enum QueueNames {
     BACKUP = 'dbsnap:backup',
     RESTORE = 'dbsnap:restore',
     DIFF = 'dbsnap:diff',
+    NOTIFICATIONS = 'dbsnap:notifications',
+    THRESHOLD_CHECK = 'dbsnap:threshold-check',
 }
 
 export const getRedisConnection = () => {
