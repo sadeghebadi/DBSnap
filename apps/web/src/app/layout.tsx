@@ -1,4 +1,5 @@
 import { getConfig } from "@dbsnap/shared";
+import "../styles/globals.css";
 
 export default function RootLayout({
   children,

@@ -12,6 +12,7 @@ import { PromoCodesModule } from './promo-codes/promo-codes.module.js';
 import { SnapshotsModule } from './snapshots/snapshots.module.js';
 import { JobsModule } from './jobs/jobs.module.js';
 import { NotificationsModule } from './notifications/notifications.module.js';
+import { DiffsModule } from './diffs/diffs.module.js';
 
 import { ScheduleModule } from '@nestjs/schedule';
 import { BullModule } from '@nestjs/bullmq';
@@ -41,6 +42,7 @@ const config = getConfig();
         JobsModule,
         SnapshotsModule,
         NotificationsModule,
+        DiffsModule,
     ],
 })
 export class AppModule {
