@@ -1,22 +1,17 @@
-# ISSUE-082 — Billing & Subscriptions
+# ISSUE-021 — Connection Validator
 
 ## Goal / Requirements / Acceptance Criteria / Out of Scope
 
-ISSUE-082 — Billing & Subscriptions
+ISSUE-021 — Connection Validator
 
-Level: L3 | Type: Admin
+Level: L2 | Type: Core
 
 Goal:
-Monetize the platform.
-
-Requirements:
-
-- Stripe integration (or equivalent)
-- Plan-based feature gating
+Validate DB connectivity.
 
 Acceptance Criteria:
 
-- Users can subscribe/upgrade/cancel
+- Returns sanitized metadata
 
 ---
 

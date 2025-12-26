@@ -20,7 +20,7 @@ export class BackupsController {
     @Post('schedules')
     @UseGuards(ApiKeyGuard)
     @Scopes('backup:write')
-    createSchedule(@Body() data: any) {
+    createSchedule(@Body() data: { name: string; cron: string; connectionId: string; retentionCount?: number; retentionDays?: number }) {
         return this.backupsService.createSchedule(data);
     }
 

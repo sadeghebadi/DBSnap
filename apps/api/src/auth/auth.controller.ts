@@ -1,4 +1,5 @@
 import { Controller, Post, Body, UseGuards, Req, Get, Query, Delete, Param } from '@nestjs/common';
+import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service.js';
 import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
@@ -12,7 +13,7 @@ export class AuthController {
     constructor(private authService: AuthService) { }
 
     @Post('signup')
-    async signup(@Body() body: any) {
+    async signup(@Body() body: { email: string; passwordHash: string }) {
         return this.authService.signup(body);
     }
 
@@ -27,32 +28,33 @@ export class AuthController {
     }
 
     @Post('reset-password')
-    async resetPassword(@Body() body: any) {
+    async resetPassword(@Body() body: { token: string; newPasswordHash: string }) {
         return this.authService.resetPassword(body.token, body.newPasswordHash);
     }
 
     @Post('login')
-    async login(@Body() body: any, @Req() req: any) {
-        const ip = req.ip || req.headers['x-forwarded-for'];
-        const userAgent = req.headers['user-agent'];
+    async login(@Body() body: { email: string; passwordHash: string }, @Req() req: Request) {
+        const xForwardedFor = req.headers['x-forwarded-for'];
+        const ip = req.ip || (Array.isArray(xForwardedFor) ? xForwardedFor[0] : xForwardedFor);
+        const userAgent = req.headers['user-agent'] as string;
         return this.authService.login(body, { ip, userAgent });
     }
 
     @Get('sessions')
     @UseGuards(JwtAuthGuard)
-    async listSessions(@Req() req: any) {
+    async listSessions(@Req() req: Request & { user: { userId: string } }) {
         return this.authService.listSessions(req.user.userId);
     }
 
     @Delete('sessions/:id')
     @UseGuards(JwtAuthGuard)
-    async revokeSession(@Req() req: any, @Param('id') id: string) {
+    async revokeSession(@Req() req: Request & { user: { userId: string } }, @Param('id') id: string) {
         return this.authService.revokeSession(id, req.user.userId);
     }
 
     @Delete('sessions')
     @UseGuards(JwtAuthGuard)
-    async revokeAllSessions(@Req() req: any) {
+    async revokeAllSessions(@Req() req: Request & { user: { userId: string } }) {
         return this.authService.revokeAllSessions(req.user.userId);
     }
 
@@ -64,7 +66,7 @@ export class AuthController {
 
     @Post('refresh')
     @UseGuards(JwtAuthGuard)
-    async refresh(@Req() req: any) {
+    async refresh(@Req() req: Request & { user: { email: string; userId: string; role: string; isVerified: boolean } }) {
         return this.authService.refreshToken(req.user);
     }
 
@@ -77,19 +79,19 @@ export class AuthController {
 
     @Post('mfa/generate')
     @UseGuards(JwtAuthGuard)
-    async generateMfaSecret(@Req() req: any) {
+    async generateMfaSecret(@Req() req: Request & { user: { userId: string } }) {
         return this.authService.generateMfaSecret(req.user.userId);
     }
 
     @Post('mfa/enable')
     @UseGuards(JwtAuthGuard)
-    async enableMfa(@Req() req: any, @Body('code') code: string) {
+    async enableMfa(@Req() req: Request & { user: { userId: string } }, @Body('code') code: string) {
         return this.authService.enableMfa(req.user.userId, code);
     }
 
     @Post('mfa/disable')
     @UseGuards(JwtAuthGuard)
-    async disableMfa(@Req() req: any) {
+    async disableMfa(@Req() req: Request & { user: { userId: string } }) {
         return this.authService.disableMfa(req.user.userId);
     }
 
@@ -106,7 +108,7 @@ export class AuthController {
 
     @Get('github/callback')
     @UseGuards(AuthGuard('github'))
-    async githubLoginCallback(@Req() req: any) {
+    async githubLoginCallback(@Req() req: Request & { user: { email: string; id: string; role: string; isVerified: boolean } }) {
         return this.authService.login(req.user);
     }
 
@@ -118,7 +120,7 @@ export class AuthController {
 
     @Get('google/callback')
     @UseGuards(AuthGuard('google'))
-    async googleLoginCallback(@Req() req: any) {
+    async googleLoginCallback(@Req() req: Request & { user: { email: string; id: string; role: string; isVerified: boolean } }) {
         return this.authService.login(req.user);
     }
 }

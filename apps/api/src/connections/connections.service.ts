@@ -101,7 +101,7 @@ export class ConnectionsService {
     async update(userId: string, id: string, dto: UpdateConnectionDto) {
         const connection = await this.findOne(userId, id);
 
-        const data: Partial<CreateConnectionDto> & { password?: string } = { ...dto } as any;
+        const data: Partial<CreateConnectionDto> & { password?: string } = { ...dto } as Partial<CreateConnectionDto> & { password?: string };
         if (dto.password) {
             data.password = encrypt(dto.password);
         }

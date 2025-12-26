@@ -1,27 +1,27 @@
-# ISSUE-083 — System Health Dashboard
+# ISSUE-080 — Admin User List
 
 ## Goal / Requirements / Acceptance Criteria / Out of Scope
 
-ISSUE-083 — System Health Dashboard
+ISSUE-080 — Admin User List
 
 Level: L2 | Type: Admin
 
-Goal:
-Monitor internal system state.
-
-Metrics:
-
-- Queue depth
-- Worker CPU/Memory
-- Backup success rate
-
-Acceptance Criteria:
-
-- Real-time visibility for admins
-
 ---
 
-## PHASE 9 — HARDENING & QUALITY
+Goal:
+Allow admins to view and manage all users in the system.
+
+Requirements:
+- Paginated list of all users
+- Search by email
+- Display user status (Verified/Unverified)
+- Display creation date
+
+Acceptance Criteria:
+- Admin can see all users across all organizations
+- Search functionality works correctly
+
+---
 
 ## AI Instructions for Gemini
 
@@ -34,11 +34,10 @@ Instructions:
 2. **Git Workflow**:
    - Implement the requirements.
    - Commit and push the branch development.
-   - Copy this task file from `readyToDev/` to `issues_done/`.
+   - Copy this task file from `readyToDev/admin-panel/` to `issues_done/`.
 3. Follow Goal, Requirements, Acceptance Criteria, and Out of Scope.
 4. Prepare a folder / file structure and placeholder code (if applicable) for this issue.
 5. Do NOT start coding other features beyond the scope of this issue.
 6. Provide outputs in a format ready for direct commit or review.
 
 Reply ONLY with the code/files/folder structure relevant to this Issue.
-

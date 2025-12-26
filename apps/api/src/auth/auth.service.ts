@@ -98,7 +98,7 @@ export class AuthService {
         return { message: 'Password reset successful.' };
     }
 
-    async login(user: any, metadata?: { ip?: string; userAgent?: string }) {
+    async login(user: { email: string; id?: string; role?: string; isVerified?: boolean }, metadata?: { ip?: string; userAgent?: string }) {
         const dbUser = await this.prisma.user.findUnique({
             where: { email: user.email },
         });
@@ -170,7 +170,7 @@ export class AuthService {
         return !!session && session.isValid;
     }
 
-    private generateTokens(user: any) {
+    private generateTokens(user: { email: string; id: string; role: string; isVerified: boolean }) {
         const payload = { email: user.email, sub: user.id, role: user.role, isVerified: user.isVerified };
         return {
             access_token: this.jwtService.sign(payload),
@@ -268,7 +268,7 @@ export class AuthService {
         return this.generateTokens(user);
     }
 
-    async refreshToken(user: any) {
+    async refreshToken(user: { email: string; userId: string; role: string; isVerified: boolean }) {
         const payload = { email: user.email, sub: user.userId, role: user.role, isVerified: user.isVerified };
         return {
             access_token: this.jwtService.sign(payload),
@@ -288,7 +288,7 @@ export class AuthService {
 
         if (user) {
             // Update OAuth IDs if they are missing
-            const updateData: any = {};
+            const updateData: Partial<{ githubId: string; googleId: string }> = {};
             if (profile.githubId && !user.githubId) updateData.githubId = profile.githubId;
             if (profile.googleId && !user.googleId) updateData.googleId = profile.googleId;
 

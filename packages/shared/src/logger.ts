@@ -1,7 +1,7 @@
 import winston from 'winston';
 import { getTraceId } from './context';
 
-const { combine, timestamp, json, printf, colorize, simple } = winston.format;
+const { combine, timestamp, json, printf, colorize } = winston.format;
 
 const traceIdFormat = winston.format((info) => {
     const traceId = getTraceId();

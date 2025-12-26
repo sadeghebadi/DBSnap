@@ -16,7 +16,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
     }
 
-    async validate(payload: any) {
+    async validate(payload: { sub: string; email: string; role: string; isVerified: boolean; sid?: string }) {
         // Check if session ID is present and valid
         if (payload.sid) {
             const isValid = await this.authService.isSessionValid(payload.sid);

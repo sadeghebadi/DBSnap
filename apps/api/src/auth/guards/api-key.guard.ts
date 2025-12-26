@@ -1,4 +1,4 @@
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, ForbiddenException } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ApiKeysService } from '../../api-keys/api-keys.service.js';
 import { SCOPES_KEY } from '../decorators/scopes.decorator.js';

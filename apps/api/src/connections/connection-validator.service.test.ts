@@ -1,8 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConnectionValidatorService, DatabaseType } from './connection-validator.service';
-import pg from 'pg';
-import mysql from 'mysql2/promise';
-import { MongoClient } from 'mongodb';
+import { ConnectionValidatorService, DatabaseType } from './connection-validator.service.js';
 
 jest.mock('pg', () => ({
     Client: jest.fn().mockImplementation(() => ({

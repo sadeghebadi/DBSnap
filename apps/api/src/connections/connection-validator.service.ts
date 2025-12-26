@@ -56,9 +56,10 @@ export class ConnectionValidatorService {
                     engine: 'PostgreSQL',
                 },
             };
-        } catch (error: any) {
-            this.logger.error(`Postgres connection failed: ${error.message}`);
-            throw new Error(`Connection failed: ${error.message}`);
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            this.logger.error(`Postgres connection failed: ${message}`);
+            throw new Error(`Connection failed: ${message}`);
         }
     }
 
@@ -73,7 +74,7 @@ export class ConnectionValidatorService {
                 connectTimeout: 5000,
             });
 
-            const [rows]: any = await connection.execute('SELECT VERSION() as version');
+            const [rows] = await connection.execute('SELECT VERSION() as version') as [({ version: string })[], unknown];
             await connection.end();
 
             return {
@@ -83,9 +84,10 @@ export class ConnectionValidatorService {
                     engine: 'MySQL',
                 },
             };
-        } catch (error: any) {
-            this.logger.error(`MySQL connection failed: ${error.message}`);
-            throw new Error(`Connection failed: ${error.message}`);
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            this.logger.error(`MySQL connection failed: ${message}`);
+            throw new Error(`Connection failed: ${message}`);
         }
     }
 
@@ -111,9 +113,10 @@ export class ConnectionValidatorService {
                     engine: 'MongoDB',
                 },
             };
-        } catch (error: any) {
-            this.logger.error(`MongoDB connection failed: ${error.message}`);
-            throw new Error(`Connection failed: ${error.message}`);
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            this.logger.error(`MongoDB connection failed: ${message}`);
+            throw new Error(`Connection failed: ${message}`);
         }
     }
 }
