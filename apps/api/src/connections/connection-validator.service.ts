@@ -3,6 +3,8 @@ import pg from 'pg';
 import mysql from 'mysql2/promise';
 import { MongoClient } from 'mongodb';
 
+import { SshTunnelService } from './ssh-tunnel.service.js';
+
 export enum DatabaseType {
     POSTGRESQL = 'POSTGRESQL',
     MYSQL = 'MYSQL',
@@ -16,13 +18,59 @@ export interface ConnectionDetails {
     databaseName: string;
     username: string;
     password: string;
+    sshEnabled?: boolean;
+    sshHost?: string;
+    sshPort?: number;
+    sshUsername?: string;
+    sshPrivateKey?: string;
+    sshPassphrase?: string;
 }
 
 @Injectable()
 export class ConnectionValidatorService {
     private readonly logger = new Logger(ConnectionValidatorService.name);
 
+    constructor(private readonly sshTunnelService: SshTunnelService) { }
+
     async validate(details: ConnectionDetails) {
+        let connectionDetails = { ...details };
+        let localPort: number | undefined;
+
+        if (details.sshEnabled) {
+            localPort = Math.floor(Math.random() * (65535 - 10000 + 1) + 10000);
+            try {
+                await this.sshTunnelService.createTunnel({
+                    host: details.sshHost!,
+                    port: details.sshPort || 22,
+                    username: details.sshUsername!,
+                    privateKey: details.sshPrivateKey!,
+                    passphrase: details.sshPassphrase,
+                    dstHost: details.host,
+                    dstPort: details.port,
+                    localPort,
+                });
+
+                // Redirect DB connection through local tunnel
+                connectionDetails.host = '127.0.0.1';
+                connectionDetails.port = localPort;
+            } catch (error) {
+                const message = error instanceof Error ? error.message : String(error);
+                this.logger.error(`Failed to establish SSH tunnel: ${message}`);
+                throw new Error(`SSH Tunnel failed: ${message}`);
+            }
+        }
+
+        try {
+            const result = await this.performValidation(connectionDetails);
+            return result;
+        } finally {
+            if (localPort) {
+                await this.sshTunnelService.closeTunnel(localPort);
+            }
+        }
+    }
+
+    private async performValidation(details: ConnectionDetails) {
         switch (details.type) {
             case DatabaseType.POSTGRESQL:
                 return this.validatePostgres(details);

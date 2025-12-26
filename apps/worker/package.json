@@ -4,18 +4,21 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "node --loader ts-node/esm src/index.ts",
+        "dev": "tsx watch src/index.ts",
         "build": "tsc",
         "lint": "eslint .",
         "test": "jest"
     },
     "devDependencies": {
+        "@types/ssh2": "^1.15.5",
         "ts-node": "latest",
+        "tsx": "^4.21.0",
         "typescript": "latest"
     },
     "dependencies": {
         "@dbsnap/shared": "^0.0.0",
         "bullmq": "^5.66.3",
-        "ioredis": "^5.8.2"
+        "ioredis": "^5.8.2",
+        "ssh2": "^1.17.0"
     }
 }

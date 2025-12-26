@@ -10,4 +10,10 @@ export class UpdateConnectionDto extends PartialType(CreateConnectionDto) {
     username?: string;
     password?: string;
     projectId?: string;
+    sshEnabled?: boolean;
+    sshHost?: string;
+    sshPort?: number;
+    sshUsername?: string;
+    sshPrivateKey?: string;
+    sshPassphrase?: string;
 }

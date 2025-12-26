@@ -139,6 +139,12 @@ model DatabaseConnection {
   project      Project      @relation(fields: [projectId], references: [id])
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
+  sshEnabled   Boolean              @default(false)
+  sshHost      String?
+  sshPort      Int?                 @default(22)
+  sshUsername  String?
+  sshPrivateKey String?              // Encrypted
+  sshPassphrase String?              // Encrypted
   schedules    BackupSchedule[]
   snapshots    BackupSnapshot[]
 

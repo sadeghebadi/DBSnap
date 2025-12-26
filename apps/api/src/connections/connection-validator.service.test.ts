@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConnectionValidatorService, DatabaseType } from './connection-validator.service.js';
+import { SshTunnelService } from './ssh-tunnel.service.js';
 
 jest.mock('pg', () => ({
     Client: jest.fn().mockImplementation(() => ({
@@ -28,12 +29,28 @@ jest.mock('mongodb', () => ({
     })),
 }));
 
+jest.mock('./ssh-tunnel.service.js', () => ({
+    SshTunnelService: jest.fn().mockImplementation(() => ({
+        createTunnel: jest.fn().mockResolvedValue(undefined),
+        closeTunnel: jest.fn().mockResolvedValue(undefined),
+    })),
+}));
+
 describe('ConnectionValidatorService', () => {
     let service: ConnectionValidatorService;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            providers: [ConnectionValidatorService],
+            providers: [
+                ConnectionValidatorService,
+                {
+                    provide: SshTunnelService,
+                    useValue: {
+                        createTunnel: jest.fn().mockResolvedValue(undefined),
+                        closeTunnel: jest.fn().mockResolvedValue(undefined),
+                    },
+                },
+            ],
         }).compile();
 
         service = module.get<ConnectionValidatorService>(ConnectionValidatorService);
@@ -41,6 +58,27 @@ describe('ConnectionValidatorService', () => {
 
     it('should be defined', () => {
         expect(service).toBeDefined();
+    });
+
+    it('should validate PostgreSQL connection with SSH tunnel', async () => {
+        const sshTunnelService = (service as any).sshTunnelService;
+
+        const result = await service.validate({
+            type: DatabaseType.POSTGRESQL,
+            host: 'internal-db',
+            port: 5432,
+            databaseName: 'test',
+            username: 'user',
+            password: 'pass',
+            sshEnabled: true,
+            sshHost: 'bastion',
+            sshUsername: 'sshuser',
+            sshPrivateKey: 'key',
+        });
+
+        expect(sshTunnelService.createTunnel).toHaveBeenCalled();
+        expect(result.success).toBe(true);
+        expect(sshTunnelService.closeTunnel).toHaveBeenCalled();
     });
 
     it('should validate PostgreSQL connection', async () => {

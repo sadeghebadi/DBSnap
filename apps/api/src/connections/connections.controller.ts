@@ -5,10 +5,15 @@ import { UpdateConnectionDto } from './dto/update-connection.dto.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { VerifiedGuard } from '../auth/guards/verified.guard.js';
 
+import { ConnectionValidatorService } from './connection-validator.service.js';
+
 @Controller('connections')
 @UseGuards(JwtAuthGuard, VerifiedGuard)
 export class ConnectionsController {
-    constructor(private readonly connectionsService: ConnectionsService) { }
+    constructor(
+        private readonly connectionsService: ConnectionsService,
+        private readonly validatorService: ConnectionValidatorService,
+    ) { }
 
     @Post()
     async create(@Req() req: { user: { userId: string } }, @Body() dto: CreateConnectionDto) {
@@ -28,6 +33,20 @@ export class ConnectionsController {
     @Patch(':id')
     async update(@Req() req: { user: { userId: string } }, @Param('id') id: string, @Body() dto: UpdateConnectionDto) {
         return this.connectionsService.update(req.user.userId, id, dto);
+    }
+
+    @Post('test')
+    async testConnection(@Body() dto: CreateConnectionDto) {
+        return this.validatorService.validate(dto);
+    }
+
+    @Post(':id/test')
+    async testExistingConnection(@Req() req: { user: { userId: string } }, @Param('id') id: string) {
+        const connection = await this.connectionsService.findOne(req.user.userId, id);
+        return this.validatorService.validate({
+            ...connection,
+            type: connection.type as any, // Cast to validator's DatabaseType
+        });
     }
 
     @Delete(':id')

@@ -32,13 +32,20 @@ export class ConnectionsService {
     async create(userId: string, dto: CreateConnectionDto) {
         await this.validateProjectAccess(userId, dto.projectId);
 
-        const encryptedPassword = encrypt(dto.password);
+        const data: any = {
+            ...dto,
+            password: encrypt(dto.password),
+        };
+
+        if (dto.sshPrivateKey) {
+            data.sshPrivateKey = encrypt(dto.sshPrivateKey);
+        }
+        if (dto.sshPassphrase) {
+            data.sshPassphrase = encrypt(dto.sshPassphrase);
+        }
 
         return this.prisma.databaseConnection.create({
-            data: {
-                ...dto,
-                password: encryptedPassword,
-            },
+            data,
         });
     }
 
@@ -101,9 +108,15 @@ export class ConnectionsService {
     async update(userId: string, id: string, dto: UpdateConnectionDto) {
         const connection = await this.findOne(userId, id);
 
-        const data: Partial<CreateConnectionDto> & { password?: string } = { ...dto } as Partial<CreateConnectionDto> & { password?: string };
+        const data: any = { ...dto };
         if (dto.password) {
             data.password = encrypt(dto.password);
+        }
+        if (dto.sshPrivateKey) {
+            data.sshPrivateKey = encrypt(dto.sshPrivateKey);
+        }
+        if (dto.sshPassphrase) {
+            data.sshPassphrase = encrypt(dto.sshPassphrase);
         }
 
         if (dto.projectId && dto.projectId !== connection.projectId) {

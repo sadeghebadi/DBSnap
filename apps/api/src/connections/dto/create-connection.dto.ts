@@ -1,4 +1,4 @@
-import { IsString, IsInt, IsEnum, IsNotEmpty } from 'class-validator';
+import { IsString, IsInt, IsEnum, IsNotEmpty, IsOptional, IsBoolean } from 'class-validator';
 
 export enum DatabaseType {
     POSTGRESQL = 'POSTGRESQL',
@@ -36,4 +36,28 @@ export class CreateConnectionDto {
     @IsString()
     @IsNotEmpty()
     projectId!: string;
+
+    @IsOptional()
+    @IsBoolean()
+    sshEnabled?: boolean;
+
+    @IsOptional()
+    @IsString()
+    sshHost?: string;
+
+    @IsOptional()
+    @IsInt()
+    sshPort?: number;
+
+    @IsOptional()
+    @IsString()
+    sshUsername?: string;
+
+    @IsOptional()
+    @IsString()
+    sshPrivateKey?: string;
+
+    @IsOptional()
+    @IsString()
+    sshPassphrase?: string;
 }
