@@ -1,9 +1,12 @@
 import { getConfig, createLogger, runWithContext } from "@dbsnap/shared";
 import { randomUUID } from 'crypto';
 import { WorkerTelemetry } from './telemetry.js';
+import { SnapshotEngine, DatabaseType } from './snapshots/snapshot-engine.js';
 
 const config = getConfig();
 const logger = createLogger('worker');
+
+const snapshotEngine = new SnapshotEngine();
 
 logger.info(
   `DBSnap Worker starting with ${config.APP_NAME} config on port ${config.WORKER_PORT}...`,
@@ -30,12 +33,35 @@ setInterval(() => {
     const jobTriggered = Math.random() > 0.8; // Simulate occasional jobs
 
     if (jobTriggered) {
+      const snapshotId = randomUUID();
       logger.info("Processing backup job", {
         jobType: "snapshot_creation",
-        snapshotId: randomUUID()
+        snapshotId
       });
-      // ... backup logic (DB dump, upload to S3) ...
-      logger.info("Backup completed successfully");
+
+      // Simulate real engine usage
+      (async () => {
+        try {
+          // In real code, these would come from the job payload
+          const { stream, metadata } = await snapshotEngine.createSnapshotStream(DatabaseType.POSTGRESQL, {
+            host: 'localhost',
+            port: 5432,
+            database: 'dbsnap',
+          });
+
+          logger.info(`Started streaming data for ${metadata.tables.length} tables`);
+
+          let rowCount = 0;
+          for await (const line of stream) {
+            // In PHASE 4 ISSUE-032, we will pipe this to S3/Local storage
+            rowCount++;
+          }
+
+          logger.info("Backup completed successfully", { snapshotId, linesProcessed: rowCount });
+        } catch (err) {
+          logger.error("Backup failed", { snapshotId, error: err instanceof Error ? err.message : String(err) });
+        }
+      })();
     }
   });
 }, 10000); // Check every 10 seconds

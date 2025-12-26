@@ -203,18 +203,20 @@ model BackupSchedule {
 }
 
 model BackupSnapshot {
-  id           String         @id @default(uuid())
-  status       SnapshotStatus @default(PENDING)
-  storagePath  String?
-  sizeBytes    BigInt?
-  startedAt    DateTime?
-  completedAt  DateTime?
-  errorMessage String?
-  scheduleId   String?
-  schedule     BackupSchedule? @relation(fields: [scheduleId], references: [id])
-  connectionId String
-  connection   DatabaseConnection @relation(fields: [connectionId], references: [id])
-  createdAt    DateTime       @default(now())
+  id            String         @id @default(uuid())
+  status        SnapshotStatus @default(PENDING)
+  timestamp     DateTime       @default(now())
+  schemaVersion Int            @default(1)
+  storagePath   String?
+  sizeBytes     BigInt?
+  startedAt     DateTime?
+  completedAt   DateTime?
+  errorMessage  String?
+  scheduleId    String?
+  schedule      BackupSchedule? @relation(fields: [scheduleId], references: [id])
+  connectionId  String
+  connection    DatabaseConnection @relation(fields: [connectionId], references: [id])
+  createdAt     DateTime       @default(now())
 
   @@map("backup_snapshots")
 }
