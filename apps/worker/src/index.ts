@@ -2,11 +2,16 @@ import { getConfig, createLogger, runWithContext } from "@dbsnap/shared";
 import { randomUUID } from 'crypto';
 import { WorkerTelemetry } from './telemetry.js';
 import { SnapshotEngine, DatabaseType } from './snapshots/snapshot-engine.js';
+import { StorageFactory } from './storage/storage.factory.js';
 
 const config = getConfig();
 const logger = createLogger('worker');
 
 const snapshotEngine = new SnapshotEngine();
+const storageAdapter = StorageFactory.createAdapter({
+  driver: 'local', // In a real app, this would come from config.STORAGE_DRIVER
+  local: { baseDir: './storage/snapshots' }
+});
 
 logger.info(
   `DBSnap Worker starting with ${config.APP_NAME} config on port ${config.WORKER_PORT}...`,
@@ -51,13 +56,14 @@ setInterval(() => {
 
           logger.info(`Started streaming data for ${metadata.tables.length} tables`);
 
-          let rowCount = 0;
-          for await (const line of stream) {
-            // In PHASE 4 ISSUE-032, we will pipe this to S3/Local storage
-            rowCount++;
-          }
+          const storageKey = `${snapshotId}.jsonl`;
+          const { path, size } = await storageAdapter.upload(storageKey, stream);
 
-          logger.info("Backup completed successfully", { snapshotId, linesProcessed: rowCount });
+          logger.info("Backup uploaded successfully", {
+            snapshotId,
+            path,
+            sizeBytes: size
+          });
         } catch (err) {
           logger.error("Backup failed", { snapshotId, error: err instanceof Error ? err.message : String(err) });
         }

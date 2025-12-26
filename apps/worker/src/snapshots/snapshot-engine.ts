@@ -2,11 +2,18 @@ import { IDatabaseExtractor, ExtractorOptions } from './extractors/base.extracto
 import { PostgresExtractor } from './extractors/postgres.extractor.js';
 import { MySqlExtractor } from './extractors/mysql.extractor.js';
 import { MongoExtractor } from './extractors/mongo.extractor.js';
+import { createCompressionStream, createHashingStream, HashTransform } from '../utils/stream-utils.js';
 
 export enum DatabaseType {
     POSTGRESQL = 'POSTGRESQL',
     MYSQL = 'MYSQL',
     MONGODB = 'MONGODB',
+}
+
+export interface SnapshotResult {
+    stream: any;
+    metadata: any;
+    hashStream: HashTransform;
 }
 
 export class SnapshotEngine {
@@ -20,12 +27,22 @@ export class SnapshotEngine {
         };
     }
 
-    async createSnapshotStream(type: DatabaseType, options: ExtractorOptions) {
+    async createSnapshotStream(type: DatabaseType, options: ExtractorOptions, compress = false): Promise<SnapshotResult> {
         const extractor = this.extractors[type];
         if (!extractor) {
             throw new Error(`Unsupported database type: ${type}`);
         }
 
-        return extractor.extract(options);
+        const { stream, metadata } = await extractor.extract(options);
+
+        let processedStream = stream;
+        if (compress) {
+            processedStream = processedStream.pipe(createCompressionStream());
+        }
+
+        const hashStream = createHashingStream();
+        processedStream = processedStream.pipe(hashStream);
+
+        return { stream: processedStream, metadata, hashStream };
     }
 }
