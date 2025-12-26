@@ -180,7 +180,7 @@ export class AdminService {
     // ISSUE-089: Worker pool control
     async restartWorker(workerId: string) {
         // Send restart signal via Redis PubSub
-        await this.redis.publish('dbsnap:worker:control', JSON.stringify({
+        await this.redis.publish('dbsnap-worker-control', JSON.stringify({
             command: 'RESTART',
             workerId,
         }));
@@ -188,7 +188,7 @@ export class AdminService {
     }
 
     async updateConcurrency(concurrency: number) {
-        await this.redis.publish('dbsnap:worker:control', JSON.stringify({
+        await this.redis.publish('dbsnap-worker-control', JSON.stringify({
             command: 'UPDATE_CONCURRENCY',
             concurrency,
         }));
