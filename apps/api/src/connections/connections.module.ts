@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
+import { ConnectionsService } from './connections.service.js';
 import { ConnectionsController } from './connections.controller.js';
-import { ConnectionValidatorService } from './connection-validator.service.js';
+import { DatabaseModule } from '../database/database.module.js';
 
 @Module({
+    imports: [DatabaseModule],
     controllers: [ConnectionsController],
-    providers: [ConnectionValidatorService],
-    exports: [ConnectionValidatorService],
+    providers: [ConnectionsService],
+    exports: [ConnectionsService],
 })
 export class ConnectionsModule { }

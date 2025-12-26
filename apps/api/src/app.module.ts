@@ -16,6 +16,8 @@ import { ScheduleModule } from '@nestjs/schedule';
         MailModule,
         AuthModule,
         ApiKeysModule,
+        ProjectsModule,
+        ConnectionsModule,
         BackupsModule,
     ],
 })
