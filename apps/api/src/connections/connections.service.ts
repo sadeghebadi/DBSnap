@@ -43,6 +43,18 @@ export class ConnectionsService {
         if (dto.sshPassphrase) {
             data.sshPassphrase = encrypt(dto.sshPassphrase);
         }
+        if (dto.proxyPassword) {
+            data.proxyPassword = encrypt(dto.proxyPassword);
+        }
+        if (dto.sslCA) {
+            data.sslCA = encrypt(dto.sslCA);
+        }
+        if (dto.sslCert) {
+            data.sslCert = encrypt(dto.sslCert);
+        }
+        if (dto.sslKey) {
+            data.sslKey = encrypt(dto.sslKey);
+        }
 
         return this.prisma.databaseConnection.create({
             data,
@@ -117,6 +129,18 @@ export class ConnectionsService {
         }
         if (dto.sshPassphrase) {
             data.sshPassphrase = encrypt(dto.sshPassphrase);
+        }
+        if (dto.proxyPassword) {
+            data.proxyPassword = encrypt(dto.proxyPassword);
+        }
+        if (dto.sslCA) {
+            data.sslCA = encrypt(dto.sslCA);
+        }
+        if (dto.sslCert) {
+            data.sslCert = encrypt(dto.sslCert);
+        }
+        if (dto.sslKey) {
+            data.sslKey = encrypt(dto.sslKey);
         }
 
         if (dto.projectId && dto.projectId !== connection.projectId) {

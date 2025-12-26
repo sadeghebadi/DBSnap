@@ -29,6 +29,18 @@ jest.mock('mongodb', () => ({
     })),
 }));
 
+jest.mock('socks-proxy-agent', () => ({
+    SocksProxyAgent: jest.fn().mockImplementation(() => ({
+        createConnection: jest.fn().mockReturnValue({}),
+    })),
+}));
+
+jest.mock('http-proxy-agent', () => ({
+    HttpProxyAgent: jest.fn().mockImplementation(() => ({
+        createConnection: jest.fn().mockReturnValue({}),
+    })),
+}));
+
 jest.mock('./ssh-tunnel.service.js', () => ({
     SshTunnelService: jest.fn().mockImplementation(() => ({
         createTunnel: jest.fn().mockResolvedValue(undefined),
@@ -79,6 +91,40 @@ describe('ConnectionValidatorService', () => {
         expect(sshTunnelService.createTunnel).toHaveBeenCalled();
         expect(result.success).toBe(true);
         expect(sshTunnelService.closeTunnel).toHaveBeenCalled();
+    });
+
+    it('should validate PostgreSQL connection with SSL', async () => {
+        const result = await service.validate({
+            type: DatabaseType.POSTGRESQL,
+            host: 'secure-db',
+            port: 5432,
+            databaseName: 'test',
+            username: 'user',
+            password: 'pass',
+            sslEnabled: true,
+            sslCA: 'ca-cert',
+            sslCert: 'client-cert',
+            sslKey: 'client-key',
+        });
+
+        expect(result.success).toBe(true);
+    });
+
+    it('should validate PostgreSQL connection with SOCKS5 proxy', async () => {
+        const result = await service.validate({
+            type: DatabaseType.POSTGRESQL,
+            host: 'remote-db',
+            port: 5432,
+            databaseName: 'test',
+            username: 'user',
+            password: 'pass',
+            proxyEnabled: true,
+            proxyHost: 'proxy-host',
+            proxyPort: 1080,
+            proxyType: 'SOCKS5',
+        });
+
+        expect(result.success).toBe(true);
     });
 
     it('should validate PostgreSQL connection', async () => {

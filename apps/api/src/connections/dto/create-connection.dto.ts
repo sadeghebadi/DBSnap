@@ -60,4 +60,44 @@ export class CreateConnectionDto {
     @IsOptional()
     @IsString()
     sshPassphrase?: string;
+
+    @IsOptional()
+    @IsBoolean()
+    proxyEnabled?: boolean;
+
+    @IsOptional()
+    @IsString()
+    proxyHost?: string;
+
+    @IsOptional()
+    @IsInt()
+    proxyPort?: number;
+
+    @IsOptional()
+    @IsString()
+    proxyType?: string; // 'HTTP' or 'SOCKS5'
+
+    @IsOptional()
+    @IsString()
+    proxyUsername?: string;
+
+    @IsOptional()
+    @IsString()
+    proxyPassword?: string;
+
+    @IsOptional()
+    @IsBoolean()
+    sslEnabled?: boolean;
+
+    @IsOptional()
+    @IsString()
+    sslCA?: string;
+
+    @IsOptional()
+    @IsString()
+    sslCert?: string;
+
+    @IsOptional()
+    @IsString()
+    sslKey?: string;
 }

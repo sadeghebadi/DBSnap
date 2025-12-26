@@ -16,4 +16,14 @@ export class UpdateConnectionDto extends PartialType(CreateConnectionDto) {
     sshUsername?: string;
     sshPrivateKey?: string;
     sshPassphrase?: string;
+    proxyEnabled?: boolean;
+    proxyHost?: string;
+    proxyPort?: number;
+    proxyType?: string;
+    proxyUsername?: string;
+    proxyPassword?: string;
+    sslEnabled?: boolean;
+    sslCA?: string;
+    sslCert?: string;
+    sslKey?: string;
 }

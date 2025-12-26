@@ -145,6 +145,16 @@ model DatabaseConnection {
   sshUsername  String?
   sshPrivateKey String?              // Encrypted
   sshPassphrase String?              // Encrypted
+  proxyEnabled   Boolean              @default(false)
+  proxyHost      String?
+  proxyPort      Int?
+  proxyType      String?              // 'HTTP' or 'SOCKS5'
+  proxyUsername  String?
+  proxyPassword  String?              // Encrypted
+  sslEnabled     Boolean              @default(false)
+  sslCA          String?              // Encrypted
+  sslCert        String?              // Encrypted
+  sslKey         String?              // Encrypted
   schedules    BackupSchedule[]
   snapshots    BackupSnapshot[]
 

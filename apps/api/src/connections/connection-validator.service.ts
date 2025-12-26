@@ -1,7 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import pg from 'pg';
 import mysql from 'mysql2/promise';
-import { MongoClient } from 'mongodb';
+import { MongoClient, MongoClientOptions } from 'mongodb';
+import { SocksProxyAgent } from 'socks-proxy-agent';
+import { HttpProxyAgent } from 'http-proxy-agent';
 
 import { SshTunnelService } from './ssh-tunnel.service.js';
 
@@ -24,6 +26,16 @@ export interface ConnectionDetails {
     sshUsername?: string;
     sshPrivateKey?: string;
     sshPassphrase?: string;
+    proxyEnabled?: boolean;
+    proxyHost?: string;
+    proxyPort?: number;
+    proxyType?: string;
+    proxyUsername?: string;
+    proxyPassword?: string;
+    sslEnabled?: boolean;
+    sslCA?: string;
+    sslCert?: string;
+    sslKey?: string;
 }
 
 @Injectable()
@@ -36,6 +48,7 @@ export class ConnectionValidatorService {
         let connectionDetails = { ...details };
         let localPort: number | undefined;
 
+        // SSH Tunnel takes precedence if enabled
         if (details.sshEnabled) {
             localPort = Math.floor(Math.random() * (65535 - 10000 + 1) + 10000);
             try {
@@ -50,7 +63,6 @@ export class ConnectionValidatorService {
                     localPort,
                 });
 
-                // Redirect DB connection through local tunnel
                 connectionDetails.host = '127.0.0.1';
                 connectionDetails.port = localPort;
             } catch (error) {
@@ -61,8 +73,7 @@ export class ConnectionValidatorService {
         }
 
         try {
-            const result = await this.performValidation(connectionDetails);
-            return result;
+            return await this.performValidation(connectionDetails);
         } finally {
             if (localPort) {
                 await this.sshTunnelService.closeTunnel(localPort);
@@ -83,15 +94,42 @@ export class ConnectionValidatorService {
         }
     }
 
+    private getProxyAgent(details: ConnectionDetails) {
+        const auth = details.proxyUsername && details.proxyPassword
+            ? `${details.proxyUsername}:${details.proxyPassword}@`
+            : '';
+        const url = `${details.proxyType === 'SOCKS5' ? 'socks5' : 'http'}://${auth}${details.proxyHost}:${details.proxyPort}`;
+
+        return details.proxyType === 'SOCKS5'
+            ? new SocksProxyAgent(url)
+            : new HttpProxyAgent(url);
+    }
+
     private async validatePostgres(details: ConnectionDetails) {
-        const client = new pg.Client({
+        const connectionOptions: any = {
             host: details.host,
             port: details.port,
             database: details.databaseName,
             user: details.username,
             password: details.password,
             connectionTimeoutMillis: 5000,
-        });
+        };
+
+        if (details.proxyEnabled) {
+            const agent: any = this.getProxyAgent(details);
+            connectionOptions.stream = agent.createConnection({ host: details.host, port: details.port });
+        }
+
+        if (details.sslEnabled) {
+            connectionOptions.ssl = {
+                ca: details.sslCA,
+                cert: details.sslCert,
+                key: details.sslKey,
+                rejectUnauthorized: !!details.sslCA,
+            };
+        }
+
+        const client = new pg.Client(connectionOptions);
 
         try {
             await client.connect();
@@ -113,14 +151,29 @@ export class ConnectionValidatorService {
 
     private async validateMysql(details: ConnectionDetails) {
         try {
-            const connection = await mysql.createConnection({
+            const connectionOptions: any = {
                 host: details.host,
                 port: details.port,
                 database: details.databaseName,
                 user: details.username,
                 password: details.password,
                 connectTimeout: 5000,
-            });
+            };
+
+            if (details.proxyEnabled) {
+                const agent: any = this.getProxyAgent(details);
+                connectionOptions.stream = agent.createConnection({ host: details.host, port: details.port });
+            }
+
+            if (details.sslEnabled) {
+                connectionOptions.ssl = {
+                    ca: details.sslCA,
+                    cert: details.sslCert,
+                    key: details.sslKey,
+                };
+            }
+
+            const connection = await mysql.createConnection(connectionOptions);
 
             const [rows] = await connection.execute('SELECT VERSION() as version') as [({ version: string })[], unknown];
             await connection.end();
@@ -146,7 +199,24 @@ export class ConnectionValidatorService {
             : '';
         const uri = `mongodb://${auth}${details.host}:${details.port}/${details.databaseName}?serverSelectionTimeoutMS=5000`;
 
-        const client = new MongoClient(uri);
+        const options: MongoClientOptions = {
+            serverSelectionTimeoutMS: 5000,
+        };
+
+        if (details.proxyEnabled && details.proxyType === 'SOCKS5') {
+            (options as any).proxyHost = details.proxyHost;
+            (options as any).proxyPort = details.proxyPort;
+            (options as any).proxyUsername = details.proxyUsername;
+            (options as any).proxyPassword = details.proxyPassword;
+        }
+
+        if (details.sslEnabled) {
+            options.tls = true;
+            if (details.sslCA) options.tlsCAFile = details.sslCA; // Note: MongoDB driver might need file paths, but we store content. Some drivers allow content.
+            if (details.sslCert) options.tlsCertificateKeyFile = details.sslCert;
+        }
+
+        const client = new MongoClient(uri, options);
 
         try {
             await client.connect();
