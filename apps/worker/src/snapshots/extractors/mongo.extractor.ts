@@ -26,7 +26,14 @@ export class MongoExtractor implements IDatabaseExtractor {
                 }) + '\n');
 
                 for (const name of collectionNames) {
-                    outputStream.write(JSON.stringify({ type: 'collection_start', name }) + '\n');
+                    const indexes = await db.collection(name).indexes();
+                    outputStream.write(JSON.stringify({
+                        type: 'collection_start',
+                        name,
+                        schema: {
+                            indexes
+                        }
+                    }) + '\n');
 
                     const cursor = db.collection(name).find({});
                     while (await cursor.hasNext()) {

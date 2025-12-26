@@ -33,10 +33,29 @@ export class PostgresExtractor implements IDatabaseExtractor {
                 }) + '\n');
 
                 for (const table of tables) {
-                    outputStream.write(JSON.stringify({ type: 'table_start', name: table }) + '\n');
+                    // Get indexes for the table
+                    const indexRes = await client.query(`
+                        SELECT indexname, indexdef 
+                        FROM pg_indexes 
+                        WHERE tablename = $1 AND schemaname = 'public'
+                    `, [table]);
 
-                    // Simple full table scan for MVP. 
-                    // In a production environment, we'd use CURSOR or batches for very large tables.
+                    // Get constraints
+                    const constRes = await client.query(`
+                        SELECT conname, pg_get_constraintdef(oid) as condef
+                        FROM pg_constraint
+                        WHERE conrelid = $1::regclass
+                    `, [table]);
+
+                    outputStream.write(JSON.stringify({
+                        type: 'table_start',
+                        name: table,
+                        schema: {
+                            indexes: indexRes.rows,
+                            constraints: constRes.rows
+                        }
+                    }) + '\n');
+
                     const res = await client.query(`SELECT * FROM "${table}"`);
                     for (const row of res.rows) {
                         outputStream.write(JSON.stringify({ type: 'row', table, data: row }) + '\n');

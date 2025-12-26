@@ -31,7 +31,28 @@ export class MySqlExtractor implements IDatabaseExtractor {
                 }) + '\n');
 
                 for (const table of tables) {
-                    outputStream.write(JSON.stringify({ type: 'table_start', name: table }) + '\n');
+                    // Get indexes
+                    const [indexRows] = await connection.execute(`
+                        SELECT INDEX_NAME as indexname, COLUMN_NAME, NON_UNIQUE
+                        FROM information_schema.STATISTICS
+                        WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
+                    `, [options.database, table]);
+
+                    // Get constraints
+                    const [constRows] = await connection.execute(`
+                        SELECT CONSTRAINT_NAME as conname, COLUMN_NAME, REFERENCED_TABLE_NAME
+                        FROM information_schema.KEY_COLUMN_USAGE
+                        WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND REFERENCED_TABLE_NAME IS NOT NULL
+                    `, [options.database, table]);
+
+                    outputStream.write(JSON.stringify({
+                        type: 'table_start',
+                        name: table,
+                        schema: {
+                            indexes: indexRows,
+                            constraints: constRows
+                        }
+                    }) + '\n');
 
                     const [dataRows] = await connection.execute(`SELECT * FROM \`${table}\``);
                     for (const row of dataRows as any[]) {
