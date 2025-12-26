@@ -46,9 +46,9 @@ export class WorkerTelemetry {
 
     async listenForControl(callback: (command: { command: string; workerId?: string; concurrency?: number }) => void) {
         const sub = new Redis(this.config.REDIS_URL);
-        sub.subscribe('dbsnap:worker:control');
+        sub.subscribe('dbsnap-worker-control');
         sub.on('message', (channel, message) => {
-            if (channel === 'dbsnap:worker:control') {
+            if (channel === 'dbsnap-worker-control') {
                 const command = JSON.parse(message);
                 if (!command.workerId || command.workerId === this.workerId) {
                     callback(command);
