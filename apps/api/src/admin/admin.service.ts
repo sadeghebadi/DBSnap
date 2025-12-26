@@ -406,7 +406,7 @@ export class AdminService {
         return this.prisma.organization.findUnique({
             where: { id },
             include: {
-                projects: { include: { databases: true } },
+                projects: { include: { connections: true } },
                 users: true,
                 subscription: true
             }
@@ -417,7 +417,7 @@ export class AdminService {
     async gdprExport(userId: string) {
         const user = await this.prisma.user.findUnique({
             where: { id: userId },
-            include: { organizations: true }
+            include: { organization: true }
         });
         return { user, exportedAt: new Date() };
     }

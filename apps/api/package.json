@@ -19,6 +19,7 @@
         "@nestjs/passport": "^11.0.5",
         "@nestjs/platform-express": "^11.1.10",
         "@nestjs/schedule": "^6.1.0",
+        "@nestjs/throttler": "^6.5.0",
         "@types/qrcode": "^1.5.6",
         "bullmq": "^5.66.3",
         "class-transformer": "^0.5.1",

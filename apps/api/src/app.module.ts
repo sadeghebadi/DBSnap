@@ -23,11 +23,16 @@ const config = getConfig();
 
 import { LoggerService } from './common/logger/logger.service.js';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter.js';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 
 @Module({
     imports: [
         ScheduleModule.forRoot(),
+        ThrottlerModule.forRoot([{
+            ttl: 60000,
+            limit: 10,
+        }]),
         BullModule.forRoot({
             connection: {
                 url: config.REDIS_URL,
@@ -53,6 +58,10 @@ import { APP_FILTER } from '@nestjs/core';
         {
             provide: APP_FILTER,
             useClass: GlobalExceptionFilter,
+        },
+        {
+            provide: APP_GUARD,
+            useClass: ThrottlerGuard,
         },
     ],
 })
