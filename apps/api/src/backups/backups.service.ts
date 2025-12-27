@@ -1,13 +1,16 @@
-import { Injectable, Logger, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, ForbiddenException, Inject } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { PrismaService } from '../database/prisma.service.js';
 import { SnapshotStatus } from '@dbsnap/database';
-
 @Injectable()
 export class BackupsService {
     private readonly logger = new Logger(BackupsService.name);
 
-    constructor(private prisma: PrismaService) { }
+    constructor(
+        @Inject(PrismaService) private prisma: PrismaService
+    ) {
+        console.log('BackupsService initialized, prisma:', !!this.prisma);
+    }
 
     @Cron(CronExpression.EVERY_MINUTE)
     async handleCron() {
