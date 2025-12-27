@@ -1,13 +1,16 @@
-import { Body, Controller, Get, Param, Post, UseGuards, Req, Query, Delete } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards, Req, Query, Delete, Inject } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { VerifiedGuard } from '../auth/guards/verified.guard.js';
 import { ApiKeyGuard } from '../auth/guards/api-key.guard.js';
 import { Scopes } from '../auth/decorators/scopes.decorator.js';
 import { BackupsService } from './backups.service.js';
-
 @Controller('backups')
 export class BackupsController {
-    constructor(private readonly backupsService: BackupsService) { }
+    constructor(
+        @Inject(BackupsService) private readonly backupsService: BackupsService
+    ) {
+        console.log('BackupsController initialized, service:', !!this.backupsService);
+    }
 
     @Post('trigger')
     @UseGuards(ApiKeyGuard)
