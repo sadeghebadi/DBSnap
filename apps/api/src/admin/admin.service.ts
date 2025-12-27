@@ -10,10 +10,10 @@ export class AdminService {
     private redis: Redis;
     private config = getConfig();
     private readonly logger = new Logger(AdminService.name);
+    private backupsQueue?: Queue;
 
     constructor(
         private prisma: PrismaService,
-        @InjectQueue('backups') private backupsQueue: Queue
     ) {
         this.redis = new Redis(this.config.REDIS_URL, {
             maxRetriesPerRequest: null,
@@ -21,19 +21,21 @@ export class AdminService {
     }
 
     async getStats() {
-        const [totalUsers, totalBackups, successRate, totalStorage, jobCounts] = await Promise.all([
-            this.prisma.user.count(),
-            this.prisma.backupSnapshot.count({
-                where: {
-                    createdAt: {
-                        gte: new Date(Date.now() - 24 * 60 * 60 * 1000)
-                    }
+        const [totalUsers, totalBackups, successRate, totalStorage] = await Promise.all([this.prisma.user.count(),
+        this.prisma.backupSnapshot.count({
+            where: {
+                createdAt: {
+                    gte: new Date(Date.now() - 24 * 60 * 60 * 1000)
                 }
-            }),
-            this.getSuccessRate(),
-            this.getTotalStorage(),
-            this.backupsQueue.getJobCounts('wait', 'active', 'completed', 'failed', 'delayed', 'paused')
+            }
+        }),
+        this.getSuccessRate(),
+        this.getTotalStorage(),
         ]);
+
+        const jobCounts = this.backupsQueue
+            ? await this.backupsQueue.getJobCounts('wait', 'active', 'completed', 'failed', 'delayed', 'paused')
+            : { wait: 0, active: 0, completed: 0, failed: 0, delayed: 0, paused: 0 };
 
         const workerStats = await this.getWorkerStats();
 
@@ -126,6 +128,7 @@ export class AdminService {
 
     // ISSUE-057: DLQ Management
     async getFailedJobs() {
+        if (!this.backupsQueue) return [];
         const failed = await this.backupsQueue.getFailed();
         return failed.map(job => ({
             id: job.id,
@@ -138,6 +141,7 @@ export class AdminService {
     }
 
     async retryJob(jobId: string) {
+        if (!this.backupsQueue) return { success: false, message: 'Queue not available' };
         const job = await this.backupsQueue.getJob(jobId);
         if (job) {
             await job.retry();
@@ -147,12 +151,14 @@ export class AdminService {
     }
 
     async retryAllFailed() {
+        if (!this.backupsQueue) return { count: 0 };
         const failed = await this.backupsQueue.getFailed();
         await Promise.all(failed.map(job => job.retry()));
         return { count: failed.length };
     }
 
     async clearDLQ() {
+        if (!this.backupsQueue) return { success: false, message: 'Queue not available' };
         await this.backupsQueue.clean(0, 0, 'failed');
         return { success: true };
     }

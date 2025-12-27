@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, BadRequestException, NotFoundException, Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../database/prisma.service.js';
 import { MailService } from '../mail/mail.service.js';
@@ -9,10 +9,12 @@ import * as QRCode from 'qrcode';
 @Injectable()
 export class AuthService {
     constructor(
-        private jwtService: JwtService,
-        private prisma: PrismaService,
-        private mailService: MailService,
-    ) { }
+        @Inject(JwtService) private jwtService: JwtService,
+        @Inject(PrismaService) private prisma: PrismaService,
+        @Inject(MailService) private mailService: MailService,
+    ) {
+        console.log('[AuthService] Constructor - jwtService:', !!this.jwtService, 'prisma:', !!this.prisma, 'mailService:', !!this.mailService);
+    }
 
     async signup(data: { email: string; passwordHash: string }) {
         const verificationToken = randomBytes(32).toString('hex');
@@ -98,13 +100,22 @@ export class AuthService {
         return { message: 'Password reset successful.' };
     }
 
-    async login(user: { email: string; id?: string; role?: string; isVerified?: boolean }, metadata?: { ip?: string; userAgent?: string }) {
+    async login(credentials: { email: string; password?: string; id?: string; role?: string; isVerified?: boolean }, metadata?: { ip?: string; userAgent?: string }) {
         const dbUser = await this.prisma.user.findUnique({
-            where: { email: user.email },
+            where: { email: credentials.email },
         });
 
         if (!dbUser) {
             throw new UnauthorizedException('Invalid credentials');
+        }
+
+        // If password is provided, verify it (for email/password login)
+        if (credentials.password) {
+            const bcrypt = await import('bcrypt');
+            const isPasswordValid = await bcrypt.compare(credentials.password, dbUser.passwordHash);
+            if (!isPasswordValid) {
+                throw new UnauthorizedException('Invalid credentials');
+            }
         }
 
         // Create a new session
@@ -125,8 +136,14 @@ export class AuthService {
         };
 
         return {
-            access_token: this.jwtService.sign(payload),
-            refresh_token: this.jwtService.sign(payload, { expiresIn: '7d' }),
+            accessToken: this.jwtService.sign(payload),
+            refreshToken: this.jwtService.sign(payload, { expiresIn: '7d' }),
+            user: {
+                id: dbUser.id,
+                email: dbUser.email,
+                role: dbUser.role,
+                isVerified: dbUser.isVerified
+            }
         };
     }
 

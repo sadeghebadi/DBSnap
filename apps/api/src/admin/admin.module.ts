@@ -8,9 +8,9 @@ import { BullModule } from '@nestjs/bullmq';
 @Module({
     imports: [
         DatabaseModule,
-        BullModule.registerQueue({
-            name: 'backups',
-        }),
+        // BullModule.registerQueue({
+        //     name: 'backups',
+        // }), // Disabled - causes startup hang
     ],
     controllers: [AdminController],
     providers: [AdminService],

@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Req, Get, Query, Delete, Param } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Req, Get, Query, Delete, Param, Inject } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service.js';
@@ -10,7 +10,9 @@ import { UserRole } from '@dbsnap/shared';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private authService: AuthService) { }
+    constructor(@Inject(AuthService) private authService: AuthService) {
+        console.log('[AuthController] Constructor called, authService:', !!this.authService);
+    }
 
     @Post('signup')
     async signup(@Body() body: { email: string; passwordHash: string }) {
@@ -33,7 +35,14 @@ export class AuthController {
     }
 
     @Post('login')
-    async login(@Body() body: { email: string; passwordHash: string }, @Req() req: Request) {
+    async login(@Body() body: { email: string; password: string }, @Req() req: Request) {
+        console.log('[AuthController.login] Called, authService:', !!this.authService);
+        console.log('[AuthController.login] Body:', body);
+
+        if (!this.authService) {
+            throw new Error('AuthService is not injected!');
+        }
+
         const xForwardedFor = req.headers['x-forwarded-for'];
         const ip = req.ip || (Array.isArray(xForwardedFor) ? xForwardedFor[0] : xForwardedFor);
         const userAgent = req.headers['user-agent'] as string;
@@ -62,6 +71,17 @@ export class AuthController {
     @UseGuards(JwtAuthGuard)
     async logout() {
         return { message: 'Logged out successfully' };
+    }
+
+    @Get('me')
+    @UseGuards(JwtAuthGuard)
+    async getCurrentUser(@Req() req: Request & { user: { userId: string; email: string; role: string; isVerified: boolean } }) {
+        return {
+            id: req.user.userId,
+            email: req.user.email,
+            role: req.user.role,
+            isVerified: req.user.isVerified
+        };
     }
 
     @Post('refresh')

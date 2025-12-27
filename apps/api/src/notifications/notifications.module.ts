@@ -23,7 +23,9 @@ export class NotificationsModule implements OnModuleInit {
     ) { }
 
     onModuleInit() {
+        console.log('[NotificationsModule] Starting onModuleInit...');
         const connection = getRedisConnection();
+        console.log('[NotificationsModule] Got Redis connection config:', connection);
 
         const worker = new Worker(QueueNames.NOTIFICATIONS, async (job) => {
             await this.notificationsService.handleNotification(job);
@@ -41,5 +43,6 @@ export class NotificationsModule implements OnModuleInit {
         });
 
         logger.info('Notifications Worker started');
+        console.log('[NotificationsModule] onModuleInit completed');
     }
 }

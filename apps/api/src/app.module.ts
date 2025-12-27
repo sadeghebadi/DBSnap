@@ -28,40 +28,21 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 
 @Module({
     imports: [
-        ScheduleModule.forRoot(),
-        ThrottlerModule.forRoot([{
-            ttl: 60000,
-            limit: 10,
-        }]),
-        BullModule.forRoot({
-            connection: {
-                url: config.REDIS_URL,
-            },
-        }),
         DatabaseModule,
         MailModule,
         AuthModule,
         ApiKeysModule,
         ProjectsModule,
         ConnectionsModule,
-        BackupsModule,
-        AdminModule,
+        AdminModule, // Re-enabled without BullModule dependency
         BillingModule,
         PromoCodesModule,
-        JobsModule,
-        SnapshotsModule,
-        NotificationsModule,
-        DiffsModule,
     ],
     providers: [
         LoggerService,
         {
             provide: APP_FILTER,
             useClass: GlobalExceptionFilter,
-        },
-        {
-            provide: APP_GUARD,
-            useClass: ThrottlerGuard,
         },
     ],
 })

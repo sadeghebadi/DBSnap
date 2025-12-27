@@ -7,6 +7,7 @@ import { JwtStrategy } from './strategies/jwt.strategy.js';
 import { GithubStrategy } from './strategies/github.strategy.js';
 import { GoogleStrategy } from './strategies/google.strategy.js';
 import { MailModule } from '../mail/mail.module.js';
+import { DatabaseModule } from '../database/database.module.js';
 import { getConfig } from '@dbsnap/shared';
 
 const config = getConfig();
@@ -19,6 +20,7 @@ const config = getConfig();
             signOptions: { expiresIn: '1h' },
         }),
         MailModule,
+        DatabaseModule,
     ],
     controllers: [AuthController],
     providers: [AuthService, JwtStrategy, GithubStrategy, GoogleStrategy],
