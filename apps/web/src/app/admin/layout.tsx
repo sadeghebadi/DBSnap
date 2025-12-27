@@ -1,3 +1,4 @@
+"use client";
 
 import AdminGuard from "../../components/AdminGuard";
 
