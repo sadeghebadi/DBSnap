@@ -37,6 +37,7 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
         AdminModule, // Re-enabled without BullModule dependency
         BillingModule,
         PromoCodesModule,
+        BackupsModule,
     ],
     providers: [
         LoggerService,

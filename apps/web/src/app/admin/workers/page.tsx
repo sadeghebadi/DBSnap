@@ -2,243 +2,147 @@
 
 import { useEffect, useState } from "react";
 import { AdminService } from "../../../services/admin";
+import { toast } from "react-hot-toast";
 
-interface FailedJob {
-    id: string;
-    name: string;
-    data: any;
-    failedReason: string;
-    timestamp: number;
-}
-
-interface WorkerNode {
-    id: string;
+interface WorkerTelemetry {
+    workerId: string;
     hostname: string;
-    pid: number;
     uptime: number;
-    memoryUsage: { rss: number; heapTotal: number; heapUsed: number };
-    lastHeartbeat: number;
+    memory: {
+        heapUsed: number;
+        heapTotal: number;
+        rss: number;
+    };
+    cpu: {
+        usage: number;
+    };
+    activeJobs: number;
+    lastSeen: string;
 }
 
-interface QueueMetrics {
-    wait: number;
-    active: number;
-    completed: number;
-    failed: number;
-    delayed: number;
-    paused: number;
-}
-
-export default function WorkerStatusPage() {
-    const [failedJobs, setFailedJobs] = useState<FailedJob[]>([]);
-    const [workers, setWorkers] = useState<WorkerNode[]>([]);
-    const [queueMetrics, setQueueMetrics] = useState<QueueMetrics | null>(null);
+export default function WorkersPage() {
+    const [workers, setWorkers] = useState<WorkerTelemetry[]>([]);
     const [loading, setLoading] = useState(true);
-    const [actionInProgress, setActionInProgress] = useState<string | null>(null);
+    const [concurrency, setConcurrency] = useState(5);
 
-    const fetchData = async () => {
+    const fetchWorkers = async () => {
         try {
-            const [jobs, stats] = await Promise.all([
-                AdminService.getFailedJobs(),
-                AdminService.getStats() // Contains workerStats and queueDepth
-            ]);
-            setFailedJobs(jobs);
+            const stats = await AdminService.getStats();
             setWorkers(stats.workerStats || []);
-            setQueueMetrics(stats.queueDepth || null);
         } catch (err) {
-            console.error(err);
+            console.error("Failed to fetch worker stats", err);
+            toast.error("Failed to load worker statistics");
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchData();
-        const interval = setInterval(fetchData, 5000); // Poll every 5s for live status
+        fetchWorkers();
+        const interval = setInterval(fetchWorkers, 5000);
         return () => clearInterval(interval);
     }, []);
 
-    const handleRetry = async (jobId: string) => {
-        setActionInProgress(jobId);
-        try {
-            await AdminService.retryJob(jobId);
-            await fetchData();
-        } catch (err) {
-            alert('Failed to retry job');
-        } finally {
-            setActionInProgress(null);
-        }
-    };
-
-    const handleClearDLQ = async () => {
-        if (!confirm('Are you sure you want to delete ALL failed jobs? This cannot be undone.')) return;
-        try {
-            await AdminService.clearDLQ();
-            await fetchData();
-        } catch (err) {
-            alert('Failed to clear DLQ');
-        }
-    };
-
-    const handleRestartWorker = async (workerId: string) => {
-        if (!confirm('Restart this worker node?')) return;
-        setActionInProgress(`restart-${workerId}`);
+    const handleRestart = async (workerId: string) => {
+        if (!confirm(`Are you sure you want to restart worker ${workerId}?`)) return;
         try {
             await AdminService.restartWorker(workerId);
-            alert('Restart signal sent to worker.');
+            toast.success(`Restart signal sent to ${workerId}`);
         } catch (err) {
-            alert('Failed to restart worker');
-        } finally {
-            setActionInProgress(null);
+            toast.error("Failed to send restart signal");
         }
     };
 
-    if (loading) return <div className="text-muted">Loading worker status...</div>;
+    const handleUpdateConcurrency = async () => {
+        try {
+            await AdminService.updateConcurrency(concurrency);
+            toast.success("Concurrency limit updated globally");
+        } catch (err) {
+            toast.error("Failed to update concurrency");
+        }
+    };
 
-    const formatMemory = (bytes: number) => (bytes / 1024 / 1024).toFixed(0) + ' MB';
+    const formatMemory = (bytes: number) => (bytes / 1024 / 1024).toFixed(2) + " MB";
+
+    if (loading) return <div className="animate-fade-in">Loading worker telemetry...</div>;
 
     return (
         <div className="animate-fade-in">
-            <h1 style={{ fontSize: '1.75rem', marginBottom: '2rem' }}>Worker Status & Queues</h1>
-
-            <div className="admin-grid">
-                <div className="admin-card">
-                    <div className="stat-label">Active Workers</div>
-                    <div className="stat-value">{workers.length}</div>
-                    <div className={`badge ${workers.length > 0 ? 'badge-success' : 'badge-error'}`} style={{ marginTop: '0.5rem', display: 'inline-block' }}>
-                        {workers.length > 0 ? 'Operational' : 'No Workers Found'}
+            <div className="admin-header-actions">
+                <h2 className="section-title" style={{ margin: 0 }}>Worker Pool Control</h2>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <div className="input-group" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <label style={{ fontSize: '0.875rem' }}>Global Concurrency:</label>
+                        <input
+                            type="number"
+                            className="admin-input"
+                            style={{ width: '80px' }}
+                            value={concurrency}
+                            onChange={(e) => setConcurrency(parseInt(e.target.value))}
+                        />
                     </div>
-                </div>
-                <div className="admin-card">
-                    <div className="stat-label">Queue Depth (Waiting)</div>
-                    <div className="stat-value">{queueMetrics?.wait || 0}</div>
-                    <div style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginTop: '0.5rem' }}>
-                        Active: {queueMetrics?.active || 0}
-                    </div>
-                </div>
-                <div className="admin-card">
-                    <div className="stat-label">Failed Jobs (DLQ)</div>
-                    <div className="stat-value" style={{ color: failedJobs.length > 0 ? 'hsl(var(--error))' : 'inherit' }}>
-                        {failedJobs.length}
-                    </div>
-                    {failedJobs.length > 0 && (
-                        <div style={{ marginTop: '0.5rem' }}>
-                            <span className="badge badge-error">Attention Needed</span>
-                        </div>
-                    )}
+                    <button className="cta-button cta-primary" style={{ padding: '0.5rem 1rem' }} onClick={handleUpdateConcurrency}>
+                        Update
+                    </button>
+                    <button className="cta-button cta-secondary" style={{ padding: '0.5rem 1rem' }} onClick={fetchWorkers}>
+                        Refresh
+                    </button>
                 </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '2rem', marginTop: '2rem' }}>
-                {/* Active Workers List */}
-                <div className="admin-card">
-                    <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem' }}>Worker Nodes</h2>
-                    {workers.length === 0 ? (
-                        <div className="text-muted">No active workers connected to Redis.</div>
-                    ) : (
-                        <table className="admin-table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Hostname</th>
-                                    <th>PID</th>
-                                    <th>Memory (RSS)</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {workers.map(w => (
-                                    <tr key={w.id}>
-                                        <td style={{ fontFamily: 'monospace' }}>{w.id.substring(0, 8)}...</td>
-                                        <td>{w.hostname}</td>
-                                        <td>{w.pid}</td>
-                                        <td>{formatMemory(w.memoryUsage.rss)}</td>
-                                        <td>
-                                            <button
-                                                className="btn"
-                                                onClick={() => handleRestartWorker(w.id)}
-                                                disabled={!!actionInProgress}
-                                                style={{
-                                                    padding: '0.25rem 0.75rem',
-                                                    fontSize: '0.75rem',
-                                                    width: 'auto',
-                                                    background: 'rgba(234, 179, 8, 0.1)',
-                                                    color: '#facc15',
-                                                    border: '1px solid rgba(234, 179, 8, 0.2)'
-                                                }}
-                                            >
-                                                {actionInProgress === `restart-${w.id}` ? 'Stopping...' : 'Restart'}
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    )}
-                </div>
-
-                {/* DLQ List */}
-                <div className="admin-card">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                        <h2 style={{ fontSize: '1.25rem' }}>Dead Letter Queue (Failed Jobs)</h2>
-                        {failedJobs.length > 0 && (
-                            <button
-                                className="btn"
-                                style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'hsl(var(--error))', border: '1px solid rgba(239, 68, 68, 0.2)', width: 'auto' }}
-                                onClick={handleClearDLQ}
-                            >
-                                Clear All Failed Jobs
-                            </button>
-                        )}
+            <div className="admin-grid" style={{ marginTop: '2rem' }}>
+                {workers.length === 0 && (
+                    <div className="admin-card" style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '3rem' }}>
+                        <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>💤</div>
+                        <h3 className="text-muted">No active workers detected</h3>
+                        <p style={{ fontSize: '0.875rem' }}>Workers report telemetry every 10 seconds.</p>
                     </div>
-
-                    {failedJobs.length === 0 ? (
-                        <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
-                            <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>✅</div>
-                            No failed jobs found. Everything is running smoothly.
+                )}
+                {workers.map((worker) => (
+                    <div key={worker.workerId} className="admin-card">
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                            <div>
+                                <h3 style={{ margin: 0, fontSize: '1.125rem' }}>{worker.hostname}</h3>
+                                <code style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{worker.workerId}</code>
+                            </div>
+                            <span className="badge badge-success">Online</span>
                         </div>
-                    ) : (
-                        <table className="admin-table">
-                            <thead>
-                                <tr>
-                                    <th>Job ID</th>
-                                    <th>Name</th>
-                                    <th>Reason</th>
-                                    <th>Time</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {failedJobs.map(job => (
-                                    <tr key={job.id}>
-                                        <td style={{ fontFamily: 'monospace' }}>{job.id}</td>
-                                        <td>{job.name}</td>
-                                        <td style={{ color: 'hsl(var(--error))', maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={job.failedReason}>
-                                            {job.failedReason}
-                                        </td>
-                                        <td style={{ color: 'var(--text-muted)' }}>{new Date(job.timestamp).toLocaleString()}</td>
-                                        <td>
-                                            <button
-                                                className="btn"
-                                                onClick={() => handleRetry(job.id)}
-                                                disabled={!!actionInProgress}
-                                                style={{
-                                                    padding: '0.25rem 0.75rem',
-                                                    fontSize: '0.75rem',
-                                                    width: 'auto',
-                                                    minWidth: '60px',
-                                                    background: 'rgba(255, 255, 255, 0.1)'
-                                                }}
-                                            >
-                                                {actionInProgress === job.id ? '...' : 'Retry'}
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    )}
-                </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', margin: '1.5rem 0' }}>
+                            <div className="stat-item">
+                                <div className="stat-label">CPU Usage</div>
+                                <div className="stat-value" style={{ fontSize: '1.5rem' }}>{worker.cpu.usage.toFixed(1)}%</div>
+                            </div>
+                            <div className="stat-item">
+                                <div className="stat-label">Active Jobs</div>
+                                <div className="stat-value" style={{ fontSize: '1.5rem' }}>{worker.activeJobs}</div>
+                            </div>
+                        </div>
+
+                        <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
+                                <span>Memory (Heap)</span>
+                                <span>{formatMemory(worker.memory.heapUsed)} / {formatMemory(worker.memory.heapTotal)}</span>
+                            </div>
+                            <div className="progress-bar" style={{ height: '4px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px' }}>
+                                <div style={{
+                                    height: '100%',
+                                    width: `${(worker.memory.heapUsed / worker.memory.heapTotal) * 100}%`,
+                                    background: 'var(--brand-primary)',
+                                    borderRadius: '2px'
+                                }}></div>
+                            </div>
+                        </div>
+
+                        <button
+                            className="cta-button cta-danger"
+                            style={{ width: '100%', padding: '0.5rem' }}
+                            onClick={() => handleRestart(worker.workerId)}
+                        >
+                            Restart Worker
+                        </button>
+                    </div>
+                ))}
             </div>
         </div>
     );

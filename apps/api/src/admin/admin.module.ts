@@ -3,20 +3,16 @@ import { AdminController } from './admin.controller.js';
 import { AdminService } from './admin.service.js';
 import { DatabaseModule } from '../database/database.module.js';
 import { AuthModule } from '../auth/auth.module.js';
-import { RolesGuard } from '../auth/guards/roles.guard.js';
-import { VerifiedGuard } from '../auth/guards/verified.guard.js';
-
-import { BullModule } from '@nestjs/bullmq';
+import { JobsModule } from '../jobs/jobs.module.js';
 
 @Module({
     imports: [
         DatabaseModule,
         AuthModule,
-        // BullModule.registerQueue({
-        //     name: 'backups',
-        // }), // Disabled - causes startup hang
+        JobsModule,
     ],
     controllers: [AdminController],
-    providers: [AdminService, RolesGuard, VerifiedGuard],
+    providers: [AdminService],
+    exports: [AdminService],
 })
 export class AdminModule { }

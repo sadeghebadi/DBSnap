@@ -26,11 +26,11 @@ export class CreateConnectionDto {
     databaseName!: string;
 
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     username!: string;
 
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     password!: string;
 
     @IsString()

@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { PrismaService } from '../database/prisma.service.js';
 import { SnapshotStatus } from '@dbsnap/database';
@@ -54,6 +54,76 @@ export class BackupsService {
 
         // After triggering, we also check if retention cleanup is needed
         await this.runRetentionCleanup(scheduleId);
+
+        return snapshot;
+    }
+
+
+
+    async findAllSnapshots(userId: string) {
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId },
+            select: { organizationId: true },
+        });
+
+        if (!user || !user.organizationId) {
+            return [];
+        }
+
+        return this.prisma.backupSnapshot.findMany({
+            where: {
+                connection: {
+                    project: {
+                        organizationId: user.organizationId
+                    }
+                }
+            },
+            include: {
+                connection: {
+                    select: {
+                        name: true,
+                        type: true
+                    }
+                }
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+    }
+
+    async createManualSnapshot(userId: string, connectionId: string) {
+        // Validate access
+        const connection = await this.prisma.databaseConnection.findUnique({
+            where: { id: connectionId },
+            include: { project: true }
+        });
+
+        if (!connection) {
+            throw new Error('Connection not found');
+        }
+
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId },
+            select: { organizationId: true }
+        });
+
+        if (!user || user.organizationId !== connection.project.organizationId) {
+            throw new Error('Unauthorized access to connection');
+        }
+
+        // Create pending snapshot
+        const snapshot = await this.prisma.backupSnapshot.create({
+            data: {
+                status: SnapshotStatus.PENDING,
+                connectionId: connection.id,
+                // No scheduleId for manual snapshots
+            }
+        });
+
+        this.logger.log(`Created manual snapshot ${snapshot.id} for connection ${connection.name}`);
+
+        // TODO: Dispatch to worker (Same as triggerBackup)
 
         return snapshot;
     }
@@ -123,6 +193,91 @@ export class BackupsService {
     async getSchedules() {
         return this.prisma.backupSchedule.findMany({
             include: { connection: true },
+        });
+    }
+    async createScheduleForUser(userId: string, data: {
+        name: string;
+        cron: string;
+        connectionId: string;
+        retentionCount?: number;
+        retentionDays?: number;
+    }) {
+        const connection = await this.prisma.databaseConnection.findUnique({
+            where: { id: data.connectionId },
+            include: { project: true }
+        });
+
+        if (!connection) {
+            throw new NotFoundException('Connection not found');
+        }
+
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId },
+            select: { organizationId: true },
+        });
+
+        if (!user || connection.project.organizationId !== user.organizationId) {
+            throw new ForbiddenException('You do not have access to this connection');
+        }
+
+        return this.prisma.backupSchedule.create({
+            data,
+        });
+    }
+
+    async getSchedulesForUser(userId: string, projectId?: string) {
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId },
+            select: { organizationId: true },
+        });
+
+        if (!user || !user.organizationId) {
+            return [];
+        }
+
+        const where: any = {
+            connection: {
+                project: {
+                    organizationId: user.organizationId
+                }
+            }
+        };
+
+        if (projectId) {
+            where.connection.projectId = projectId;
+        }
+
+        return this.prisma.backupSchedule.findMany({
+            where,
+            include: { connection: true },
+        });
+    }
+
+    async deleteScheduleForUser(userId: string, scheduleId: string) {
+        const schedule = await this.prisma.backupSchedule.findUnique({
+            where: { id: scheduleId },
+            include: {
+                connection: {
+                    include: { project: true }
+                }
+            }
+        });
+
+        if (!schedule) {
+            throw new NotFoundException('Schedule not found');
+        }
+
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId },
+            select: { organizationId: true },
+        });
+
+        if (!user || schedule.connection.project.organizationId !== user.organizationId) {
+            throw new ForbiddenException('You do not have access to this schedule');
+        }
+
+        return this.prisma.backupSchedule.delete({
+            where: { id: scheduleId },
         });
     }
 }

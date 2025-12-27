@@ -42,7 +42,7 @@ export default function LoginPage() {
                 }
 
                 // Hard redirect to admin panel or dashboard based on role
-                window.location.href = data.user?.role === "ADMIN" ? "/admin" : "/dashboard";
+                window.location.href = data.user?.role === "ADMIN" ? "/admin" : "/connections";
             } else {
                 throw new Error("No access token received");
             }

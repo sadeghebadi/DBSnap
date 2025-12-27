@@ -1,15 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { ConnectionsService } from "../../../../services/connections";
-import { ProjectsService } from "../../../../services/projects";
+import { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { ConnectionsService } from "../../../../../services/connections";
+import { ProjectsService } from "../../../../../services/projects";
 import { toast } from "react-hot-toast";
-import { useEffect } from "react";
+import BackupScheduler from "../../../../../components/BackupScheduler";
 
-export default function AddConnectionPage() {
+export default function EditConnectionPage() {
     const router = useRouter();
+    const params = useParams();
+    const id = params?.id as string;
+
+    const [loading, setLoading] = useState(true);
     const [dbType, setDbType] = useState('postgres');
 
     // Form state
@@ -20,6 +24,7 @@ export default function AddConnectionPage() {
     const [host, setHost] = useState('');
     const [port, setPort] = useState('');
     const [username, setUsername] = useState('');
+    // Password is optional on edit (leave blank to keep unchanged)
     const [password, setPassword] = useState('');
     const [databaseName, setDatabaseName] = useState('');
 
@@ -28,28 +33,48 @@ export default function AddConnectionPage() {
     const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
 
     useEffect(() => {
-        loadProjects();
-    }, []);
+        const init = async () => {
+            try {
+                // Load params first
+                const [projectsData, connData] = await Promise.all([
+                    ProjectsService.list(),
+                    ConnectionsService.get(id)
+                ]);
 
-    const loadProjects = async () => {
-        try {
-            const data = await ProjectsService.list();
-            setProjects(data);
-            if (data.length > 0) {
-                setProjectId(data[0].id);
+                setProjects(projectsData);
+
+                // Fill form
+                setName(connData.name);
+                setDbType(connData.type.toLowerCase());
+                setHost(connData.host);
+                setPort(connData.port.toString());
+                setUsername(connData.username || '');
+                setDatabaseName(connData.databaseName);
+                setProjectId(connData.projectId);
+
+                // Password is not sent back for security, so we leave it blank
+            } catch (err) {
+                console.error(err);
+                toast.error("Failed to load connection details");
+                router.push('/connections');
+            } finally {
+                setLoading(false);
             }
-        } catch (err) {
-            toast.error("Failed to load projects");
+        };
+
+        if (id) {
+            init();
         }
-    };
+    }, [id, router]);
 
     const getFormData = () => ({
         name,
-        type: dbType.toUpperCase(), // API expects uppercase enum likely? controller cast it. Let's send uppercase.
+        type: dbType.toUpperCase(),
         host,
         port: parseInt(port) || 5432,
         username,
-        password,
+        // Only send password if user entered a new one
+        ...(password ? { password } : {}),
         databaseName,
         projectId: projectId
     });
@@ -58,13 +83,34 @@ export default function AddConnectionPage() {
         setTesting(true);
         setTestResult(null);
         try {
+            // For testing invalid connection while editing, we might need to send the old password if field is empty
+            // But usually 'test' endpoint on create expects full creds. 
+            // Better to use 'testExisting' if possible, or send what we have.
+            // If we use the generic test endpoint, we must provide a password if it's required for auth.
+            // If the user didn't type a password, we can't test properly with the stateless endpoint unless we fetch it (which we can't).
+            // Solution: Use the component-specific 'testExisting' if we are just verifying connectivity of the *saved* state, 
+            // OR warn the user they need to re-enter password to test changes.
+
+            // Let's try to test the *current form values*. 
+            // If password is empty, we might fail authentication if the DB requires it.
+            // But we can try 'testExisting' if the user hasn't changed credentials? 
+            // Actually, the best UX is: "Test Connection" tests what is currently in the form.
+
+            if (!password) {
+                // Try asking backend to test using stored password + new form values? 
+                // We don't have that endpoint. 
+                // We have `POST :id/test`. That tests the *saved* connection. 
+                // So if user changes Host but not Password, calling :id/test tests the OLD Host.
+                // So we must use `POST test`. But we lack the password.
+                // For now, let's just warn or try anyway (some DBs don't need pw).
+            }
+
             const result = await ConnectionsService.test(getFormData());
             setTestResult({ success: result.success, message: result.message || "Connection verified successfully!" });
             if (result.success) toast.success("Connection verified!");
             else toast.error("Connection failed");
         } catch (err: any) {
             setTestResult({ success: false, message: err.message || "Connection failed" });
-            toast.error("Test failed");
         } finally {
             setTesting(false);
         }
@@ -74,14 +120,22 @@ export default function AddConnectionPage() {
         e.preventDefault();
         setSaving(true);
         try {
-            await ConnectionsService.create(getFormData());
-            toast.success("Connection created successfully");
+            await ConnectionsService.update(id, getFormData());
+            toast.success("Connection updated successfully");
             router.push('/connections');
         } catch (err: any) {
-            toast.error(err.message || "Failed to create connection");
+            toast.error(err.message || "Failed to update connection");
             setSaving(false);
         }
     };
+
+    if (loading) {
+        return (
+            <div className="flex-center" style={{ height: '50vh' }}>
+                <div className="animate-fade-in">Loading connection details...</div>
+            </div>
+        );
+    }
 
     return (
         <div className="animate-fade-in" style={{ maxWidth: '800px' }}>
@@ -89,8 +143,8 @@ export default function AddConnectionPage() {
                 <Link href="/connections">
                     <span className="btn-link" style={{ marginBottom: '1rem', display: 'inline-block' }}>← Back to Connections</span>
                 </Link>
-                <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Add New Connection</h1>
-                <p style={{ color: 'hsl(var(--text-muted))' }}>Configure your database source credentials</p>
+                <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Edit Connection</h1>
+                <p style={{ color: 'hsl(var(--text-muted))' }}>Update your database source configuration</p>
             </div>
 
             <div className="glass-card">
@@ -129,6 +183,7 @@ export default function AddConnectionPage() {
                                 value={dbType}
                                 onChange={(e) => setDbType(e.target.value)}
                                 style={{ appearance: 'none' }}
+                                disabled // Changing type might break other things, usually better to create new
                             >
                                 <option value="postgres">PostgreSQL</option>
                                 <option value="mysql">MySQL</option>
@@ -176,11 +231,11 @@ export default function AddConnectionPage() {
                                 />
                             </div>
                             <div className="input-group">
-                                <label className="input-label">Password <span style={{ color: 'hsl(var(--text-muted))', fontSize: '0.7em' }}>(Optional)</span></label>
+                                <label className="input-label">Password <span style={{ color: 'hsl(var(--text-muted))', fontSize: '0.7em' }}>(Unchanged)</span></label>
                                 <input
                                     type="password"
                                     className="input-field"
-                                    placeholder="••••••••"
+                                    placeholder="Enter new password to update"
                                     value={password}
                                     onChange={e => setPassword(e.target.value)}
                                 />
@@ -215,7 +270,7 @@ export default function AddConnectionPage() {
                             className={`btn btn-primary ${saving ? 'btn-loading' : ''}`}
                             disabled={saving || testing}
                         >
-                            {saving ? "Saving..." : "Save Connection"}
+                            {saving ? "Saving..." : "Save Changes"}
                         </button>
                     </div>
 
@@ -233,10 +288,19 @@ export default function AddConnectionPage() {
                         }}>
                             <span>{testResult.success ? "✅" : "❌"}</span>
                             <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>{testResult.message}</span>
+                            {!testResult.success && !password && (
+                                <span style={{ fontSize: '0.8rem', marginLeft: 'auto', opacity: 0.8 }}>
+                                    (Did you assume the old password would be used? Re-enter it to test.)
+                                </span>
+                            )}
                         </div>
                     )}
                 </form>
             </div>
+
+            {id && projectId && (
+                <BackupScheduler connectionId={id} projectId={projectId} />
+            )}
 
             <style jsx>{`
                 .form-section {

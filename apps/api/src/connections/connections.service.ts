@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, Inject } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service.js';
 import { CreateConnectionDto } from './dto/create-connection.dto.js';
 import { UpdateConnectionDto } from './dto/update-connection.dto.js';
@@ -6,7 +6,7 @@ import { encrypt } from '@dbsnap/shared';
 
 @Injectable()
 export class ConnectionsService {
-    constructor(private prisma: PrismaService) { }
+    constructor(@Inject(PrismaService) private prisma: PrismaService) { }
 
     private async validateProjectAccess(userId: string, projectId: string) {
         const user = await this.prisma.user.findUnique({
@@ -87,6 +87,16 @@ export class ConnectionsService {
                 project: {
                     select: {
                         name: true,
+                    }
+                },
+                snapshots: {
+                    take: 1,
+                    orderBy: {
+                        createdAt: 'desc'
+                    },
+                    select: {
+                        createdAt: true,
+                        status: true
                     }
                 }
             }

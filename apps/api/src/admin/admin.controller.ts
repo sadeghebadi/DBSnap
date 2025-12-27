@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Delete, Param, Query, UseGuards, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Body, Delete, Param, Query, UseGuards, Patch, Inject, forwardRef } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { RolesGuard } from '../auth/guards/roles.guard.js';
 import { Roles } from '../auth/decorators/roles.decorator.js';
@@ -10,7 +10,10 @@ import { AdminService } from './admin.service.js';
 @UseGuards(JwtAuthGuard, RolesGuard, VerifiedGuard)
 @Roles(UserRole.ADMIN)
 export class AdminController {
-    constructor(private adminService: AdminService) { }
+    constructor(
+        @Inject(forwardRef(() => AdminService))
+        private readonly adminService: AdminService
+    ) { }
 
     @Get('stats')
     async getStats() {
@@ -188,5 +191,10 @@ export class AdminController {
     @Post('support/action')
     async supportAction(@Body() body: { action: string; resourceId: string; adminId: string }) {
         return this.adminService.triggerSupportAction(body.action, body.resourceId, body.adminId);
+    }
+
+    @Get('billing-stats')
+    async getBillingStats() {
+        return this.adminService.getBillingStats();
     }
 }

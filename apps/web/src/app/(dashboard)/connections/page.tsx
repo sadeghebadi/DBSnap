@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { ConnectionsService } from "../../../services/connections";
+import { toast } from "react-hot-toast";
 
 interface Connection {
     id: string;
     name: string;
     type: string;
     host: string;
-    status: 'healthy' | 'warning' | 'error';
+    status?: 'healthy' | 'warning' | 'error';
     lastBackup?: string;
 }
 
@@ -17,15 +19,43 @@ export default function ConnectionsPage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Mocking API call for now
-        setTimeout(() => {
-            setConnections([
-                { id: '1', name: 'Production Main', type: 'PostgreSQL', host: 'db.example.com', status: 'healthy', lastBackup: '2 hours ago' },
-                { id: '2', name: 'Staging Auth', type: 'MongoDB', host: 'mongo-stg.local', status: 'healthy', lastBackup: '5 mins ago' },
-                { id: '3', name: 'Legacy Analytics', type: 'MySQL', host: '192.168.1.45', status: 'warning', lastBackup: '1 day ago' },
-            ]);
-            setLoading(false);
-        }, 800);
+        const fetchConnections = async () => {
+            try {
+                const data = await ConnectionsService.list();
+                // Map API response to UI model if needed, or use directly
+                // Assuming API returns array of connections
+                // For status and lastBackup, we might need real data or keep mocking for now if backend doesn't provide it yet
+                const mappedData = data.map((conn: any) => {
+                    let status: 'healthy' | 'warning' | 'error' = 'healthy';
+                    let lastBackup = 'Never';
+
+                    if (conn.snapshots && conn.snapshots.length > 0) {
+                        const lastSnap = conn.snapshots[0];
+                        if (lastSnap.status === 'FAILED') status = 'error';
+                        else if (lastSnap.status === 'COMPLETED') status = 'healthy';
+                        else status = 'warning'; // PENDING, RUNNING, PURGED
+
+                        lastBackup = new Date(lastSnap.createdAt).toLocaleString();
+                    } else {
+                        status = 'healthy'; // New connection, assume healthy
+                    }
+
+                    return {
+                        ...conn,
+                        status,
+                        lastBackup
+                    };
+                });
+                setConnections(mappedData);
+            } catch (err) {
+                console.error("Failed to fetch connections", err);
+                toast.error("Failed to load connections");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchConnections();
     }, []);
 
     if (loading) return (
@@ -79,7 +109,9 @@ export default function ConnectionsPage() {
                                     <span className="value">{conn.lastBackup}</span>
                                 </div>
                                 <div className="card-actions">
-                                    <button className="btn-icon">⚙️</button>
+                                    <Link href={`/connections/${conn.id}/edit`}>
+                                        <button className="btn-icon">⚙️</button>
+                                    </Link>
                                 </div>
                             </div>
                         </div>

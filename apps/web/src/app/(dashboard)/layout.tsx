@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import AuthGuard from "../../components/AuthGuard";
 
 export default function DashboardLayout({
     children,
@@ -11,60 +12,61 @@ export default function DashboardLayout({
     const pathname = usePathname();
 
     const navItems = [
-        { label: "Dashboard", href: "/dashboard", icon: "🏠" },
+        { label: "Dashboard", href: "/connections", icon: "🏠" },
         { label: "Connections", href: "/connections", icon: "🔌" },
         { label: "Snapshots", href: "/snapshots", icon: "📦" },
         { label: "Settings", href: "/settings", icon: "⚙️" },
     ];
 
     return (
-        <div className="dashboard-wrapper">
-            {/* Sidebar */}
-            <aside className="sidebar">
-                <div className="sidebar-brand">
-                    <span className="brand-gradient">DBSnap</span>
-                </div>
+        <AuthGuard>
+            <div className="dashboard-wrapper">
+                {/* Sidebar */}
+                <aside className="sidebar">
+                    <div className="sidebar-brand">
+                        <span className="brand-gradient">DBSnap</span>
+                    </div>
 
-                <nav className="sidebar-nav">
-                    {navItems.map((item) => (
-                        <Link key={item.href} href={item.href}>
-                            <div className={`nav-item ${pathname === item.href ? "active" : ""}`}>
-                                <span className="nav-icon">{item.icon}</span>
-                                <span className="nav-label">{item.label}</span>
+                    <nav className="sidebar-nav">
+                        {navItems.map((item) => (
+                            <Link key={item.href} href={item.href}>
+                                <div className={`nav-item ${pathname === item.href ? "active" : ""}`}>
+                                    <span className="nav-icon">{item.icon}</span>
+                                    <span className="nav-label">{item.label}</span>
+                                </div>
+                            </Link>
+                        ))}
+                    </nav>
+
+                    <div className="sidebar-footer">
+                        <div className="user-profile">
+                            <div className="user-avatar">JD</div>
+                            <div className="user-info">
+                                <div className="user-name">John Doe</div>
+                                <div className="user-role">Free Plan</div>
                             </div>
-                        </Link>
-                    ))}
-                </nav>
-
-                <div className="sidebar-footer">
-                    <div className="user-profile">
-                        <div className="user-avatar">JD</div>
-                        <div className="user-info">
-                            <div className="user-name">John Doe</div>
-                            <div className="user-role">Free Plan</div>
                         </div>
                     </div>
+                </aside>
+
+                {/* Main Content */}
+                <div className="main-stage">
+                    <header className="top-bar">
+                        <div className="search-placeholder">
+                            <input type="text" placeholder="Search connections..." />
+                        </div>
+                        <div className="top-bar-actions">
+                            <button className="btn-icon">🔔</button>
+                            <button className="btn-icon">💬</button>
+                        </div>
+                    </header>
+
+                    <main className="content">
+                        {children}
+                    </main>
                 </div>
-            </aside>
 
-            {/* Main Content */}
-            <div className="main-stage">
-                <header className="top-bar">
-                    <div className="search-placeholder">
-                        <input type="text" placeholder="Search connections..." />
-                    </div>
-                    <div className="top-bar-actions">
-                        <button className="btn-icon">🔔</button>
-                        <button className="btn-icon">💬</button>
-                    </div>
-                </header>
-
-                <main className="content">
-                    {children}
-                </main>
-            </div>
-
-            <style jsx>{`
+                <style jsx>{`
                 .dashboard-wrapper {
                     display: grid;
                     grid-template-columns: 280px 1fr;
@@ -203,6 +205,7 @@ export default function DashboardLayout({
                     flex: 1;
                 }
             `}</style>
-        </div>
+            </div>
+        </AuthGuard>
     );
 }

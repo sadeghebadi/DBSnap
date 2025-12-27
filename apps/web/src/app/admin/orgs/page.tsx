@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AdminService } from "../../../services/admin";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 
 interface Organization {
     id: string;
@@ -21,9 +22,13 @@ export default function AdminOrgsPage() {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [newOrgName, setNewOrgName] = useState("");
 
-    // Quota Modal State
-    const [showQuotaModal, setShowQuotaModal] = useState(false);
+    // Org Details / Explorer State
+    const [showExplorer, setShowExplorer] = useState(false);
     const [selectedOrg, setSelectedOrg] = useState<Organization | null>(null);
+    const [orgDetails, setOrgDetails] = useState<any>(null);
+    const [explorerLoading, setExplorerLoading] = useState(false);
+    const [showQuotaModal, setShowQuotaModal] = useState(false);
+
     const [quotaOverrides, setQuotaOverrides] = useState({
         overrideMaxSnapshots: "",
         overrideMaxConnections: "",
@@ -74,6 +79,20 @@ export default function AdminOrgsPage() {
         }
     };
 
+    const handleOpenExplorer = async (org: Organization) => {
+        setSelectedOrg(org);
+        setShowExplorer(true);
+        setExplorerLoading(true);
+        try {
+            const details = await AdminService.getOrgDetails(org.id);
+            setOrgDetails(details);
+        } catch (err) {
+            toast.error("Failed to load organization details");
+        } finally {
+            setExplorerLoading(false);
+        }
+    };
+
     const handleUpdateQuotas = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!selectedOrg) return;
@@ -86,9 +105,9 @@ export default function AdminOrgsPage() {
             });
             setShowQuotaModal(false);
             fetchOrgs();
-            alert("Quotas updated");
+            toast.success("Quotas updated");
         } catch (err) {
-            alert("Failed to update quotas");
+            toast.error("Failed to update quotas");
         }
     };
 
@@ -144,10 +163,16 @@ export default function AdminOrgsPage() {
                                         {org.isActive === false ? '✅' : '🚫'}
                                     </button>
                                     <button
+                                        title="Explore Resources"
+                                        onClick={() => handleOpenExplorer(org)}
+                                        style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1.2rem', marginRight: '0.5rem' }}
+                                    >
+                                        🔍
+                                    </button>
+                                    <button
                                         title="Manage Quotas"
                                         onClick={() => {
                                             setSelectedOrg(org);
-                                            // Initialize override values or defaults
                                             setQuotaOverrides({
                                                 overrideMaxSnapshots: (org as any).overrideMaxSnapshots || "",
                                                 overrideMaxConnections: (org as any).overrideMaxConnections || "",
@@ -167,88 +192,55 @@ export default function AdminOrgsPage() {
                 </table>
             )}
 
-            {showCreateModal && (
-                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
-                    <div className="admin-card" style={{ width: '400px', background: '#0f172a', border: '1px solid var(--glass-border)' }}>
-                        <h2 style={{ marginBottom: '1.5rem' }}>Create Organization</h2>
-                        <form onSubmit={handleCreateOrg}>
-                            <div className="input-group">
-                                <label className="input-label">Organization Name</label>
-                                <input
-                                    className="input-field"
-                                    type="text"
-                                    required
-                                    value={newOrgName}
-                                    onChange={e => setNewOrgName(e.target.value)}
-                                />
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1.5rem' }}>
-                                <button type="button" className="btn" style={{ width: 'auto', background: 'transparent' }} onClick={() => setShowCreateModal(false)}>Cancel</button>
-                                <button type="submit" className="btn btn-primary" style={{ width: 'auto' }}>Create</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
+            {showExplorer && selectedOrg && (
+                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, backdropFilter: 'blur(8px)' }}>
+                    <div className="admin-card animate-slide-in" style={{ width: '900px', maxHeight: '90vh', overflow: 'auto', background: '#0f172a', border: '1px solid var(--glass-border)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                            <h2 style={{ fontSize: '1.5rem', margin: 0 }}>Organization Explorer: {selectedOrg.name}</h2>
+                            <button className="btn" style={{ width: 'auto', background: 'transparent' }} onClick={() => setShowExplorer(false)}>✕ Close</button>
+                        </div>
 
-            {showQuotaModal && selectedOrg && (
-                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
-                    <div className="admin-card" style={{ width: '500px', background: '#0f172a', border: '1px solid var(--glass-border)' }}>
-                        <h2 style={{ marginBottom: '1.5rem' }}>Manage Quotas: {selectedOrg.name}</h2>
-                        <form onSubmit={handleUpdateQuotas}>
-                            <div className="input-group" style={{ marginBottom: '1rem' }}>
-                                <label className="input-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-                                    <input
-                                        type="checkbox"
-                                        checked={quotaOverrides.ignorePlanLimits}
-                                        onChange={e => setQuotaOverrides({ ...quotaOverrides, ignorePlanLimits: e.target.checked })}
-                                        style={{ width: '16px', height: '16px' }}
-                                    />
-                                    Ignore Plan Limits (Unlimited)
-                                </label>
-                            </div>
+                        {explorerLoading ? <div style={{ textAlign: 'center', padding: '3rem' }}>Fetching organization resources...</div> : orgDetails && (
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+                                <div>
+                                    <h3 style={{ fontSize: '1rem', color: 'var(--brand-primary)', marginBottom: '1rem' }}>PROJECTS & CONNECTIONS</h3>
+                                    {orgDetails.projects.map((project: any) => (
+                                        <div key={project.id} style={{ marginBottom: '1.5rem', padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '0.5rem' }}>
+                                            <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>📁 {project.name} <span className="badge" style={{ fontSize: '0.7rem' }}>{project.environment}</span></div>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', paddingLeft: '1rem' }}>
+                                                {project.connections.map((conn: any) => (
+                                                    <div key={conn.id} style={{ fontSize: '0.875rem', display: 'flex', justifyContent: 'space-between' }}>
+                                                        <span>🔌 {conn.name} ({conn.type})</span>
+                                                        <span className="text-muted">{conn.status}</span>
+                                                    </div>
+                                                ))}
+                                                {project.connections.length === 0 && <span className="text-muted" style={{ fontSize: '0.875rem' }}>No connections</span>}
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {orgDetails.projects.length === 0 && <div className="text-muted">No projects found.</div>}
+                                </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', opacity: quotaOverrides.ignorePlanLimits ? 0.5 : 1 }}>
-                                <div className="input-group">
-                                    <label className="input-label">Max Snapshots</label>
-                                    <input
-                                        className="input-field"
-                                        type="number"
-                                        disabled={quotaOverrides.ignorePlanLimits}
-                                        placeholder="Default"
-                                        value={quotaOverrides.overrideMaxSnapshots}
-                                        onChange={e => setQuotaOverrides({ ...quotaOverrides, overrideMaxSnapshots: e.target.value })}
-                                    />
-                                </div>
-                                <div className="input-group">
-                                    <label className="input-label">Max Connections</label>
-                                    <input
-                                        className="input-field"
-                                        type="number"
-                                        disabled={quotaOverrides.ignorePlanLimits}
-                                        placeholder="Default"
-                                        value={quotaOverrides.overrideMaxConnections}
-                                        onChange={e => setQuotaOverrides({ ...quotaOverrides, overrideMaxConnections: e.target.value })}
-                                    />
-                                </div>
-                                <div className="input-group">
-                                    <label className="input-label">Storage Limit (GB)</label>
-                                    <input
-                                        className="input-field"
-                                        type="number"
-                                        disabled={quotaOverrides.ignorePlanLimits}
-                                        placeholder="Default"
-                                        value={quotaOverrides.overrideStorageLimitGb}
-                                        onChange={e => setQuotaOverrides({ ...quotaOverrides, overrideStorageLimitGb: e.target.value })}
-                                    />
+                                <div>
+                                    <h3 style={{ fontSize: '1rem', color: '#60a5fa', marginBottom: '1rem' }}>USAGES & SUBSCRIPTION</h3>
+                                    <div className="stat-grid" style={{ gridTemplateColumns: '1fr', gap: '1rem' }}>
+                                        <div className="admin-card" style={{ padding: '1rem', background: 'rgba(255,255,255,0.02)' }}>
+                                            <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Subscription Plan</div>
+                                            <div style={{ fontSize: '1.25rem', fontWeight: 600, marginTop: '0.25rem' }}>{orgDetails.subscription?.plan?.name || 'FREE'}</div>
+                                        </div>
+                                        <div className="admin-card" style={{ padding: '1rem', background: 'rgba(255,255,255,0.02)' }}>
+                                            <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Total Users</div>
+                                            <div style={{ fontSize: '1.25rem', fontWeight: 600, marginTop: '0.25rem' }}>{orgDetails.users.length}</div>
+                                            <div style={{ fontSize: '0.75rem', marginTop: '0.5rem' }}>
+                                                {orgDetails.users.map((u: any) => (
+                                                    <div key={u.id}>• {u.email}</div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-
-                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1.5rem' }}>
-                                <button type="button" className="btn" style={{ width: 'auto', background: 'transparent' }} onClick={() => setShowQuotaModal(false)}>Cancel</button>
-                                <button type="submit" className="btn btn-primary" style={{ width: 'auto' }}>Save Changes</button>
-                            </div>
-                        </form>
+                        )}
                     </div>
                 </div>
             )}

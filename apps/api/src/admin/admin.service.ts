@@ -1,7 +1,7 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject, Optional } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service.js';
 import { Redis } from 'ioredis';
-import { getConfig } from '@dbsnap/shared';
+import { getConfig, QueueNames } from '@dbsnap/shared';
 import { Queue } from 'bullmq';
 import { InjectQueue } from '@nestjs/bullmq';
 
@@ -10,10 +10,13 @@ export class AdminService {
     private redis: Redis;
     private config = getConfig();
     private readonly logger = new Logger(AdminService.name);
-    private backupsQueue?: Queue;
 
     constructor(
+        @Inject(PrismaService)
         private prisma: PrismaService,
+        @Optional()
+        @InjectQueue('backups')
+        private backupsQueue?: Queue,
     ) {
         this.redis = new Redis(this.config.REDIS_URL, {
             maxRetriesPerRequest: null,
@@ -103,6 +106,7 @@ export class AdminService {
                     email: true,
                     role: true,
                     isVerified: true,
+                    isActive: true,
                     createdAt: true
                 }
             }),
@@ -447,5 +451,44 @@ export class AdminService {
             }
         });
         return { success: true, message: `${action} triggered for ${resourceId}` };
+    }
+
+    async getBillingStats() {
+        const [totalSubscriptions, plans, orgs] = await Promise.all([
+            this.prisma.subscription.count({ where: { status: 'ACTIVE' } }),
+            this.prisma.plan.findMany({
+                include: {
+                    _count: {
+                        select: { subscriptions: { where: { status: 'ACTIVE' } } }
+                    }
+                }
+            }),
+            this.prisma.organization.findMany({
+                include: {
+                    subscription: {
+                        include: { plan: true }
+                    }
+                }
+            })
+        ]);
+
+        let mrr = 0;
+        plans.forEach(plan => {
+            mrr += (plan.price || 0) * plan._count.subscriptions;
+        });
+
+        const churnedOrgs = orgs.filter(o => o.subscription?.status === 'CANCELED');
+
+        return {
+            totalRevenue: mrr * 12 * 0.8, // Mocked historical revenue
+            mrr,
+            activeSubscriptions: totalSubscriptions,
+            planDistribution: plans.map(p => ({
+                name: p.name,
+                count: p._count.subscriptions,
+                revenue: (p.price || 0) * p._count.subscriptions
+            })),
+            churnRate: orgs.length > 0 ? (churnedOrgs.length / orgs.length) * 100 : 0
+        };
     }
 }

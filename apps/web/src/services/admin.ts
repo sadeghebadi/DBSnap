@@ -21,6 +21,12 @@ export const AdminService = {
         return res.json();
     },
 
+    async getBillingStats() {
+        const res = await fetch(`${API_URL}/admin/billing-stats`, { headers: getHeaders() });
+        if (!res.ok) throw new Error('Failed to fetch billing stats');
+        return res.json();
+    },
+
     async getRecentEvents() {
         const res = await fetch(`${API_URL}/admin/events`, { headers: getHeaders() });
         if (!res.ok) throw new Error('Failed to fetch events');
@@ -73,6 +79,16 @@ export const AdminService = {
             headers: getHeaders()
         });
         if (!res.ok) throw new Error('Failed to restart worker');
+        return res.json();
+    },
+
+    async updateConcurrency(concurrency: number) {
+        const res = await fetch(`${API_URL}/admin/workers/concurrency`, {
+            method: 'PATCH',
+            headers: getHeaders(),
+            body: JSON.stringify({ concurrency })
+        });
+        if (!res.ok) throw new Error('Failed to update concurrency');
         return res.json();
     },
 

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Query, Inject } from '@nestjs/common';
 import { ConnectionsService } from './connections.service.js';
 import { CreateConnectionDto } from './dto/create-connection.dto.js';
 import { UpdateConnectionDto } from './dto/update-connection.dto.js';
@@ -11,8 +11,8 @@ import { ConnectionValidatorService } from './connection-validator.service.js';
 @UseGuards(JwtAuthGuard, VerifiedGuard)
 export class ConnectionsController {
     constructor(
-        private readonly connectionsService: ConnectionsService,
-        private readonly validatorService: ConnectionValidatorService,
+        @Inject(ConnectionsService) private readonly connectionsService: ConnectionsService,
+        @Inject(ConnectionValidatorService) private readonly validatorService: ConnectionValidatorService,
     ) { }
 
     @Post()

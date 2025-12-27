@@ -2,210 +2,161 @@
 
 import { useEffect, useState } from "react";
 import { AdminService } from "../../../services/admin";
+import { toast } from "react-hot-toast";
 
 interface PromoCode {
     id: string;
     code: string;
     discountPercent?: number;
     discountAmount?: number;
+    expirationDate?: string;
     usageLimit?: number;
     usageCount: number;
     isActive: boolean;
-    expirationDate?: string;
-    planId?: string;
+    createdAt: string;
 }
 
-export default function AdminPromoCodesPage() {
-    const [codes, setCodes] = useState<PromoCode[]>([]);
+export default function PromoCodesPage() {
+    const [promos, setPromos] = useState<PromoCode[]>([]);
     const [loading, setLoading] = useState(true);
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [newPromo, setNewPromo] = useState({
+        code: "",
+        discountPercent: "",
+        discountAmount: "",
+        usageLimit: "",
+        expirationDate: ""
+    });
 
-    // Form state
-    const [newCode, setNewCode] = useState("");
-    const [discountType, setDiscountType] = useState<"percent" | "amount">("percent");
-    const [discountValue, setDiscountValue] = useState(10);
-    const [usageLimit, setUsageLimit] = useState<number | "">("");
-    const [expirationDate, setExpirationDate] = useState("");
-
-    const fetchCodes = async () => {
-        setLoading(true);
+    const fetchPromos = async () => {
         try {
             const data = await AdminService.listPromoCodes();
-            setCodes(data);
+            setPromos(data || []);
         } catch (err) {
-            console.error("Failed to fetch promo codes");
+            toast.error("Failed to load promo codes");
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchCodes();
+        fetchPromos();
     }, []);
 
     const handleCreate = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
             await AdminService.createPromoCode({
-                code: newCode,
-                discountPercent: discountType === 'percent' ? discountValue : undefined,
-                discountAmount: discountType === 'amount' ? discountValue : undefined,
-                usageLimit: usageLimit || undefined,
-                expirationDate: expirationDate || undefined
+                ...newPromo,
+                discountPercent: newPromo.discountPercent ? parseInt(newPromo.discountPercent) : undefined,
+                discountAmount: newPromo.discountAmount ? parseFloat(newPromo.discountAmount) : undefined,
+                usageLimit: newPromo.usageLimit ? parseInt(newPromo.usageLimit) : undefined,
+                expirationDate: newPromo.expirationDate ? new Date(newPromo.expirationDate).toISOString() : undefined,
             });
+            toast.success("Promo code created");
             setShowCreateModal(false);
-            setNewCode("");
-            setDiscountValue(10);
-            fetchCodes();
-            alert("Promo Code Created!");
+            fetchPromos();
         } catch (err) {
-            alert("Failed to create code");
+            toast.error("Failed to create promo code");
         }
     };
 
     const handleDeactivate = async (id: string) => {
-        if (!confirm("Deactivate this code? Users will no longer be able to use it.")) return;
+        if (!confirm("Deactivate this promo code? It cannot be reactivated.")) return;
         try {
             await AdminService.deactivatePromoCode(id);
-            fetchCodes();
+            toast.success("Promo code deactivated");
+            fetchPromos();
         } catch (err) {
-            alert("Failed to deactivate");
+            toast.error("Failed to deactivate");
         }
     };
 
+    if (loading) return <div className="animate-fade-in">Loading coupons...</div>;
+
     return (
-        <div className="admin-card animate-fade-in">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <h2 style={{ fontSize: '1.25rem' }}>Promo Codes</h2>
-                <button
-                    className="btn btn-primary"
-                    style={{ width: 'auto' }}
-                    onClick={() => setShowCreateModal(true)}
-                >
-                    + New Code
+        <div className="animate-fade-in">
+            <div className="admin-header-actions">
+                <h2 className="section-title" style={{ margin: 0 }}>Promo Codes</h2>
+                <button className="cta-button cta-primary" style={{ padding: '0.5rem 1.5rem' }} onClick={() => setShowCreateModal(true)}>
+                    + Create New
                 </button>
             </div>
 
-            {loading ? <div className="text-muted">Loading...</div> : (
+            <div className="admin-card" style={{ padding: 0, marginTop: '2rem' }}>
                 <table className="admin-table">
                     <thead>
                         <tr>
                             <th>Code</th>
                             <th>Discount</th>
                             <th>Usage</th>
-                            <th>Expires</th>
+                            <th>Limit</th>
+                            <th>Expiry</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {codes.map(code => (
-                            <tr key={code.id} style={{ opacity: code.isActive ? 1 : 0.5 }}>
-                                <td style={{ fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '1px' }}>{code.code}</td>
+                        {promos.length === 0 && (
+                            <tr><td colSpan={7} style={{ textAlign: 'center', padding: '3rem' }}>No active campaigns.</td></tr>
+                        )}
+                        {promos.map((p) => (
+                            <tr key={p.id}>
+                                <td style={{ fontWeight: 600, fontFamily: 'monospace' }}>{p.code}</td>
+                                <td>{p.discountPercent ? `${p.discountPercent}%` : `$${p.discountAmount}`}</td>
+                                <td>{p.usageCount}</td>
+                                <td>{p.usageLimit || '∞'}</td>
+                                <td>{p.expirationDate ? new Date(p.expirationDate).toLocaleDateString() : 'Never'}</td>
                                 <td>
-                                    {code.discountPercent ? `${code.discountPercent}%` : `$${code.discountAmount}`}
-                                </td>
-                                <td>
-                                    {code.usageCount} {code.usageLimit ? `/ ${code.usageLimit}` : '(Unlimited)'}
-                                </td>
-                                <td>
-                                    {code.expirationDate ? new Date(code.expirationDate).toLocaleDateString() : 'Never'}
-                                </td>
-                                <td>
-                                    <span className={`badge ${code.isActive ? 'badge-success' : 'badge-warning'}`}>
-                                        {code.isActive ? 'Active' : 'Expired/Deactivated'}
+                                    <span className={`badge ${p.isActive ? 'badge-success' : 'badge-warning'}`}>
+                                        {p.isActive ? 'Active' : 'Expired'}
                                     </span>
                                 </td>
                                 <td>
-                                    {code.isActive && (
-                                        <button
-                                            onClick={() => handleDeactivate(code.id)}
-                                            style={{ background: 'transparent', border: 'none', color: '#f87171', cursor: 'pointer', fontWeight: 500 }}
-                                        >
+                                    {p.isActive && (
+                                        <button onClick={() => handleDeactivate(p.id)} className="text-muted" style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}>
                                             Deactivate
                                         </button>
                                     )}
                                 </td>
                             </tr>
                         ))}
-                        {codes.length === 0 && (
-                            <tr>
-                                <td colSpan={6} style={{ textAlign: "center", padding: "2rem", color: "rgba(255,255,255,0.5)" }}>
-                                    No promo codes found. Create one to get started.
-                                </td>
-                            </tr>
-                        )}
                     </tbody>
                 </table>
-            )}
+            </div>
 
             {showCreateModal && (
                 <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
-                    <div className="admin-card" style={{ width: '450px', background: '#0f172a', border: '1px solid var(--glass-border)' }}>
-                        <h2 style={{ marginBottom: '1.5rem' }}>Create Promo Code</h2>
+                    <div className="admin-card" style={{ width: '500px', background: '#0f172a' }}>
+                        <h2 style={{ marginBottom: '1.5rem' }}>Generate Promo Code</h2>
                         <form onSubmit={handleCreate}>
                             <div className="input-group">
-                                <label className="input-label">Code (e.g. WELCOME20)</label>
-                                <input
-                                    className="input-field"
-                                    type="text"
-                                    required
-                                    value={newCode}
-                                    onChange={e => setNewCode(e.target.value.toUpperCase())}
-                                    placeholder="SUMMER-SALE"
-                                />
+                                <label className="stat-label">CODE</label>
+                                <input className="admin-input" style={{ width: '100%' }} value={newPromo.code} onChange={(e) => setNewPromo({ ...newPromo, code: e.target.value.toUpperCase() })} required placeholder="SAVE50" />
                             </div>
-
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
                                 <div className="input-group">
-                                    <label className="input-label">Type</label>
-                                    <select
-                                        className="input-field"
-                                        value={discountType}
-                                        onChange={e => setDiscountType(e.target.value as "percent" | "amount")}
-                                    >
-                                        <option value="percent">Percentage (%)</option>
-                                        <option value="amount">Fixed Amount ($)</option>
-                                    </select>
+                                    <label className="stat-label">DISCOUNT %</label>
+                                    <input className="admin-input" type="number" style={{ width: '100%' }} value={newPromo.discountPercent} onChange={(e) => setNewPromo({ ...newPromo, discountPercent: e.target.value })} />
                                 </div>
                                 <div className="input-group">
-                                    <label className="input-label">Value</label>
-                                    <input
-                                        className="input-field"
-                                        type="number"
-                                        required
-                                        min="1"
-                                        value={discountValue}
-                                        onChange={e => setDiscountValue(parseInt(e.target.value))}
-                                    />
+                                    <label className="stat-label">OR FLAT $</label>
+                                    <input className="admin-input" type="number" style={{ width: '100%' }} value={newPromo.discountAmount} onChange={(e) => setNewPromo({ ...newPromo, discountAmount: e.target.value })} />
                                 </div>
                             </div>
-
-                            <div className="input-group">
-                                <label className="input-label">Usage Limit (Optional)</label>
-                                <input
-                                    className="input-field"
-                                    type="number"
-                                    min="1"
-                                    placeholder="Leave empty for unlimited"
-                                    value={usageLimit}
-                                    onChange={e => setUsageLimit(e.target.value ? parseInt(e.target.value) : "")}
-                                />
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
+                                <div className="input-group">
+                                    <label className="stat-label">USAGE LIMIT</label>
+                                    <input className="admin-input" type="number" style={{ width: '100%' }} value={newPromo.usageLimit} onChange={(e) => setNewPromo({ ...newPromo, usageLimit: e.target.value })} />
+                                </div>
+                                <div className="input-group">
+                                    <label className="stat-label">EXPIRY DATE</label>
+                                    <input className="admin-input" type="date" style={{ width: '100%' }} value={newPromo.expirationDate} onChange={(e) => setNewPromo({ ...newPromo, expirationDate: e.target.value })} />
+                                </div>
                             </div>
-
-                            <div className="input-group">
-                                <label className="input-label">Expiration Date (Optional)</label>
-                                <input
-                                    className="input-field"
-                                    type="date"
-                                    value={expirationDate}
-                                    onChange={e => setExpirationDate(e.target.value)}
-                                />
-                            </div>
-
-                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1.5rem' }}>
-                                <button type="button" className="btn" style={{ width: 'auto', background: 'transparent' }} onClick={() => setShowCreateModal(false)}>Cancel</button>
-                                <button type="submit" className="btn btn-primary" style={{ width: 'auto' }}>Create Code</button>
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '2rem' }}>
+                                <button type="button" className="cta-button cta-secondary" onClick={() => setShowCreateModal(false)}>Cancel</button>
+                                <button type="submit" className="cta-button cta-primary">Create Promo</button>
                             </div>
                         </form>
                     </div>
