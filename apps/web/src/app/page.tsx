@@ -1,16 +1,20 @@
+import BlurText from '@/components/BlurText';
+import LightRays from '@/components/LightRays';
+
 export default function Page() {
   return (
     <div className="landing-page">
       {/* Hero Section */}
       <section className="landing-hero">
+        <LightRays />
         <div className="grid-background"></div>
         <div className="hero-content">
           <h1 className="hero-title">
-            <span className="brand-gradient">DBSnap</span>
+            <BlurText text="DBSnap" delay={0} className="brand-gradient" />
             <br />
-            Database Snapshots,
+            <BlurText text="Database Snapshots," delay={200} />
             <br />
-            Simplified
+            <BlurText text="Simplified" delay={400} />
           </h1>
           <p className="hero-subtitle">
             Enterprise-grade database backup and snapshot management.

@@ -1,6 +1,6 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, Inject, forwardRef } from '@nestjs/common';
 import { getConfig } from '@dbsnap/shared';
 import { AuthService } from '../auth.service.js';
 
@@ -8,7 +8,7 @@ const config = getConfig();
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-    constructor(private authService: AuthService) {
+    constructor(@Inject(forwardRef(() => AuthService)) private authService: AuthService) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
@@ -18,10 +18,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     async validate(payload: { sub: string; email: string; role: string; isVerified: boolean; sid?: string }) {
         // Check if session ID is present and valid
-        if (payload.sid) {
-            const isValid = await this.authService.isSessionValid(payload.sid);
-            if (!isValid) {
-                throw new UnauthorizedException('Session is no longer valid');
+        if (payload.sid && this.authService) {
+            try {
+                const isValid = await this.authService.isSessionValid(payload.sid);
+                if (!isValid) {
+                    throw new UnauthorizedException('Session is no longer valid');
+                }
+            } catch (error) {
+                // If session validation fails, log but don't crash
+                console.error('[JwtStrategy] Session validation error:', error);
+                throw new UnauthorizedException('Session validation failed');
             }
         }
 
