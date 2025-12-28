@@ -459,68 +459,108 @@ h4,
   margin-right: auto;
 }
 
-.features-grid {
+/* Features Grid Bento Style */
+.features-grid-bento {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
   max-width: 1200px;
   margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .features-grid-bento {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .md-col-span-2 {
+    grid-column: span 2 / span 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .features-grid-bento {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .lg-col-span-2 {
+    grid-column: span 2 / span 2;
+  }
+
+  .lg-row-span-2 {
+    grid-row: span 2 / span 2;
+  }
 }
 
 .feature-card {
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--glass-border);
   border-radius: 1.5rem;
   padding: 2.5rem;
   transition: all var(--trans-slow);
   position: relative;
   overflow: hidden;
-}
-
-.feature-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--accent)));
-  transform: scaleX(0);
-  transition: transform var(--trans-slow);
-}
-
-.feature-card:hover::before {
-  transform: scaleX(1);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .feature-card:hover {
   transform: translateY(-8px);
-  border-color: hsl(var(--primary) / 0.3);
+  border-color: hsl(var(--primary) / 0.4);
+  background: rgba(255, 255, 255, 0.05);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
-.feature-icon {
-  width: 60px;
-  height: 60px;
+.feature-card .hover-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, hsl(var(--primary) / 0.1), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-spring);
+  pointer-events: none;
+}
+
+.feature-card:hover .hover-glow {
+  opacity: 1;
+}
+
+.feature-icon-wrapper {
+  width: 56px;
+  height: 56px;
   border-radius: 1rem;
   background: linear-gradient(135deg, hsl(var(--primary) / 0.2), hsl(var(--accent) / 0.2));
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  font-size: 1.5rem;
   margin-bottom: 1.5rem;
+  color: hsl(var(--primary));
+  transition: transform 0.3s var(--ease-spring);
+}
+
+.feature-card:hover .feature-icon-wrapper {
+  transform: scale(1.1) rotate(5deg);
 }
 
 .feature-title {
   font-size: 1.5rem;
-  margin-bottom: 1rem;
-  font-weight: 600;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+  color: white;
+  transition: color 0.3s;
+}
+
+.feature-card:hover .feature-title {
+  color: hsl(var(--primary));
 }
 
 .feature-description {
   color: hsl(var(--text-muted));
   line-height: 1.6;
+  font-size: 1rem;
 }
 
 /* Database Support Section */
