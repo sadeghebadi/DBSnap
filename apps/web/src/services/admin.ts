@@ -239,7 +239,7 @@ export const AdminService = {
             headers: getHeaders()
         });
         if (!res.ok) throw new Error('Failed to export data');
-        return res.blob();
+        return res.json();
     },
 
     async gdprDelete(userId: string) {

@@ -381,7 +381,6 @@ h4,
   font-size: clamp(2.5rem, 8vw, 5rem);
   line-height: 1.1;
   margin-bottom: 1.5rem;
-  animation: fadeInUp 0.8s ease-out;
 }
 
 .hero-subtitle {
@@ -391,7 +390,6 @@ h4,
   max-width: 700px;
   margin-left: auto;
   margin-right: auto;
-  animation: fadeInUp 0.8s ease-out 0.2s backwards;
 }
 
 .hero-cta {
@@ -399,7 +397,6 @@ h4,
   gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
-  animation: fadeInUp 0.8s ease-out 0.4s backwards;
 }
 
 .cta-button {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AdminService } from "../../services/admin";
+import { AdminService } from "../../../services/admin";
 import { toast } from "react-hot-toast";
 
 interface AuditLog {
@@ -23,7 +23,7 @@ export default function AuditLogsPage() {
 
     const fetchLogs = async () => {
         try {
-            const data = await AdminService.getAuditLogs({ q: filter });
+            const data = await AdminService.getAuditLogs();
             setLogs(data || []);
         } catch (err) {
             toast.error("Failed to load audit logs");

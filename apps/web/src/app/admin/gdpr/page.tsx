@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AdminService } from "../../services/admin";
+import { AdminService } from "../../../services/admin";
 import { toast } from "react-hot-toast";
 
 export default function GDPRPage() {
@@ -13,7 +13,7 @@ export default function GDPRPage() {
         if (!userId) return toast.error("User ID required");
         setLoading(true);
         try {
-            const data = await AdminService.gdprAction(userId, 'export');
+            const data = await AdminService.gdprExport(userId);
             setResult(data);
             toast.success("Data export generated successfully");
         } catch (err) {
@@ -29,7 +29,7 @@ export default function GDPRPage() {
 
         setLoading(true);
         try {
-            await AdminService.gdprAction(userId, 'delete');
+            await AdminService.gdprDelete(userId);
             toast.success("User successfully purged from system");
             setUserId("");
             setResult(null);
