@@ -1,6 +1,6 @@
 # Phase 0: Foundation (Repo & Discipline)
 
-- [ ] **Repo Bootstrap**
+- [x] **Repo Bootstrap**
     - Folder: `/`
     - Goal: Initialize DBSnap monorepo with base structure.
     - Technical Details (PRD/ARD):
