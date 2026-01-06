@@ -36,6 +36,8 @@ model User {
   email         String    @unique
   passwordHash  String
   plan          UserPlan  @default(FREE)
+  roleId        String
+  role          Role      @relation(fields: [roleId], references: [id])
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   projects      Project[]
@@ -45,6 +47,22 @@ enum UserPlan {
   FREE
   PRO
   TEAM
+}
+
+  TEAM
+}
+
+model Role {
+  id          String       @id @default(uuid())
+  name        String       @unique // ROOT, ADMIN, CUSTOMER_DEVELOPER, CUSTOM_XXX
+  permissions Permission[]
+  users       User[]
+}
+
+model Permission {
+  id        String   @id @default(uuid())
+  action    String   // e.g. "backup:create", "db:read"
+  roles     Role[]
 }
 
 model Project {
@@ -248,6 +266,7 @@ Using **Turborepo** for build caching and orchestration.
 - [ ] Monaco Editor integration for diff view.
 - [ ] Dashboard: Project List, Backup History Timeline.
 - [ ] Connect FE to BE API.
+- [ ] **Admin Panel**: User Management, Project Oversight, System Health Dashboard.
 
 ### Phase 5: Verification & Polish (Days 26-30)
 - [ ] Load Testing (1GB+ database dumps).
