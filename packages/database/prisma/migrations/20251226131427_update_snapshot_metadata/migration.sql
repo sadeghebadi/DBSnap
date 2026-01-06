@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "backup_snapshots" ADD COLUMN     "schemaVersion" INTEGER NOT NULL DEFAULT 1,
-ADD COLUMN     "timestamp" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;

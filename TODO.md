@@ -1,0 +1,1902 @@
+# Phase 0: Foundation (Repo & Discipline)
+
+- [] **Repo Bootstrap**
+    - Folder: `/`
+    - Goal: Initialize DBSnap monorepo with base structure.
+    - Technical Details (PRD/ARD):
+        - API: JWT + refresh tokens, GitHub/Google OAuth integration
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Endpoints: Protected routes for project, database, backup, and diff management
+        - Environment: Docker Compose for local development (Postgres, Redis, MinIO)
+        - Health: Liveness/Readiness probes for self-healing in containerized environments
+        - Infrastructure: Turborepo for orchestration and build caching
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Queues: Separate queues for backup, diff, and restore jobs
+        - Scalability: Isolated from API server; concurrency honors user/plan limits
+        - Security: Rate limiting to prevent abuse
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - Stack: Next.js (apps/web), NestJS (apps/api, apps/worker)
+        - Structure: apps/ (frontend, api, worker), packages/ (database, ui, config, shared-types, crypto-utils)
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: /apps/api
+        - Requirements: /apps/web
+        - Requirements: /apps/worker
+        - Requirements: /packages/shared
+    - Acceptance Criteria:
+        - Repo installs without errors
+        - All services start with placeholder code
+- [] **Environment Configuration**
+    - Folder: `/`
+    - Goal: Standardize environment configuration.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: .env.example
+        - Requirements: Central config loader
+        - Requirements: No secrets committed
+    - Acceptance Criteria:
+        - App fails gracefully if env missing
+- [] **Linting & Formatting**
+    - Folder: `packages/config`
+    - Goal: Ensure consistent code style.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: ESLint
+        - Requirements: Prettier
+        - Requirements: Shared config
+    - Acceptance Criteria:
+        - Lint passes in CI
+- [] **Minimal CONTRIBUTING.md**
+    - Folder: `/`
+    - Goal: Define contribution rules.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: One issue → one PR
+        - Requirements: AI usage rules
+        - Requirements: Commit conventions
+    - Acceptance Criteria:
+        - CONTRIBUTING.md exists
+- [] **Dockerized Development Environment**
+    - Folder: `/`
+    - Goal: Standardize local development with all dependencies.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Health: Liveness/Readiness probes for self-healing in containerized environments
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Queues: Separate queues for backup, diff, and restore jobs
+        - Scalability: Isolated from API server; concurrency honors user/plan limits
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: docker-compose.yml for local infrastructure
+        - Requirements: Services: PostgreSQL, MongoDB, Redis
+        - Requirements: Health checks for each service
+    - Acceptance Criteria:
+        - `docker-compose up` provides a fully working local infra
+- [] **CI Pipeline for Quality Gating**
+    - Folder: `packages/config`
+    - Goal: Automate lint and test checks on PRs.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: GitHub Actions workflow
+        - Requirements: Run ESLint, Prettier, and Jest tests
+        - Requirements: Prevent merging if checks fail
+    - Acceptance Criteria:
+        - CI runs on every PR and push
+- [] **CD Pipeline for Staging**
+    - Folder: `/`
+    - Goal: Automate deployment to a staging environment.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Deploy to cloud (AWS/Vercel/etc)
+        - Requirements: Environment secret management
+        - Requirements: Automated migrations
+    - Acceptance Criteria:
+        - Merge to `develop` triggers staging deploy
+- [] **Structured Logging System**
+    - Folder: `apps/api`
+    - Goal: Enable easier debugging through structured data.
+    - Technical Details (PRD/ARD):
+        - API: JWT + refresh tokens, GitHub/Google OAuth integration
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Endpoints: Protected routes for project, database, backup, and diff management
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Security: Rate limiting to prevent abuse
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Winston or Pino integration
+        - Requirements: JSON format in production
+        - Requirements: Request ID correlation across services
+    - Acceptance Criteria:
+        - Logs include TraceID and consistent metadata
+
+# Phase 1: Auth & Tenancy
+
+- [] **User Model**
+    - Folder: `/`
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Fields: id
+        - Fields: email
+        - Fields: passwordHash
+        - Fields: createdAt
+    - Acceptance Criteria:
+        - Model persists correctly
+- [] **Organization / Project Model**
+    - Folder: `/`
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: User belongs to organization
+        - Requirements: Org owns DB connections
+    - Acceptance Criteria:
+        - Referential integrity enforced
+- [] **Auth API (JWT)**
+    - Folder: `/`
+    - Technical Details (PRD/ARD):
+        - API: JWT + refresh tokens, GitHub/Google OAuth integration
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Endpoints: Protected routes for project, database, backup, and diff management
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Security: Rate limiting to prevent abuse
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Endpoints: Login
+        - Endpoints: Logout
+        - Endpoints: Refresh token
+    - Acceptance Criteria:
+        - Protected routes require token
+- [] **RBAC Roles**
+    - Folder: `/`
+    - Technical Details (PRD/ARD):
+        - API: JWT + refresh tokens, GitHub/Google OAuth integration
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Endpoints: Protected routes for project, database, backup, and diff management
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Security: Rate limiting to prevent abuse
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Roles: Admin
+        - Roles: Member
+        - Roles: Read-only
+    - Acceptance Criteria:
+        - Permissions enforced on APIs
+- [] **Email Verification & Password Reset**
+    - Folder: `/`
+    - Goal: Secure user accounts via verification and recovery.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Send verification email on signup
+        - Requirements: Password reset flow (request + token + change)
+    - Acceptance Criteria:
+        - Unverified users cannot access core features
+        - Password can be reset via email link
+- [] **OAuth Integration**
+    - Folder: `/`
+    - Goal: Simplify onboarding with social login.
+    - Technical Details (PRD/ARD):
+        - API: JWT + refresh tokens, GitHub/Google OAuth integration
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Endpoints: Protected routes for project, database, backup, and diff management
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Security: Rate limiting to prevent abuse
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: GitHub OAuth
+        - Requirements: Google OAuth
+    - Acceptance Criteria:
+        - User can sign up/login via 3rd party
+        - Existing email accounts can link to OAuth
+- [] **Project Management API**
+    - Folder: `/`
+    - Goal: Manage projects as containers for DB connections.
+    - Technical Details (PRD/ARD):
+        - API: JWT + refresh tokens, GitHub/Google OAuth integration
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Endpoints: Protected routes for project, database, backup, and diff management
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Security: Rate limiting to prevent abuse
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Create/Read/Update/Delete projects
+        - Requirements: Assign projects to organizations
+    - Acceptance Criteria:
+        - Project ownership enforced
+- [] **Multi-Factor Authentication (MFA)**
+    - Folder: `/`
+    - Goal: Add an extra layer of security for user accounts.
+    - Technical Details (PRD/ARD):
+        - API: JWT + refresh tokens, GitHub/Google OAuth integration
+        - Algorithm: AES-256-GCM authenticated encryption
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Endpoints: Protected routes for project, database, backup, and diff management
+        - Key Management: Master Key (MK) from environment + unique IV per record
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Security: Credentials encrypted in PostgreSQL using MK + individual IV
+        - Security: Rate limiting to prevent abuse
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - Streaming: Data is encrypted via stream pipe (CipherIV) before leaving worker memory to S3
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: TOTP (Google Authenticator) support
+        - Requirements: QR code generation
+        - Requirements: Backup recovery codes
+    - Acceptance Criteria:
+        - User can enable MFA and it is enforced at login
+- [] **Session management & Revocation**
+    - Folder: `/`
+    - Goal: Allow users to see and manage active login sessions.
+    - Technical Details (PRD/ARD):
+        - API: JWT + refresh tokens, GitHub/Google OAuth integration
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Endpoints: Protected routes for project, database, backup, and diff management
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Security: Rate limiting to prevent abuse
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: List active sessions with IP and User Agent
+        - Requirements: "Logout from all devices" functionality
+        - Requirements: Individual session revocation
+    - Acceptance Criteria:
+        - Revoking a session immediately invalidates the JWT
+- [] **API Key Management**
+    - Folder: `packages/database`
+    - Goal: Allow programmatic access to DBSnap.
+    - Technical Details (PRD/ARD):
+        - API: JWT + refresh tokens, GitHub/Google OAuth integration
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Endpoints: Protected routes for project, database, backup, and diff management
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Security: Rate limiting to prevent abuse
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Generate API keys with scopes
+        - Requirements: Secret rotation logic
+        - Requirements: Usage tracking per key
+    - Acceptance Criteria:
+        - User can trigger backups via API key
+
+# Phase 1: Foundation Tasks
+
+- [] **Dummy Test Task**
+    - Folder: `/`
+    - Goal: Verify that the AI can follow the new Git workflow (branch, implement, commit, push, copy).
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Create a file named `dummy_test_success.txt` in the root directory.
+        - Requirements: The file content should be "Git workflow verified!".
+    - Acceptance Criteria:
+        - Branch `readyToDev/ISSUE-999
+
+# Phase 2: Database Connections
+
+- [] **DB Connection Schema**
+    - Folder: `/`
+    - Technical Details (PRD/ARD):
+        - Algorithm: AES-256-GCM authenticated encryption
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Key Management: Master Key (MK) from environment + unique IV per record
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Security: Credentials encrypted in PostgreSQL using MK + individual IV
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - Streaming: Data is encrypted via stream pipe (CipherIV) before leaving worker memory to S3
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Encrypted credentials
+- [] **Connection Validator**
+    - Folder: `/`
+    - Goal: Validate DB connectivity.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Acceptance Criteria:
+        - Returns sanitized metadata
+- [] **Connection API**
+    - Folder: `/`
+    - Technical Details (PRD/ARD):
+        - API: JWT + refresh tokens, GitHub/Google OAuth integration
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Endpoints: Protected routes for project, database, backup, and diff management
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Security: Rate limiting to prevent abuse
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Endpoints: Create
+        - Endpoints: Update
+        - Endpoints: Delete
+        - Endpoints: List
+    - Acceptance Criteria:
+        - Permission checks enforced
+- [] **Backup Scheduling & Retention**
+    - Folder: `/`
+    - Goal: Automate periodic backups and cleanup.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Health: Liveness/Readiness probes for self-healing in containerized environments
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Queues: Separate queues for backup, diff, and restore jobs
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Scalability: Isolated from API server; concurrency honors user/plan limits
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: CRON expression support
+        - Requirements: Retention days/count setting
+    - Acceptance Criteria:
+        - Workers trigger at specified times
+        - Old snapshots are purged based on policy
+- [] **SSH Tunnel Support**
+    - Folder: `packages/database`
+    - Goal: Support databases behind a bastion host.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: SSH private key management
+        - Requirements: Port forwarding logic
+        - Requirements: Tunnel health monitoring
+    - Acceptance Criteria:
+        - User can connect to a DB that is only accessible via SSH tunnel
+- [] **Static IP / Proxy Support**
+    - Folder: `/`
+    - Goal: Support IP whitelisting for strict DB firewalls.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Outbound traffic routing through static IP
+        - Requirements: Proxy configuration in DB connectors
+    - Acceptance Criteria:
+        - All backup traffic originates from a known, fixed IP address
+- [] **SSL/TLS Certificate Support**
+    - Folder: `packages/database`
+    - Goal: Support databases requiring custom CA or client certificates.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: CA, Certificate, and Key file upload
+        - Requirements: Secure storage of certificates
+        - Requirements: Connector integration for TLS
+    - Acceptance Criteria:
+        - Connect successfully to a DB requiring mutual TLS (mTLS)
+
+# Phase 3: Snapshot & Backup Core
+
+- [] **Snapshot Metadata Model**
+    - Folder: `/`
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Fields: connectionId
+        - Fields: timestamp
+        - Fields: schemaVersion
+        - Fields: storagePath
+- [] **Snapshot Creation Logic**
+    - Folder: `/`
+    - Technical Details (PRD/ARD):
+        - API: JWT + refresh tokens, GitHub/Google OAuth integration
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Endpoints: Protected routes for project, database, backup, and diff management
+        - Environment: Docker Compose for local development (Postgres, Redis, MinIO)
+        - Infrastructure: Turborepo for orchestration and build caching
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Security: Rate limiting to prevent abuse
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - Stack: Next.js (apps/web), NestJS (apps/api, apps/worker)
+        - Structure: apps/ (frontend, api, worker), packages/ (database, ui, config, shared-types, crypto-utils)
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Dump DB
+        - Requirements: Normalize structure
+        - Requirements: Store as JSON
+- [] **Snapshot Storage Adapter**
+    - Folder: `/`
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Adapters: Local FS
+        - Adapters: S3-compatible
+- [] **Snapshot Restore (Read-only)**
+    - Folder: `/`
+    - Goal: Load snapshot without modifying DB.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Logic: Selective restore (by collection/table) to same or new database
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Risk Mitigation: No automatic retries for restore jobs (prefer manual restart)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - Strategy: performRestore job in restore-queue
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+- [] **Selective Restore Logic**
+    - Folder: `packages/database`
+    - Goal: Restore specific parts of a database.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Logic: Selective restore (by collection/table) to same or new database
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Risk Mitigation: No automatic retries for restore jobs (prefer manual restart)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - Strategy: performRestore job in restore-queue
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Selection by collection/table
+        - Requirements: Overwrite vs Append options
+    - Acceptance Criteria:
+        - Targeted data is restored without affecting others
+- [] **Snapshot Export**
+    - Folder: `/`
+    - Goal: Allow users to download their data.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Generate JSON/SQL dump
+        - Requirements: Signed download link
+    - Acceptance Criteria:
+        - User receives valid dump file
+- [] **Compression Algorithm Benchmarking**
+    - Folder: `/`
+    - Goal: Optimize storage costs and transfer speeds.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Benchmark Gzip, Deflate, and Zstandard
+        - Requirements: Implement configurable compression levels
+        - Requirements: Track compression ratio metrics
+    - Acceptance Criteria:
+        - Clear recommendation and implementation of the best compression for the project
+- [] **Stream-based Snapshot Storage**
+    - Folder: `packages/database`
+    - Goal: Handle massive databases without memory exhaustion.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Stream data directly from DB cursor to S3
+        - Requirements: Chunked upload integration
+        - Requirements: No local intermediate file if possible
+    - Acceptance Criteria:
+        - Backup of 10GB+ DB finishes with <512MB RAM usage
+- [] **Encrypted Data-at-Rest Validation**
+    - Folder: `/`
+    - Goal: Ensure backups are valid and encrypted as expected.
+    - Technical Details (PRD/ARD):
+        - Algorithm: AES-256-GCM authenticated encryption
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Key Management: Master Key (MK) from environment + unique IV per record
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Mongo Strategy: Merkle Tree Hashing with bucket-level comparison to avoid OOM
+        - Optimization: Hash-based chunk skipping for large datasets
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Orchestration: BullMQ (diff-queue), lower priority than backups
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Results: Compressed JSON summary stored in DB; full detail JSON in S3 for large diffs
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - SQL Strategy: PK-based Ordered Stream Comparison (requires PK, constant O(1) memory)
+        - Security: Credentials encrypted in PostgreSQL using MK + individual IV
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - Streaming: Data is encrypted via stream pipe (CipherIV) before leaving worker memory to S3
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Post-backup checksum validation
+        - Requirements: Decryption test on 1% sample
+        - Requirements: Audit logs for encryption metadata
+    - Acceptance Criteria:
+        - System flags any corrupted or insecure backup immediately
+
+# Phase 4: Diff Engine (Core Value)
+
+- [] **Diff Engine Interface**
+    - Folder: `/`
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Mongo Strategy: Merkle Tree Hashing with bucket-level comparison to avoid OOM
+        - Optimization: Hash-based chunk skipping for large datasets
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Orchestration: BullMQ (diff-queue), lower priority than backups
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Results: Compressed JSON summary stored in DB; full detail JSON in S3 for large diffs
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - SQL Strategy: PK-based Ordered Stream Comparison (requires PK, constant O(1) memory)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Input: Snapshot A
+        - Input: Snapshot B
+        - Output: DiffResult
+- [] **Mongo Document Diff**
+    - Folder: `/`
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Mongo Strategy: Merkle Tree Hashing with bucket-level comparison to avoid OOM
+        - Optimization: Hash-based chunk skipping for large datasets
+        - Orchestration: BullMQ (diff-queue), lower priority than backups
+        - Results: Compressed JSON summary stored in DB; full detail JSON in S3 for large diffs
+        - SQL Strategy: PK-based Ordered Stream Comparison (requires PK, constant O(1) memory)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Detect: Added
+        - Detect: Removed
+        - Detect: Modified fields
+- [] **SQL Table Diff**
+    - Folder: `/`
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Mongo Strategy: Merkle Tree Hashing with bucket-level comparison to avoid OOM
+        - Optimization: Hash-based chunk skipping for large datasets
+        - Orchestration: BullMQ (diff-queue), lower priority than backups
+        - Results: Compressed JSON summary stored in DB; full detail JSON in S3 for large diffs
+        - SQL Strategy: PK-based Ordered Stream Comparison (requires PK, constant O(1) memory)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Detect: Table changes
+        - Detect: Column changes
+        - Detect: Row count delta
+- [] **Diff Summary Generator**
+    - Folder: `/`
+    - Goal: Human-readable diff summary.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Mongo Strategy: Merkle Tree Hashing with bucket-level comparison to avoid OOM
+        - Optimization: Hash-based chunk skipping for large datasets
+        - Orchestration: BullMQ (diff-queue), lower priority than backups
+        - Results: Compressed JSON summary stored in DB; full detail JSON in S3 for large diffs
+        - SQL Strategy: PK-based Ordered Stream Comparison (requires PK, constant O(1) memory)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+- [] **Diff Persistence**
+    - Folder: `/`
+    - Goal: Store diff results for later viewing.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Mongo Strategy: Merkle Tree Hashing with bucket-level comparison to avoid OOM
+        - Optimization: Hash-based chunk skipping for large datasets
+        - Orchestration: BullMQ (diff-queue), lower priority than backups
+        - Results: Compressed JSON summary stored in DB; full detail JSON in S3 for large diffs
+        - SQL Strategy: PK-based Ordered Stream Comparison (requires PK, constant O(1) memory)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+- [] **Live Diff Mode**
+    - Folder: `packages/database`
+    - Goal: Compare backup against current database state.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Mongo Strategy: Merkle Tree Hashing with bucket-level comparison to avoid OOM
+        - Optimization: Hash-based chunk skipping for large datasets
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Orchestration: BullMQ (diff-queue), lower priority than backups
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Results: Compressed JSON summary stored in DB; full detail JSON in S3 for large diffs
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - SQL Strategy: PK-based Ordered Stream Comparison (requires PK, constant O(1) memory)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Efficient streaming from live DB
+        - Requirements: No impact on live DB performance
+    - Acceptance Criteria:
+        - Accurate diff between static snapshot and live data
+- [] **Paginated Diff Results**
+    - Folder: `/`
+    - Goal: Support visual diff for large datasets.
+    - Technical Details (PRD/ARD):
+        - API: JWT + refresh tokens, GitHub/Google OAuth integration
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Endpoints: Protected routes for project, database, backup, and diff management
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Mongo Strategy: Merkle Tree Hashing with bucket-level comparison to avoid OOM
+        - Optimization: Hash-based chunk skipping for large datasets
+        - Orchestration: BullMQ (diff-queue), lower priority than backups
+        - Results: Compressed JSON summary stored in DB; full detail JSON in S3 for large diffs
+        - SQL Strategy: PK-based Ordered Stream Comparison (requires PK, constant O(1) memory)
+        - Security: Rate limiting to prevent abuse
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: API support for diff pagination
+        - Requirements: UI support for infinite scroll or paging
+        - Requirements: Search/Filter within diff result
+    - Acceptance Criteria:
+        - Loading a diff with 10k changes remains snappy in UI
+- [] **Index & Schema Constraint Comparison**
+    - Folder: `/`
+    - Goal: Detect changes beyond just the data.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Mongo Strategy: Merkle Tree Hashing with bucket-level comparison to avoid OOM
+        - Optimization: Hash-based chunk skipping for large datasets
+        - Orchestration: BullMQ (diff-queue), lower priority than backups
+        - Results: Compressed JSON summary stored in DB; full detail JSON in S3 for large diffs
+        - SQL Strategy: PK-based Ordered Stream Comparison (requires PK, constant O(1) memory)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Compare table indexes (Postgres)
+        - Requirements: Compare foreign keys and constraints
+        - Requirements: Compare views and stored procedures (Optional)
+    - Acceptance Criteria:
+        - System reports missing or modified indexes
+- [] **Visual JSON Delta Representation**
+    - Folder: `/`
+    - Goal: Better visual clarity for modified documents.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Health: Liveness/Readiness probes for self-healing in containerized environments
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Mongo Strategy: Merkle Tree Hashing with bucket-level comparison to avoid OOM
+        - Optimization: Hash-based chunk skipping for large datasets
+        - Orchestration: BullMQ (diff-queue), lower priority than backups
+        - Queues: Separate queues for backup, diff, and restore jobs
+        - Results: Compressed JSON summary stored in DB; full detail JSON in S3 for large diffs
+        - SQL Strategy: PK-based Ordered Stream Comparison (requires PK, constant O(1) memory)
+        - Scalability: Isolated from API server; concurrency honors user/plan limits
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Monaco Diff Editor integration
+        - Requirements: Line-by-line highlight of changed fields
+        - Requirements: Side-by-side or inline view toggle
+    - Acceptance Criteria:
+        - User can clearly see which nested field changed in a Mongo doc
+
+# Phase 5: Worker & Queue
+
+- [] **Job Queue Setup**
+    - Folder: `/`
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Health: Liveness/Readiness probes for self-healing in containerized environments
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Queues: Separate queues for backup, diff, and restore jobs
+        - Scalability: Isolated from API server; concurrency honors user/plan limits
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: BullMQ or equivalent
+        - Requirements: Retry logic
+- [] **Snapshot Job Worker**
+    - Folder: `/`
+    - Goal: Execute snapshot creation jobs.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Health: Liveness/Readiness probes for self-healing in containerized environments
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Queues: Separate queues for backup, diff, and restore jobs
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Scalability: Isolated from API server; concurrency honors user/plan limits
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+- [] **Diff Job Worker**
+    - Folder: `/`
+    - Goal: Execute diff engine jobs.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Health: Liveness/Readiness probes for self-healing in containerized environments
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Mongo Strategy: Merkle Tree Hashing with bucket-level comparison to avoid OOM
+        - Optimization: Hash-based chunk skipping for large datasets
+        - Orchestration: BullMQ (diff-queue), lower priority than backups
+        - Queues: Separate queues for backup, diff, and restore jobs
+        - Results: Compressed JSON summary stored in DB; full detail JSON in S3 for large diffs
+        - SQL Strategy: PK-based Ordered Stream Comparison (requires PK, constant O(1) memory)
+        - Scalability: Isolated from API server; concurrency honors user/plan limits
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+- [] **Job Status API**
+    - Folder: `/`
+    - Technical Details (PRD/ARD):
+        - API: JWT + refresh tokens, GitHub/Google OAuth integration
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Endpoints: Protected routes for project, database, backup, and diff management
+        - Health: Liveness/Readiness probes for self-healing in containerized environments
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Queues: Separate queues for backup, diff, and restore jobs
+        - Scalability: Isolated from API server; concurrency honors user/plan limits
+        - Security: Rate limiting to prevent abuse
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - States: Pending
+        - States: Running
+        - States: Failed
+        - States: Completed
+- [] **Alert & Notification System**
+    - Folder: `/`
+    - Goal: Notify users of job outcomes.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Health: Liveness/Readiness probes for self-healing in containerized environments
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Queues: Separate queues for backup, diff, and restore jobs
+        - Scalability: Isolated from API server; concurrency honors user/plan limits
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Slack/Webhooks integration
+        - Requirements: Email alerts
+    - Acceptance Criteria:
+        - Notifications sent on failure/success
+- [] **Threshold Alert Worker**
+    - Folder: `/`
+    - Goal: Monitor size/growth anomalies.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Health: Liveness/Readiness probes for self-healing in containerized environments
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Mongo Strategy: Merkle Tree Hashing with bucket-level comparison to avoid OOM
+        - Optimization: Hash-based chunk skipping for large datasets
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Orchestration: BullMQ (diff-queue), lower priority than backups
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Queues: Separate queues for backup, diff, and restore jobs
+        - Results: Compressed JSON summary stored in DB; full detail JSON in S3 for large diffs
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - SQL Strategy: PK-based Ordered Stream Comparison (requires PK, constant O(1) memory)
+        - Scalability: Isolated from API server; concurrency honors user/plan limits
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Compare snapshot size with previous
+        - Requirements: Trigger alert if exceeds threshold
+    - Acceptance Criteria:
+        - Automated alerts for unusual data spikes
+- [] **Worker Self-Healing & Health Checks**
+    - Folder: `/`
+    - Goal: Ensure high availability of worker processes.
+    - Technical Details (PRD/ARD):
+        - API: JWT + refresh tokens, GitHub/Google OAuth integration
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Endpoints: Protected routes for project, database, backup, and diff management
+        - Health: Liveness/Readiness probes for self-healing in containerized environments
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Queues: Separate queues for backup, diff, and restore jobs
+        - Scalability: Isolated from API server; concurrency honors user/plan limits
+        - Security: Rate limiting to prevent abuse
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Health check API per worker
+        - Requirements: Auto-restart logic on hung processes
+        - Requirements: Liveness/Readiness probes (K8s compatible)
+    - Acceptance Criteria:
+        - System detects and recovers a crashed worker within 30s
+- [] **Dead Letter Queue (DLQ) Management**
+    - Folder: `/`
+    - Goal: Allow admins to inspect and retry failed jobs stored in the Dead Letter Queue.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Health: Liveness/Readiness probes for self-healing in containerized environments
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Queues: Separate queues for backup, diff, and restore jobs
+        - Scalability: Isolated from API server; concurrency honors user/plan limits
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: UI for viewing DLQ contents (failed jobs and their metadata)
+        - Requirements: Inspect error stacks and reason for failure
+        - Requirements: Bulk retry or individual job re-drive (moving from DLQ back to active queue)
+    - Acceptance Criteria:
+        - Failed jobs can be analyzed and restarted through the Admin Panel interface.
+        - Admins can clear the DLQ or specific failed jobs.
+- [] **Dynamic Worker Scaling Logic**
+    - Folder: `/`
+    - Goal: Optimize cost and performance by scaling workers based on load.
+    - Technical Details (PRD/ARD):
+        - API: JWT + refresh tokens, GitHub/Google OAuth integration
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Endpoints: Protected routes for project, database, backup, and diff management
+        - Health: Liveness/Readiness probes for self-healing in containerized environments
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Queues: Separate queues for backup, diff, and restore jobs
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Scalability: Isolated from API server; concurrency honors user/plan limits
+        - Security: Rate limiting to prevent abuse
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Monitor queue depth across all jobs
+        - Requirements: Trigger autoscaling events (simulated or real K8s/Docker)
+        - Requirements: Graceful shutdown of workers during down-scaling
+    - Acceptance Criteria:
+        - Workers scale up during peak backup hours and down at night
+
+# Phase 6: Api Layer
+
+- [] **Snapshot API**
+    - Folder: `/`
+    - Technical Details (PRD/ARD):
+        - API: JWT + refresh tokens, GitHub/Google OAuth integration
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Endpoints: Protected routes for project, database, backup, and diff management
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Security: Rate limiting to prevent abuse
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Endpoints: List snapshots
+        - Endpoints: Trigger snapshot
+- [] **Diff API**
+    - Folder: `/`
+    - Technical Details (PRD/ARD):
+        - API: JWT + refresh tokens, GitHub/Google OAuth integration
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Endpoints: Protected routes for project, database, backup, and diff management
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Mongo Strategy: Merkle Tree Hashing with bucket-level comparison to avoid OOM
+        - Optimization: Hash-based chunk skipping for large datasets
+        - Orchestration: BullMQ (diff-queue), lower priority than backups
+        - Results: Compressed JSON summary stored in DB; full detail JSON in S3 for large diffs
+        - SQL Strategy: PK-based Ordered Stream Comparison (requires PK, constant O(1) memory)
+        - Security: Rate limiting to prevent abuse
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Endpoints: Request diff
+        - Endpoints: Fetch result
+- [] **Rate Limiting**
+    - Folder: `/`
+    - Goal: Prevent abuse.
+    - Technical Details (PRD/ARD):
+        - Algorithm: AES-256-GCM authenticated encryption
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Key Management: Master Key (MK) from environment + unique IV per record
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Security: Credentials encrypted in PostgreSQL using MK + individual IV
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - Streaming: Data is encrypted via stream pipe (CipherIV) before leaving worker memory to S3
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+
+# Phase 7: Web Ui (Minimal)
+
+- [] **Auth Pages**
+    - Folder: `/`
+    - Technical Details (PRD/ARD):
+        - API: JWT + refresh tokens, GitHub/Google OAuth integration
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Endpoints: Protected routes for project, database, backup, and diff management
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Security: Rate limiting to prevent abuse
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Pages: Login
+        - Pages: Register
+- [] **Connections UI**
+    - Folder: `/`
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Features: Add
+        - Features: Test
+        - Features: List
+- [] **Snapshot List Page**
+    - Folder: `/`
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Features: Table view
+        - Features: Status indicators
+- [] **Diff Viewer (Simple)**
+    - Folder: `/`
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Mongo Strategy: Merkle Tree Hashing with bucket-level comparison to avoid OOM
+        - Optimization: Hash-based chunk skipping for large datasets
+        - Orchestration: BullMQ (diff-queue), lower priority than backups
+        - Results: Compressed JSON summary stored in DB; full detail JSON in S3 for large diffs
+        - SQL Strategy: PK-based Ordered Stream Comparison (requires PK, constant O(1) memory)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Features: Added / Removed / Changed
+        - Features: Collapsible sections
+
+# Phase 8: Admin Panel
+
+- [] **Admin — Admin Panel UI Shell & Navigation**
+    - Folder: `/`
+    - Goal: Create the foundational layout for the Admin Panel that provides consistent navigation and a professional look.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Health: Liveness/Readiness probes for self-healing in containerized environments
+        - Queues: Separate queues for backup, diff, and restore jobs
+        - Scalability: Isolated from API server; concurrency honors user/plan limits
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Dedicated Layout wrapper for all `/admin/*` routes.
+        - Requirements: Responsive Sidebar containing links to:
+        - Requirements: Dashboard (Overview)
+        - Requirements: User Management
+        - Requirements: Organization Explorer
+        - Requirements: Worker Status & DLQ
+        - Requirements: Audit Logs
+        - Requirements: Billing & Promo Codes
+        - Requirements: System Settings (Maintenance Mode)
+        - Requirements: Top Header displaying:
+        - Requirements: Current page title
+        - Requirements: Admin identity / logout
+        - Requirements: "Back to Client Dashboard" button
+        - Requirements: Consistent branding (e.g., distinct color theme for Admin vs Client UI).
+    - Acceptance Criteria:
+        - Navigation between all admin sections is smooth.
+        - Admin shell is separate from the customer dashboard shell to prevent UI bleed.
+- [] **Admin — Admin Authentication & Authorization Guard**
+    - Folder: `packages/database`
+    - Goal: Ensure that the Admin Panel is inaccessible to regular customers and properly integrated with the auth flow.
+    - Technical Details (PRD/ARD):
+        - API: JWT + refresh tokens, GitHub/Google OAuth integration
+        - Algorithm: AES-256-GCM authenticated encryption
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Endpoints: Protected routes for project, database, backup, and diff management
+        - Key Management: Master Key (MK) from environment + unique IV per record
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Security: Credentials encrypted in PostgreSQL using MK + individual IV
+        - Security: Rate limiting to prevent abuse
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - Streaming: Data is encrypted via stream pipe (CipherIV) before leaving worker memory to S3
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Create an `AdminGuard` for both Frontend and Backend API routes.
+        - Requirements: If a user tries to access `/admin` without the `ADMIN` role:
+        - Requirements: Frontend: Redirect to Unauthorized page or Home dashboard with a toast notification.
+        - Requirements: Backend: Return `403 Forbidden`.
+        - Requirements: Handle session expiration: Ensure that if an admin's session expires, they are redirected back to the login page.
+        - Requirements: Role check logic: Ensure roles are fetched from a secure JWT claim or database check.
+    - Acceptance Criteria:
+        - A user with a 'MEMBER' role cannot see or access any route under `/admin`.
+        - Unauthorized attempts are logged in the security audit.
+- [] **Admin — Admin Main Dashboard (Overview & Analytics)**
+    - Folder: `/`
+    - Goal: The "First Page" admins see. Provides high-level health and growth metrics for the entire platform.
+    - Technical Details (PRD/ARD):
+        - Algorithm: AES-256-GCM authenticated encryption
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Health: Liveness/Readiness probes for self-healing in containerized environments
+        - Key Management: Master Key (MK) from environment + unique IV per record
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Queues: Separate queues for backup, diff, and restore jobs
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Scalability: Isolated from API server; concurrency honors user/plan limits
+        - Security: Credentials encrypted in PostgreSQL using MK + individual IV
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - Streaming: Data is encrypted via stream pipe (CipherIV) before leaving worker memory to S3
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Summary cards for:
+        - Requirements: Total Active Users (and growth % this week)
+        - Requirements: Total Backups taken (last 24h)
+        - Requirements: Success vs Failure rate chart
+        - Requirements: Total Storage used globally
+        - Requirements: "Recent Critical Events" feed (e.g., failed worker, high-value customer logout, security alert).
+        - Requirements: "Quick Actions" panel (Toggle maintenance mode, Create promo code).
+        - Requirements: Real-time "System Health" traffic light indicator.
+    - Acceptance Criteria:
+        - Dashboard provides an immediate sense of system status without looking at detailed logs.
+        - Data is refreshed automatically or has a manual refresh button.
+- [] **Admin — Resource Creation Workflows (Quick Actions)**
+    - Folder: `/`
+    - Goal: Streamline administrative tasks like creating new organizations or manually onboarding enterprise customers.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: "Create Organization" form for admins (Allows setting quotas during creation).
+        - Requirements: "Create/Invite User" form (Allows pre-verified user creation).
+        - Requirements: "System Notice" broadcast tool: Create a banner message shown to all active client dashboards.
+        - Requirements: Confirmation modals for destructive actions (e.g., deleting a snapshot).
+    - Acceptance Criteria:
+        - Admins can perform these "creation" flows without needing to use the public signup/onboarding routes.
+- [] **Admin User List**
+    - Folder: `/`
+    - Goal: Allow admins to view and manage all users in the system.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Paginated list of all users
+        - Requirements: Search by email
+        - Requirements: Display user status (Verified/Unverified)
+        - Requirements: Display creation date
+    - Acceptance Criteria:
+        - Admin can see all users across all organizations
+        - Search functionality works correctly
+- [] **Admin Org Usage Stats**
+    - Folder: `apps/web`
+    - Goal: Monitor usage metrics across different organizations to identify heavy users and trends.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Mongo Strategy: Merkle Tree Hashing with bucket-level comparison to avoid OOM
+        - Optimization: Hash-based chunk skipping for large datasets
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Orchestration: BullMQ (diff-queue), lower priority than backups
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Results: Compressed JSON summary stored in DB; full detail JSON in S3 for large diffs
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - SQL Strategy: PK-based Ordered Stream Comparison (requires PK, constant O(1) memory)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Metrics: Snapshot count per organization
+        - Metrics: Storage usage per organization
+        - Metrics: Number of active database connections
+    - Acceptance Criteria:
+        - Admin can see a summary table of all organizations and their usage stats.
+        - Stats are updated in near real-time (or periodically).
+- [] **Billing & Subscriptions**
+    - Folder: `apps/web`
+    - Goal: Monetize the platform by integrating a billing system and plan-based gating.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Stripe integration (or equivalent) for payment processing
+        - Requirements: Plan-based feature gating (e.g., limit number of snapshots or organizations)
+        - Requirements: Subscription management (Subscribe, Upgrade, Cancel)
+    - Acceptance Criteria:
+        - Users can subscribe to a plan and upgrade/cancel via the UI.
+        - System enforces limits based on the active plan.
+- [] **System Health Dashboard**
+    - Folder: `/`
+    - Goal: Monitor the internal health and stability of the DBSnap system.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Health: Liveness/Readiness probes for self-healing in containerized environments
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Queues: Separate queues for backup, diff, and restore jobs
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Scalability: Isolated from API server; concurrency honors user/plan limits
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Metrics: Queue depth (number of pending/failed/running jobs)
+        - Metrics: Worker resource usage (CPU/Memory)
+        - Metrics: Overall backup success rate (last 24h / 7d)
+    - Acceptance Criteria:
+        - Admins have real-time visibility into the system's operational state.
+        - Dashboard provides clear indicators for system anomalies.
+- [] **Admin Global Audit Log Viewer**
+    - Folder: `apps/web`
+    - Goal: Provide a centralized view of all critical actions performed across the entire system for security auditing.
+    - Technical Details (PRD/ARD):
+        - Algorithm: AES-256-GCM authenticated encryption
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Key Management: Master Key (MK) from environment + unique IV per record
+        - Security: Credentials encrypted in PostgreSQL using MK + individual IV
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - Streaming: Data is encrypted via stream pipe (CipherIV) before leaving worker memory to S3
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: List all audit logs from all users and organizations.
+        - Requirements: Filter by User ID, Organization ID, Action Type, or Date Range.
+        - Requirements: Search within log metadata (IP addresses, specific affected resources).
+        - Requirements: Export logs as CSV for external compliance reviews.
+    - Acceptance Criteria:
+        - Admins can track exactly who did what and when across the platform.
+        - High-volume log data is paginated and remains searchable.
+- [] **Admin User Impersonation**
+    - Folder: `/`
+    - Goal: Allow support admins to view the application exactly as a specific user sees it to troubleshoot issues.
+    - Technical Details (PRD/ARD):
+        - Algorithm: AES-256-GCM authenticated encryption
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Key Management: Master Key (MK) from environment + unique IV per record
+        - Security: Credentials encrypted in PostgreSQL using MK + individual IV
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - Streaming: Data is encrypted via stream pipe (CipherIV) before leaving worker memory to S3
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: "Log in as user" button on the Admin User List.
+        - Requirements: Visual indicator (banner) prominently showing that the admin is currently impersonating a user.
+        - Requirements: Audit log entry whenever an impersonation session starts and ends.
+        - Requirements: Ability to quickly switch back to the admin account.
+    - Acceptance Criteria:
+        - Admin can access the dashboard of the impersonated user with their permissions.
+        - Security boundary is maintained (Admin cannot see the user's actual password).
+- [] **Admin MFA Reset Support**
+    - Folder: `/`
+    - Goal: Allow admins to help users who have lost access to their MFA device.
+    - Technical Details (PRD/ARD):
+        - API: JWT + refresh tokens, GitHub/Google OAuth integration
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Endpoints: Protected routes for project, database, backup, and diff management
+        - Security: Rate limiting to prevent abuse
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Ability to disable Multi-Factor Authentication for a specific user.
+        - Requirements: Requirement for the admin to provide a reason for the reset (stored in audit logs).
+        - Requirements: Notification email sent to the user when their MFA is disabled by an admin.
+    - Acceptance Criteria:
+        - User can log in with just their password after an admin-triggered MFA reset.
+- [] **Admin Maintenance Mode Toggle**
+    - Folder: `apps/api`
+    - Goal: Allow admins to put the entire application or specific services into maintenance mode during upgrades.
+    - Technical Details (PRD/ARD):
+        - API: JWT + refresh tokens, GitHub/Google OAuth integration
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Endpoints: Protected routes for project, database, backup, and diff management
+        - Health: Liveness/Readiness probes for self-healing in containerized environments
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Queues: Separate queues for backup, diff, and restore jobs
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Scalability: Isolated from API server; concurrency honors user/plan limits
+        - Security: Rate limiting to prevent abuse
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Global "Maintenance Mode" toggle in the Admin Dashboard.
+        - Requirements: Option to provide a custom maintenance message for users.
+        - Requirements: Whitelist specific IP addresses (e.g., developers) to bypass the maintenance screen.
+        - Requirements: API requests should return a 503 Service Unavailable status when maintenance mode is active.
+    - Acceptance Criteria:
+        - When enabled, non-whitelisted users see a maintenance page and cannot use the app.
+        - Critical background jobs (like scheduled backups) can be optionally paused or continued.
+- [] **Admin Promo Code Management**
+    - Folder: `apps/web`
+    - Goal: Create and manage promotional codes to attract new users or reward existing ones.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Create promo codes with specific attributes: Discount percentage/amount, Expiration date, Usage limit.
+        - Requirements: Bind promo codes to specific subscription plans.
+        - Requirements: Track usage count for each promo code.
+        - Requirements: Ability to deactivate a promo code manually.
+    - Acceptance Criteria:
+        - Admins can generate codes that users can apply during the checkout process.
+        - Expired or deactivated codes are rejected by the system.
+- [] **Admin Worker Pool Control**
+    - Folder: `/`
+    - Goal: Directly manage the background worker infrastructure from the Admin Panel.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Health: Liveness/Readiness probes for self-healing in containerized environments
+        - Queues: Separate queues for backup, diff, and restore jobs
+        - Scalability: Isolated from API server; concurrency honors user/plan limits
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: View real-time status of all active workers (ID, Version, CPU/Mem usage, current job).
+        - Requirements: Manually trigger a "Restart" signal for a worker process.
+        - Requirements: Adjust the concurrency level (number of jobs processed simultaneously) for specific queues.
+        - Requirements: Visual history of worker scaling events.
+    - Acceptance Criteria:
+        - Admins can identify and recover hung workers or adjust processing power based on demand.
+
+# Phase 9: Hardening & Quality
+
+- [] **Audit Log**
+    - Folder: `/`
+    - Technical Details (PRD/ARD):
+        - Algorithm: AES-256-GCM authenticated encryption
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Key Management: Master Key (MK) from environment + unique IV per record
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Mongo Strategy: Merkle Tree Hashing with bucket-level comparison to avoid OOM
+        - Optimization: Hash-based chunk skipping for large datasets
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Orchestration: BullMQ (diff-queue), lower priority than backups
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Results: Compressed JSON summary stored in DB; full detail JSON in S3 for large diffs
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - SQL Strategy: PK-based Ordered Stream Comparison (requires PK, constant O(1) memory)
+        - Security: Credentials encrypted in PostgreSQL using MK + individual IV
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - Streaming: Data is encrypted via stream pipe (CipherIV) before leaving worker memory to S3
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+- [] **Admin — Organization Resource Explorer (Details View)**
+    - Folder: `apps/web`
+    - Goal: Provide admins with a 360-degree view of an Organization's resources for deep troubleshooting.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Single dashboard page for a specific Organization.
+        - Requirements: List all projects and databases owned by the org.
+        - Requirements: List all snapshots and their status (Success/Failed).
+        - Requirements: List all users/members of the organization and their roles.
+        - Requirements: Link to the specific billing subscription for the org.
+    - Acceptance Criteria:
+        - Admins can navigate from a User to their Organization, and from there see every resource the customer has created.
+        - Search within the Org view to find a specific database ID or snapshot.
+- [] **Error Handling Strategy**
+    - Folder: `/`
+    - Goal: Typed errors only.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+- [] **Admin — Custom Quota & Limits Overrider**
+    - Folder: `packages/database`
+    - Goal: Allow admins to grant special resource limits to specific customers without changing their global billing plan.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Manual override fields for:
+        - Requirements: Max number of Organizations
+        - Requirements: Max number of Projects
+        - Requirements: Max number of Databases
+        - Requirements: Storage quota (GB)
+        - Requirements: Retention period (Days)
+        - Requirements: Toggle to "Ignore Plan Limits" for troubleshooting or premium support.
+        - Requirements: Audit log entry for every limit change.
+    - Acceptance Criteria:
+        - A customer can be granted more storage or connections than their "Pro" plan normally allows.
+        - System accurately calculates usage against these manual overrides if they exist.
+- [] **Logging & Monitoring**
+    - Folder: `/`
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+- [] **Admin — Global Database & Snapshot Browser**
+    - Folder: `apps/web`
+    - Goal: Allow admins to find any customer resource (DB or Snapshot) by ID for debugging.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Global searchable list of all Databases across all customers.
+        - Requirements: Global searchable list of all Snapshots across all customers.
+        - Requirements: Search by ID, name, or connection string hash.
+        - Requirements: Display failure reasons and logs directly in the list for quick diagnosis.
+        - Requirements: Filter by "Failed only" or "Stuck in Progress" states.
+    - Acceptance Criteria:
+        - When a customer says "My snapshot with ID X failed", the admin can instantly find it without knowing the user's email.
+- [] **Admin — User & Organization Suspension System**
+    - Folder: `apps/web`
+    - Goal: Allow admins to cleanly suspend or block users and organizations for security or non-payment reasons.
+    - Technical Details (PRD/ARD):
+        - Algorithm: AES-256-GCM authenticated encryption
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Health: Liveness/Readiness probes for self-healing in containerized environments
+        - Key Management: Master Key (MK) from environment + unique IV per record
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Queues: Separate queues for backup, diff, and restore jobs
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Scalability: Isolated from API server; concurrency honors user/plan limits
+        - Security: Credentials encrypted in PostgreSQL using MK + individual IV
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - Streaming: Data is encrypted via stream pipe (CipherIV) before leaving worker memory to S3
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Global "Suspend" button for both Users and Organizations.
+        - Requirements: Ability to provide a reason for suspension (Internal note + Customer-facing message).
+        - Requirements: Suspended users should be automatically logged out and blocked from logging back in.
+        - Requirements: Suspended organizations should have their scheduled backup jobs paused.
+        - Requirements: Automatic email notification to the customer when their account is suspended.
+    - Acceptance Criteria:
+        - A suspended customer cannot access any DBSnap resources until an admin "Reactivates" them.
+        - All background job processing for the customer is safely halted.
+- [] **Basic E2E Tests**
+    - Folder: `/`
+    - Goal: Critical flows covered.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Mongo Strategy: Merkle Tree Hashing with bucket-level comparison to avoid OOM
+        - Optimization: Hash-based chunk skipping for large datasets
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Orchestration: BullMQ (diff-queue), lower priority than backups
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Results: Compressed JSON summary stored in DB; full detail JSON in S3 for large diffs
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - SQL Strategy: PK-based Ordered Stream Comparison (requires PK, constant O(1) memory)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Acceptance Criteria:
+        - Playwright/Cypress tests for signup, backup, and diff viewing
+- [] **Engine Unit Test Suite**
+    - Folder: `/`
+    - Goal: 100% test coverage for core backup/diff logic.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Mongo Strategy: Merkle Tree Hashing with bucket-level comparison to avoid OOM
+        - Optimization: Hash-based chunk skipping for large datasets
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Orchestration: BullMQ (diff-queue), lower priority than backups
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Results: Compressed JSON summary stored in DB; full detail JSON in S3 for large diffs
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - SQL Strategy: PK-based Ordered Stream Comparison (requires PK, constant O(1) memory)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Jest tests for Mongo/SQL adapters
+        - Requirements: Mock storage and DB interfaces
+        - Requirements: Table-driven tests for edge cases (empty collections, large docs)
+    - Acceptance Criteria:
+        - Core engine passes 100% tests in CI
+- [] **Admin — GDPR & Compliance Data Exporter**
+    - Folder: `apps/web`
+    - Goal: Fulfill GDPR "Right to Access" and "Right to Erasure" (Right to be Forgotten) requests.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: "Export All Data" button for a User/Organization (Generates a ZIP with all metadata and backup info).
+        - Requirements: "Permanent Deletion" (Hard delete) tool that wipes all metadata, logs, and associated snapshots from object storage.
+        - Requirements: Audit trail for every compliance-related export or deletion.
+        - Requirements: Legal hold flag: Ability to prevent deletion if a customer is under investigation.
+    - Acceptance Criteria:
+        - Admins can cleanly purge a customer's entire footprint from the system.
+        - Export provides a machine-readable format of the user's data.
+- [] **Performance Benchmark Suite**
+    - Folder: `/`
+    - Goal: Track system performance over time.
+    - Technical Details (PRD/ARD):
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Mongo Strategy: Merkle Tree Hashing with bucket-level comparison to avoid OOM
+        - Optimization: Hash-based chunk skipping for large datasets
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Orchestration: BullMQ (diff-queue), lower priority than backups
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Results: Compressed JSON summary stored in DB; full detail JSON in S3 for large diffs
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - SQL Strategy: PK-based Ordered Stream Comparison (requires PK, constant O(1) memory)
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Measure duration for 1GB/10GB backups
+        - Requirements: Measure CPU/Memory usage during diff
+        - Requirements: Historical tracking of performance metrics
+    - Acceptance Criteria:
+        - New code must not degrade performance beyond 5% tolerance
+- [] **Admin — Admin-Triggered Customer Support Actions**
+    - Folder: `apps/web`
+    - Goal: Empower support agents to solve technical issues by performing actions on behalf of a customer without sharing credentials.
+    - Technical Details (PRD/ARD):
+        - Algorithm: AES-256-GCM authenticated encryption
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Key Management: Master Key (MK) from environment + unique IV per record
+        - Metadata: Capture size, status, start/completion timestamps, and row/collection counts
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Mongo Strategy: Merkle Tree Hashing with bucket-level comparison to avoid OOM
+        - Optimization: Hash-based chunk skipping for large datasets
+        - Orchestration: BullMQ (backup-queue) with Redis
+        - Orchestration: BullMQ (diff-queue), lower priority than backups
+        - Process: Stream dump (pg_dump or mongodump) directly to S3 via encryption pipe
+        - Results: Compressed JSON summary stored in DB; full detail JSON in S3 for large diffs
+        - Retention: Automatic purging based on project rotation policy (7/30/90 days)
+        - Retry Strategy: Exponential backoff (3 attempts)
+        - SQL Strategy: PK-based Ordered Stream Comparison (requires PK, constant O(1) memory)
+        - Security: Credentials encrypted in PostgreSQL using MK + individual IV
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - Streaming: Data is encrypted via stream pipe (CipherIV) before leaving worker memory to S3
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: "Test Connection" button on a customer's database from the Admin panel.
+        - Requirements: "Trigger Manual Backup" button on a customer's database.
+        - Requirements: "Request Diff" button between two of a customer's snapshots.
+        - Requirements: All actions triggered by an admin must be tagged with `triggeredByAdmin: true` and the Admin ID in the database.
+    - Acceptance Criteria:
+        - Admins can verify if a customer's DB connection is actually working without having to impersonate the user or see their password.
+        - Results of these actions (logs, status) are visible to the admin.
+- [] **Automated Security Scan**
+    - Folder: `/`
+    - Goal: Keep dependencies and code secure.
+    - Technical Details (PRD/ARD):
+        - API: JWT + refresh tokens, GitHub/Google OAuth integration
+        - Algorithm: AES-256-GCM authenticated encryption
+        - Components: Responsive dashboard, backup timeline, and status indicators
+        - Connectors: Mandatory read-only permission validation for target user databases
+        - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation
+        - Endpoints: Protected routes for project, database, backup, and diff management
+        - Key Management: Master Key (MK) from environment + unique IV per record
+        - Metadata: PostgreSQL using Prisma ORM with relational integrity
+        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Security: Credentials encrypted in PostgreSQL using MK + individual IV
+        - Security: Rate limiting to prevent abuse
+        - Stack: Next.js (App Router), Tailwind CSS, React Query
+        - Streaming: Data is encrypted via stream pipe (CipherIV) before leaving worker memory to S3
+        - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
+    - Functional Details:
+        - Requirements: Snyk or `npm audit` integration in CI
+        - Requirements: Owasp ZAP scan for API endpoints
+        - Requirements: Secret scanning forcommitted code
+    - Acceptance Criteria:
+        - No high/critical vulnerabilities in production code
+- [] **System Load Testing**
+    - Folder: `apps/worker`
+    - Goal: Benchmark system performance with large datasets.
+    - Technical Details (PRD/ARD):
+        - Optimization: Verify chunked S3 uploads during heavy load
+    - Functional Details:
+        - Requirements: Load test with 1GB+ database dumps
+        - Requirements: Measure RAM usage (<512MB target via streaming)
+    - Acceptance Criteria:
+        - Acceptance Criteria: System handles 10GB+ dumps without OOM
+- [] **Encryption Integrity Verification**
+    - Folder: `packages/crypto-utils`
+    - Goal: Ensure data-at-rest is truly unintelligible.
+    - Technical Details (PRD/ARD):
+        - Security: Verify checksum post-backup matches metadata
+    - Functional Details:
+        - Requirements: Manually inspect S3 snapshots
+        - Requirements: Verify that hex dumps are random/garbage without Master Key
+    - Acceptance Criteria:
+        - Acceptance Criteria: 100% of samples are encrypted with AES-256-GCM
+- [] **Production Deployment Scripts**
+    - Folder: `/`
+    - Goal: Prepare the system for cloud deployment.
+    - Technical Details (PRD/ARD):
+        - Infra: Secret management via KMS/Vault for production keys
+    - Functional Details:
+        - Requirements: Kubernetes manifest or optimized Docker files
+        - Requirements: CI/CD pipeline for production branch
+    - Acceptance Criteria:
+        - Acceptance Criteria: Automated deployment to production environment
+
