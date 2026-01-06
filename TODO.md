@@ -13,7 +13,7 @@
         - Health: Liveness/Readiness probes for self-healing in containerized environments
         - Infrastructure: Turborepo for orchestration and build caching
         - Metadata: PostgreSQL using Prisma ORM with relational integrity
-        - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
+        - Models: User (Dynamic RBAC), Role, Permission, Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
         - Queues: Separate queues for backup, diff, and restore jobs
         - Scalability: Isolated from API server; concurrency honors user/plan limits
         - Security: Rate limiting to prevent abuse
@@ -222,9 +222,11 @@
         - Stack: Next.js (App Router), Tailwind CSS, React Query
         - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
     - Functional Details:
-        - Roles: Admin
-        - Roles: Member
-        - Roles: Read-only
+        - Roles: ROOT (Super Admin)
+        - Roles: ADMIN (System Admin)
+        - Roles: CUSTOMER (Standard User)
+        - Roles: CUSTOMER_DEVELOPER (Customizable permissions)
+        - Feature: Dynamic Role & Permission creation via Admin Panel
     - Acceptance Criteria:
         - Permissions enforced on APIs
 - [] **Email Verification & Password Reset**
