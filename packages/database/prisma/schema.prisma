@@ -10,22 +10,35 @@ datasource db {
 }
 
 model User {
-  id           String         @id @default(uuid())
-  email        String         @unique
-  passwordHash String
-  firstName    String?
-  lastName     String?
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  roles        UserRole[]     @default([Viewer])
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String
+  plan          UserPlan  @default(FREE)
+  roleId        String?
+  role          Role?     @relation(fields: [roleId], references: [id])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   
-  projects     ProjectMember[]
+  projects      ProjectMember[]
 }
 
-enum UserRole {
-  Admin
-  Developer
-  Viewer
+enum UserPlan {
+  FREE
+  PRO
+  TEAM
+}
+
+model Role {
+  id          String       @id @default(uuid())
+  name        String       @unique // ROOT, ADMIN, CUSTOMER_DEVELOPER
+  permissions Permission[]
+  users       User[]
+}
+
+model Permission {
+  id        String   @id @default(uuid())
+  action    String   // e.g. "backup:create", "db:read"
+  roles     Role[]
 }
 
 model Project {
@@ -40,15 +53,22 @@ model Project {
 }
 
 model ProjectMember {
-  id        String   @id @default(uuid())
+  id        String       @id @default(uuid())
   userId    String
   projectId String
-  role      UserRole // Role within the project
+  role      ProjectRole  @default(VIEWER)
   
   user      User     @relation(fields: [userId], references: [id])
   project   Project  @relation(fields: [projectId], references: [id])
 
   @@unique([userId, projectId])
+}
+
+enum ProjectRole {
+  OWNER
+  ADMIN
+  MEMBER
+  VIEWER
 }
 
 model Database {

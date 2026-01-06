@@ -29,7 +29,7 @@
     - Acceptance Criteria:
         - Repo installs without errors
         - All services start with placeholder code
-- [ ] **Environment Configuration**
+- [x] **Environment Configuration**
     - Folder: `/`
     - Goal: Standardize environment configuration.
     - Technical Details (PRD/ARD):
@@ -46,7 +46,7 @@
         - Requirements: No secrets committed
     - Acceptance Criteria:
         - App fails gracefully if env missing
-- [ ] **Linting & Formatting**
+- [x] **Linting & Formatting**
     - Folder: `packages/config`
     - Goal: Ensure consistent code style.
     - Technical Details (PRD/ARD):
@@ -63,7 +63,7 @@
         - Requirements: Shared config
     - Acceptance Criteria:
         - Lint passes in CI
-- [ ] **Minimal CONTRIBUTING.md**
+- [x] **Minimal CONTRIBUTING.md**
     - Folder: `/`
     - Goal: Define contribution rules.
     - Technical Details (PRD/ARD):
@@ -80,7 +80,7 @@
         - Requirements: Commit conventions
     - Acceptance Criteria:
         - CONTRIBUTING.md exists
-- [ ] **Dockerized Development Environment**
+- [x] **Dockerized Development Environment**
     - Folder: `/`
     - Goal: Standardize local development with all dependencies.
     - Technical Details (PRD/ARD):
@@ -100,7 +100,7 @@
         - Requirements: Health checks for each service
     - Acceptance Criteria:
         - `docker-compose up` provides a fully working local infra
-- [ ] **CI Pipeline for Quality Gating**
+- [x] **CI Pipeline for Quality Gating**
     - Folder: `packages/config`
     - Goal: Automate lint and test checks on PRs.
     - Technical Details (PRD/ARD):
@@ -117,7 +117,7 @@
         - Requirements: Prevent merging if checks fail
     - Acceptance Criteria:
         - CI runs on every PR and push
-- [ ] **CD Pipeline for Staging**
+- [x] **CD Pipeline for Staging**
     - Folder: `/`
     - Goal: Automate deployment to a staging environment.
     - Technical Details (PRD/ARD):
@@ -134,7 +134,7 @@
         - Requirements: Automated migrations
     - Acceptance Criteria:
         - Merge to `develop` triggers staging deploy
-- [ ] **Structured Logging System**
+- [x] **Structured Logging System**
     - Folder: `apps/api`
     - Goal: Enable easier debugging through structured data.
     - Technical Details (PRD/ARD):
