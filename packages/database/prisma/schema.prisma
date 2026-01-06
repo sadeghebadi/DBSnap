@@ -19,7 +19,7 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   
-  projects      ProjectMember[]
+  projects      Project[]
 }
 
 enum UserPlan {
@@ -41,34 +41,21 @@ model Permission {
   roles     Role[]
 }
 
+enum Environment {
+  DEV
+  STAGING
+  PROD
+}
+
 model Project {
-  id          String   @id @default(uuid())
+  id          String      @id @default(uuid())
   name        String
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  members     ProjectMember[]
+  environment Environment @default(DEV)
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
   databases   Database[]
-}
-
-model ProjectMember {
-  id        String       @id @default(uuid())
-  userId    String
-  projectId String
-  role      ProjectRole  @default(VIEWER)
-  
-  user      User     @relation(fields: [userId], references: [id])
-  project   Project  @relation(fields: [projectId], references: [id])
-
-  @@unique([userId, projectId])
-}
-
-enum ProjectRole {
-  OWNER
-  ADMIN
-  MEMBER
-  VIEWER
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 }
 
 model Database {

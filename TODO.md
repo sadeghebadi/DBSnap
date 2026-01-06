@@ -157,7 +157,7 @@
 
 # Phase 1: Auth & Tenancy
 
-- [ ] **User Model**
+- [x] **User Model**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
@@ -174,7 +174,7 @@
         - Fields: createdAt
     - Acceptance Criteria:
         - Model persists correctly
-- [ ] **Organization / Project Model**
+- [x] **Organization / Project Model**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
@@ -189,7 +189,7 @@
         - Requirements: Org owns DB connections
     - Acceptance Criteria:
         - Referential integrity enforced
-- [ ] **Auth API (JWT)**
+- [x] **Auth API (JWT)**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - API: JWT + refresh tokens, GitHub/Google OAuth integration
