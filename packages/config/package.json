@@ -1,0 +1,11 @@
+{
+    "name": "@dbsnap/config",
+    "version": "0.0.0",
+    "main": "index.js",
+    "dependencies": {
+        "eslint-config-next": "latest",
+        "eslint-config-prettier": "latest",
+        "ts-node": "latest",
+        "typescript": "latest"
+    }
+}

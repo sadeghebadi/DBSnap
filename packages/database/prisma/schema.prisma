@@ -1,0 +1,116 @@
+// packages/database/prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String         @id @default(uuid())
+  email        String         @unique
+  passwordHash String
+  firstName    String?
+  lastName     String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  roles        UserRole[]     @default([Viewer])
+  
+  projects     ProjectMember[]
+}
+
+enum UserRole {
+  Admin
+  Developer
+  Viewer
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  members     ProjectMember[]
+  databases   Database[]
+}
+
+model ProjectMember {
+  id        String   @id @default(uuid())
+  userId    String
+  projectId String
+  role      UserRole // Role within the project
+  
+  user      User     @relation(fields: [userId], references: [id])
+  project   Project  @relation(fields: [projectId], references: [id])
+
+  @@unique([userId, projectId])
+}
+
+model Database {
+  id             String   @id @default(uuid())
+  name           String
+  projectId      String
+  // Encrypted connection details
+  connectionUri  String   // Encrypted
+  type           DbType
+  version        String?
+  isStaticIp     Boolean  @default(false)
+  isSshTunnel    Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  project        Project  @relation(fields: [projectId], references: [id])
+  backups        Backup[]
+}
+
+enum DbType {
+  Postgres
+  MongoDB
+  MySQL
+}
+
+model Backup {
+  id          String    @id @default(uuid())
+  databaseId  String
+  status      BackupStatus
+  s3Key       String?
+  sizeBytes   BigInt    @default(0)
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  
+  database    Database  @relation(fields: [databaseId], references: [id])
+  diffsAsA    Diff[]    @relation("SnapshotA")
+  diffsAsB    Diff[]    @relation("SnapshotB")
+}
+
+enum BackupStatus {
+  Pending
+  InProgress
+  Completed
+  Failed
+}
+
+model Diff {
+  id          String   @id @default(uuid())
+  snapshotAId String
+  snapshotBId String
+  status      DiffStatus
+  summary     Json?    // Compressed summary
+  s3DetailKey String?  // Full detail path
+  createdAt   DateTime @default(now())
+  
+  snapshotA   Backup   @relation("SnapshotA", fields: [snapshotAId], references: [id])
+  snapshotB   Backup   @relation("SnapshotB", fields: [snapshotBId], references: [id])
+}
+
+enum DiffStatus {
+  Pending
+  Processing
+  Completed
+  Failed
+}

@@ -3,7 +3,7 @@ description: Automates the cycle of coding, reviewing, and documenting tasks fro
 ---
 
 # Title: DBSnap Automated Development (Infinite Loop)
-# Description: Fully autonomous loop for coding, reviewing, and progressing through todo.md
+# Description: Fully autonomous loop for coding, reviewing, and progressing through TODO.md
 
 ## Step 1: Task Selection & Status Check
 - Open @todo.md. 

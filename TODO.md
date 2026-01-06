@@ -1,6 +1,6 @@
 # Phase 0: Foundation (Repo & Discipline)
 
-- [] **Repo Bootstrap**
+- [ ] **Repo Bootstrap**
     - Folder: `/`
     - Goal: Initialize DBSnap monorepo with base structure.
     - Technical Details (PRD/ARD):
@@ -29,7 +29,7 @@
     - Acceptance Criteria:
         - Repo installs without errors
         - All services start with placeholder code
-- [] **Environment Configuration**
+- [ ] **Environment Configuration**
     - Folder: `/`
     - Goal: Standardize environment configuration.
     - Technical Details (PRD/ARD):
@@ -46,7 +46,7 @@
         - Requirements: No secrets committed
     - Acceptance Criteria:
         - App fails gracefully if env missing
-- [] **Linting & Formatting**
+- [ ] **Linting & Formatting**
     - Folder: `packages/config`
     - Goal: Ensure consistent code style.
     - Technical Details (PRD/ARD):
@@ -63,7 +63,7 @@
         - Requirements: Shared config
     - Acceptance Criteria:
         - Lint passes in CI
-- [] **Minimal CONTRIBUTING.md**
+- [ ] **Minimal CONTRIBUTING.md**
     - Folder: `/`
     - Goal: Define contribution rules.
     - Technical Details (PRD/ARD):
@@ -80,7 +80,7 @@
         - Requirements: Commit conventions
     - Acceptance Criteria:
         - CONTRIBUTING.md exists
-- [] **Dockerized Development Environment**
+- [ ] **Dockerized Development Environment**
     - Folder: `/`
     - Goal: Standardize local development with all dependencies.
     - Technical Details (PRD/ARD):
@@ -100,7 +100,7 @@
         - Requirements: Health checks for each service
     - Acceptance Criteria:
         - `docker-compose up` provides a fully working local infra
-- [] **CI Pipeline for Quality Gating**
+- [ ] **CI Pipeline for Quality Gating**
     - Folder: `packages/config`
     - Goal: Automate lint and test checks on PRs.
     - Technical Details (PRD/ARD):
@@ -117,7 +117,7 @@
         - Requirements: Prevent merging if checks fail
     - Acceptance Criteria:
         - CI runs on every PR and push
-- [] **CD Pipeline for Staging**
+- [ ] **CD Pipeline for Staging**
     - Folder: `/`
     - Goal: Automate deployment to a staging environment.
     - Technical Details (PRD/ARD):
@@ -134,7 +134,7 @@
         - Requirements: Automated migrations
     - Acceptance Criteria:
         - Merge to `develop` triggers staging deploy
-- [] **Structured Logging System**
+- [ ] **Structured Logging System**
     - Folder: `apps/api`
     - Goal: Enable easier debugging through structured data.
     - Technical Details (PRD/ARD):
@@ -157,7 +157,7 @@
 
 # Phase 1: Auth & Tenancy
 
-- [] **User Model**
+- [ ] **User Model**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
@@ -174,7 +174,7 @@
         - Fields: createdAt
     - Acceptance Criteria:
         - Model persists correctly
-- [] **Organization / Project Model**
+- [ ] **Organization / Project Model**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
@@ -189,7 +189,7 @@
         - Requirements: Org owns DB connections
     - Acceptance Criteria:
         - Referential integrity enforced
-- [] **Auth API (JWT)**
+- [ ] **Auth API (JWT)**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - API: JWT + refresh tokens, GitHub/Google OAuth integration
@@ -208,7 +208,7 @@
         - Endpoints: Refresh token
     - Acceptance Criteria:
         - Protected routes require token
-- [] **RBAC Roles**
+- [ ] **RBAC Roles**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - API: JWT + refresh tokens, GitHub/Google OAuth integration
@@ -229,7 +229,7 @@
         - Feature: Dynamic Role & Permission creation via Admin Panel
     - Acceptance Criteria:
         - Permissions enforced on APIs
-- [] **Email Verification & Password Reset**
+- [ ] **Email Verification & Password Reset**
     - Folder: `/`
     - Goal: Secure user accounts via verification and recovery.
     - Technical Details (PRD/ARD):
@@ -246,7 +246,7 @@
     - Acceptance Criteria:
         - Unverified users cannot access core features
         - Password can be reset via email link
-- [] **OAuth Integration**
+- [ ] **OAuth Integration**
     - Folder: `/`
     - Goal: Simplify onboarding with social login.
     - Technical Details (PRD/ARD):
@@ -266,7 +266,7 @@
     - Acceptance Criteria:
         - User can sign up/login via 3rd party
         - Existing email accounts can link to OAuth
-- [] **Project Management API**
+- [ ] **Project Management API**
     - Folder: `/`
     - Goal: Manage projects as containers for DB connections.
     - Technical Details (PRD/ARD):
@@ -285,7 +285,7 @@
         - Requirements: Assign projects to organizations
     - Acceptance Criteria:
         - Project ownership enforced
-- [] **Multi-Factor Authentication (MFA)**
+- [ ] **Multi-Factor Authentication (MFA)**
     - Folder: `/`
     - Goal: Add an extra layer of security for user accounts.
     - Technical Details (PRD/ARD):
@@ -314,7 +314,7 @@
         - Requirements: Backup recovery codes
     - Acceptance Criteria:
         - User can enable MFA and it is enforced at login
-- [] **Session management & Revocation**
+- [ ] **Session management & Revocation**
     - Folder: `/`
     - Goal: Allow users to see and manage active login sessions.
     - Technical Details (PRD/ARD):
@@ -334,7 +334,7 @@
         - Requirements: Individual session revocation
     - Acceptance Criteria:
         - Revoking a session immediately invalidates the JWT
-- [] **API Key Management**
+- [ ] **API Key Management**
     - Folder: `packages/database`
     - Goal: Allow programmatic access to DBSnap.
     - Technical Details (PRD/ARD):
@@ -362,7 +362,7 @@
 
 # Phase 1: Foundation Tasks
 
-- [] **Dummy Test Task**
+- [ ] **Dummy Test Task**
     - Folder: `/`
     - Goal: Verify that the AI can follow the new Git workflow (branch, implement, commit, push, copy).
     - Technical Details (PRD/ARD):
@@ -381,7 +381,7 @@
 
 # Phase 2: Database Connections
 
-- [] **DB Connection Schema**
+- [ ] **DB Connection Schema**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Algorithm: AES-256-GCM authenticated encryption
@@ -397,7 +397,7 @@
         - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
     - Functional Details:
         - Requirements: Encrypted credentials
-- [] **Connection Validator**
+- [ ] **Connection Validator**
     - Folder: `/`
     - Goal: Validate DB connectivity.
     - Technical Details (PRD/ARD):
@@ -410,7 +410,7 @@
         - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
     - Acceptance Criteria:
         - Returns sanitized metadata
-- [] **Connection API**
+- [ ] **Connection API**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - API: JWT + refresh tokens, GitHub/Google OAuth integration
@@ -430,7 +430,7 @@
         - Endpoints: List
     - Acceptance Criteria:
         - Permission checks enforced
-- [] **Backup Scheduling & Retention**
+- [ ] **Backup Scheduling & Retention**
     - Folder: `/`
     - Goal: Automate periodic backups and cleanup.
     - Technical Details (PRD/ARD):
@@ -455,7 +455,7 @@
     - Acceptance Criteria:
         - Workers trigger at specified times
         - Old snapshots are purged based on policy
-- [] **SSH Tunnel Support**
+- [ ] **SSH Tunnel Support**
     - Folder: `packages/database`
     - Goal: Support databases behind a bastion host.
     - Technical Details (PRD/ARD):
@@ -472,7 +472,7 @@
         - Requirements: Tunnel health monitoring
     - Acceptance Criteria:
         - User can connect to a DB that is only accessible via SSH tunnel
-- [] **Static IP / Proxy Support**
+- [ ] **Static IP / Proxy Support**
     - Folder: `/`
     - Goal: Support IP whitelisting for strict DB firewalls.
     - Technical Details (PRD/ARD):
@@ -493,7 +493,7 @@
         - Requirements: Proxy configuration in DB connectors
     - Acceptance Criteria:
         - All backup traffic originates from a known, fixed IP address
-- [] **SSL/TLS Certificate Support**
+- [ ] **SSL/TLS Certificate Support**
     - Folder: `packages/database`
     - Goal: Support databases requiring custom CA or client certificates.
     - Technical Details (PRD/ARD):
@@ -518,7 +518,7 @@
 
 # Phase 3: Snapshot & Backup Core
 
-- [] **Snapshot Metadata Model**
+- [ ] **Snapshot Metadata Model**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
@@ -538,7 +538,7 @@
         - Fields: timestamp
         - Fields: schemaVersion
         - Fields: storagePath
-- [] **Snapshot Creation Logic**
+- [ ] **Snapshot Creation Logic**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - API: JWT + refresh tokens, GitHub/Google OAuth integration
@@ -564,7 +564,7 @@
         - Requirements: Dump DB
         - Requirements: Normalize structure
         - Requirements: Store as JSON
-- [] **Snapshot Storage Adapter**
+- [ ] **Snapshot Storage Adapter**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
@@ -582,7 +582,7 @@
     - Functional Details:
         - Adapters: Local FS
         - Adapters: S3-compatible
-- [] **Snapshot Restore (Read-only)**
+- [ ] **Snapshot Restore (Read-only)**
     - Folder: `/`
     - Goal: Load snapshot without modifying DB.
     - Technical Details (PRD/ARD):
@@ -601,7 +601,7 @@
         - Stack: Next.js (App Router), Tailwind CSS, React Query
         - Strategy: performRestore job in restore-queue
         - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
-- [] **Selective Restore Logic**
+- [ ] **Selective Restore Logic**
     - Folder: `packages/database`
     - Goal: Restore specific parts of a database.
     - Technical Details (PRD/ARD):
@@ -620,7 +620,7 @@
         - Requirements: Overwrite vs Append options
     - Acceptance Criteria:
         - Targeted data is restored without affecting others
-- [] **Snapshot Export**
+- [ ] **Snapshot Export**
     - Folder: `/`
     - Goal: Allow users to download their data.
     - Technical Details (PRD/ARD):
@@ -641,7 +641,7 @@
         - Requirements: Signed download link
     - Acceptance Criteria:
         - User receives valid dump file
-- [] **Compression Algorithm Benchmarking**
+- [ ] **Compression Algorithm Benchmarking**
     - Folder: `/`
     - Goal: Optimize storage costs and transfer speeds.
     - Technical Details (PRD/ARD):
@@ -658,7 +658,7 @@
         - Requirements: Track compression ratio metrics
     - Acceptance Criteria:
         - Clear recommendation and implementation of the best compression for the project
-- [] **Stream-based Snapshot Storage**
+- [ ] **Stream-based Snapshot Storage**
     - Folder: `packages/database`
     - Goal: Handle massive databases without memory exhaustion.
     - Technical Details (PRD/ARD):
@@ -680,7 +680,7 @@
         - Requirements: No local intermediate file if possible
     - Acceptance Criteria:
         - Backup of 10GB+ DB finishes with <512MB RAM usage
-- [] **Encrypted Data-at-Rest Validation**
+- [ ] **Encrypted Data-at-Rest Validation**
     - Folder: `/`
     - Goal: Ensure backups are valid and encrypted as expected.
     - Technical Details (PRD/ARD):
@@ -714,7 +714,7 @@
 
 # Phase 4: Diff Engine (Core Value)
 
-- [] **Diff Engine Interface**
+- [ ] **Diff Engine Interface**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
@@ -738,7 +738,7 @@
         - Input: Snapshot A
         - Input: Snapshot B
         - Output: DiffResult
-- [] **Mongo Document Diff**
+- [ ] **Mongo Document Diff**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
@@ -757,7 +757,7 @@
         - Detect: Added
         - Detect: Removed
         - Detect: Modified fields
-- [] **SQL Table Diff**
+- [ ] **SQL Table Diff**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
@@ -776,7 +776,7 @@
         - Detect: Table changes
         - Detect: Column changes
         - Detect: Row count delta
-- [] **Diff Summary Generator**
+- [ ] **Diff Summary Generator**
     - Folder: `/`
     - Goal: Human-readable diff summary.
     - Technical Details (PRD/ARD):
@@ -792,7 +792,7 @@
         - SQL Strategy: PK-based Ordered Stream Comparison (requires PK, constant O(1) memory)
         - Stack: Next.js (App Router), Tailwind CSS, React Query
         - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
-- [] **Diff Persistence**
+- [ ] **Diff Persistence**
     - Folder: `/`
     - Goal: Store diff results for later viewing.
     - Technical Details (PRD/ARD):
@@ -808,7 +808,7 @@
         - SQL Strategy: PK-based Ordered Stream Comparison (requires PK, constant O(1) memory)
         - Stack: Next.js (App Router), Tailwind CSS, React Query
         - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
-- [] **Live Diff Mode**
+- [ ] **Live Diff Mode**
     - Folder: `packages/database`
     - Goal: Compare backup against current database state.
     - Technical Details (PRD/ARD):
@@ -834,7 +834,7 @@
         - Requirements: No impact on live DB performance
     - Acceptance Criteria:
         - Accurate diff between static snapshot and live data
-- [] **Paginated Diff Results**
+- [ ] **Paginated Diff Results**
     - Folder: `/`
     - Goal: Support visual diff for large datasets.
     - Technical Details (PRD/ARD):
@@ -859,7 +859,7 @@
         - Requirements: Search/Filter within diff result
     - Acceptance Criteria:
         - Loading a diff with 10k changes remains snappy in UI
-- [] **Index & Schema Constraint Comparison**
+- [ ] **Index & Schema Constraint Comparison**
     - Folder: `/`
     - Goal: Detect changes beyond just the data.
     - Technical Details (PRD/ARD):
@@ -881,7 +881,7 @@
         - Requirements: Compare views and stored procedures (Optional)
     - Acceptance Criteria:
         - System reports missing or modified indexes
-- [] **Visual JSON Delta Representation**
+- [ ] **Visual JSON Delta Representation**
     - Folder: `/`
     - Goal: Better visual clarity for modified documents.
     - Technical Details (PRD/ARD):
@@ -909,7 +909,7 @@
 
 # Phase 5: Worker & Queue
 
-- [] **Job Queue Setup**
+- [ ] **Job Queue Setup**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
@@ -925,7 +925,7 @@
     - Functional Details:
         - Requirements: BullMQ or equivalent
         - Requirements: Retry logic
-- [] **Snapshot Job Worker**
+- [ ] **Snapshot Job Worker**
     - Folder: `/`
     - Goal: Execute snapshot creation jobs.
     - Technical Details (PRD/ARD):
@@ -944,7 +944,7 @@
         - Scalability: Isolated from API server; concurrency honors user/plan limits
         - Stack: Next.js (App Router), Tailwind CSS, React Query
         - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
-- [] **Diff Job Worker**
+- [ ] **Diff Job Worker**
     - Folder: `/`
     - Goal: Execute diff engine jobs.
     - Technical Details (PRD/ARD):
@@ -963,7 +963,7 @@
         - Scalability: Isolated from API server; concurrency honors user/plan limits
         - Stack: Next.js (App Router), Tailwind CSS, React Query
         - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
-- [] **Job Status API**
+- [ ] **Job Status API**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - API: JWT + refresh tokens, GitHub/Google OAuth integration
@@ -984,7 +984,7 @@
         - States: Running
         - States: Failed
         - States: Completed
-- [] **Alert & Notification System**
+- [ ] **Alert & Notification System**
     - Folder: `/`
     - Goal: Notify users of job outcomes.
     - Technical Details (PRD/ARD):
@@ -1003,7 +1003,7 @@
         - Requirements: Email alerts
     - Acceptance Criteria:
         - Notifications sent on failure/success
-- [] **Threshold Alert Worker**
+- [ ] **Threshold Alert Worker**
     - Folder: `/`
     - Goal: Monitor size/growth anomalies.
     - Technical Details (PRD/ARD):
@@ -1032,7 +1032,7 @@
         - Requirements: Trigger alert if exceeds threshold
     - Acceptance Criteria:
         - Automated alerts for unusual data spikes
-- [] **Worker Self-Healing & Health Checks**
+- [ ] **Worker Self-Healing & Health Checks**
     - Folder: `/`
     - Goal: Ensure high availability of worker processes.
     - Technical Details (PRD/ARD):
@@ -1055,7 +1055,7 @@
         - Requirements: Liveness/Readiness probes (K8s compatible)
     - Acceptance Criteria:
         - System detects and recovers a crashed worker within 30s
-- [] **Dead Letter Queue (DLQ) Management**
+- [ ] **Dead Letter Queue (DLQ) Management**
     - Folder: `/`
     - Goal: Allow admins to inspect and retry failed jobs stored in the Dead Letter Queue.
     - Technical Details (PRD/ARD):
@@ -1076,7 +1076,7 @@
     - Acceptance Criteria:
         - Failed jobs can be analyzed and restarted through the Admin Panel interface.
         - Admins can clear the DLQ or specific failed jobs.
-- [] **Dynamic Worker Scaling Logic**
+- [ ] **Dynamic Worker Scaling Logic**
     - Folder: `/`
     - Goal: Optimize cost and performance by scaling workers based on load.
     - Technical Details (PRD/ARD):
@@ -1107,7 +1107,7 @@
 
 # Phase 6: Api Layer
 
-- [] **Snapshot API**
+- [ ] **Snapshot API**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - API: JWT + refresh tokens, GitHub/Google OAuth integration
@@ -1128,7 +1128,7 @@
     - Functional Details:
         - Endpoints: List snapshots
         - Endpoints: Trigger snapshot
-- [] **Diff API**
+- [ ] **Diff API**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - API: JWT + refresh tokens, GitHub/Google OAuth integration
@@ -1149,7 +1149,7 @@
     - Functional Details:
         - Endpoints: Request diff
         - Endpoints: Fetch result
-- [] **Rate Limiting**
+- [ ] **Rate Limiting**
     - Folder: `/`
     - Goal: Prevent abuse.
     - Technical Details (PRD/ARD):
@@ -1167,7 +1167,7 @@
 
 # Phase 7: Web Ui (Minimal)
 
-- [] **Auth Pages**
+- [ ] **Auth Pages**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - API: JWT + refresh tokens, GitHub/Google OAuth integration
@@ -1183,7 +1183,7 @@
     - Functional Details:
         - Pages: Login
         - Pages: Register
-- [] **Connections UI**
+- [ ] **Connections UI**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
@@ -1197,7 +1197,7 @@
         - Features: Add
         - Features: Test
         - Features: List
-- [] **Snapshot List Page**
+- [ ] **Snapshot List Page**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
@@ -1215,7 +1215,7 @@
     - Functional Details:
         - Features: Table view
         - Features: Status indicators
-- [] **Diff Viewer (Simple)**
+- [ ] **Diff Viewer (Simple)**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
@@ -1236,7 +1236,7 @@
 
 # Phase 8: Admin Panel
 
-- [] **Admin — Admin Panel UI Shell & Navigation**
+- [ ] **Admin — Admin Panel UI Shell & Navigation**
     - Folder: `/`
     - Goal: Create the foundational layout for the Admin Panel that provides consistent navigation and a professional look.
     - Technical Details (PRD/ARD):
@@ -1265,7 +1265,7 @@
     - Acceptance Criteria:
         - Navigation between all admin sections is smooth.
         - Admin shell is separate from the customer dashboard shell to prevent UI bleed.
-- [] **Admin — Admin Authentication & Authorization Guard**
+- [ ] **Admin — Admin Authentication & Authorization Guard**
     - Folder: `packages/database`
     - Goal: Ensure that the Admin Panel is inaccessible to regular customers and properly integrated with the auth flow.
     - Technical Details (PRD/ARD):
@@ -1293,7 +1293,7 @@
     - Acceptance Criteria:
         - A user with a 'MEMBER' role cannot see or access any route under `/admin`.
         - Unauthorized attempts are logged in the security audit.
-- [] **Admin — Admin Main Dashboard (Overview & Analytics)**
+- [ ] **Admin — Admin Main Dashboard (Overview & Analytics)**
     - Folder: `/`
     - Goal: The "First Page" admins see. Provides high-level health and growth metrics for the entire platform.
     - Technical Details (PRD/ARD):
@@ -1325,7 +1325,7 @@
     - Acceptance Criteria:
         - Dashboard provides an immediate sense of system status without looking at detailed logs.
         - Data is refreshed automatically or has a manual refresh button.
-- [] **Admin — Resource Creation Workflows (Quick Actions)**
+- [ ] **Admin — Resource Creation Workflows (Quick Actions)**
     - Folder: `/`
     - Goal: Streamline administrative tasks like creating new organizations or manually onboarding enterprise customers.
     - Technical Details (PRD/ARD):
@@ -1345,7 +1345,7 @@
         - Requirements: Confirmation modals for destructive actions (e.g., deleting a snapshot).
     - Acceptance Criteria:
         - Admins can perform these "creation" flows without needing to use the public signup/onboarding routes.
-- [] **Admin User List**
+- [ ] **Admin User List**
     - Folder: `/`
     - Goal: Allow admins to view and manage all users in the system.
     - Technical Details (PRD/ARD):
@@ -1364,7 +1364,7 @@
     - Acceptance Criteria:
         - Admin can see all users across all organizations
         - Search functionality works correctly
-- [] **Admin Org Usage Stats**
+- [ ] **Admin Org Usage Stats**
     - Folder: `apps/web`
     - Goal: Monitor usage metrics across different organizations to identify heavy users and trends.
     - Technical Details (PRD/ARD):
@@ -1392,7 +1392,7 @@
     - Acceptance Criteria:
         - Admin can see a summary table of all organizations and their usage stats.
         - Stats are updated in near real-time (or periodically).
-- [] **Billing & Subscriptions**
+- [ ] **Billing & Subscriptions**
     - Folder: `apps/web`
     - Goal: Monetize the platform by integrating a billing system and plan-based gating.
     - Technical Details (PRD/ARD):
@@ -1415,7 +1415,7 @@
     - Acceptance Criteria:
         - Users can subscribe to a plan and upgrade/cancel via the UI.
         - System enforces limits based on the active plan.
-- [] **System Health Dashboard**
+- [ ] **System Health Dashboard**
     - Folder: `/`
     - Goal: Monitor the internal health and stability of the DBSnap system.
     - Technical Details (PRD/ARD):
@@ -1441,7 +1441,7 @@
     - Acceptance Criteria:
         - Admins have real-time visibility into the system's operational state.
         - Dashboard provides clear indicators for system anomalies.
-- [] **Admin Global Audit Log Viewer**
+- [ ] **Admin Global Audit Log Viewer**
     - Folder: `apps/web`
     - Goal: Provide a centralized view of all critical actions performed across the entire system for security auditing.
     - Technical Details (PRD/ARD):
@@ -1461,7 +1461,7 @@
     - Acceptance Criteria:
         - Admins can track exactly who did what and when across the platform.
         - High-volume log data is paginated and remains searchable.
-- [] **Admin User Impersonation**
+- [ ] **Admin User Impersonation**
     - Folder: `/`
     - Goal: Allow support admins to view the application exactly as a specific user sees it to troubleshoot issues.
     - Technical Details (PRD/ARD):
@@ -1481,7 +1481,7 @@
     - Acceptance Criteria:
         - Admin can access the dashboard of the impersonated user with their permissions.
         - Security boundary is maintained (Admin cannot see the user's actual password).
-- [] **Admin MFA Reset Support**
+- [ ] **Admin MFA Reset Support**
     - Folder: `/`
     - Goal: Allow admins to help users who have lost access to their MFA device.
     - Technical Details (PRD/ARD):
@@ -1498,7 +1498,7 @@
         - Requirements: Notification email sent to the user when their MFA is disabled by an admin.
     - Acceptance Criteria:
         - User can log in with just their password after an admin-triggered MFA reset.
-- [] **Admin Maintenance Mode Toggle**
+- [ ] **Admin Maintenance Mode Toggle**
     - Folder: `apps/api`
     - Goal: Allow admins to put the entire application or specific services into maintenance mode during upgrades.
     - Technical Details (PRD/ARD):
@@ -1525,7 +1525,7 @@
     - Acceptance Criteria:
         - When enabled, non-whitelisted users see a maintenance page and cannot use the app.
         - Critical background jobs (like scheduled backups) can be optionally paused or continued.
-- [] **Admin Promo Code Management**
+- [ ] **Admin Promo Code Management**
     - Folder: `apps/web`
     - Goal: Create and manage promotional codes to attract new users or reward existing ones.
     - Technical Details (PRD/ARD):
@@ -1541,7 +1541,7 @@
     - Acceptance Criteria:
         - Admins can generate codes that users can apply during the checkout process.
         - Expired or deactivated codes are rejected by the system.
-- [] **Admin Worker Pool Control**
+- [ ] **Admin Worker Pool Control**
     - Folder: `/`
     - Goal: Directly manage the background worker infrastructure from the Admin Panel.
     - Technical Details (PRD/ARD):
@@ -1562,7 +1562,7 @@
 
 # Phase 9: Hardening & Quality
 
-- [] **Audit Log**
+- [ ] **Audit Log**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Algorithm: AES-256-GCM authenticated encryption
@@ -1586,7 +1586,7 @@
         - Stack: Next.js (App Router), Tailwind CSS, React Query
         - Streaming: Data is encrypted via stream pipe (CipherIV) before leaving worker memory to S3
         - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
-- [] **Admin — Organization Resource Explorer (Details View)**
+- [ ] **Admin — Organization Resource Explorer (Details View)**
     - Folder: `apps/web`
     - Goal: Provide admins with a 360-degree view of an Organization's resources for deep troubleshooting.
     - Technical Details (PRD/ARD):
@@ -1611,7 +1611,7 @@
     - Acceptance Criteria:
         - Admins can navigate from a User to their Organization, and from there see every resource the customer has created.
         - Search within the Org view to find a specific database ID or snapshot.
-- [] **Error Handling Strategy**
+- [ ] **Error Handling Strategy**
     - Folder: `/`
     - Goal: Typed errors only.
     - Technical Details (PRD/ARD):
@@ -1622,7 +1622,7 @@
         - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
         - Stack: Next.js (App Router), Tailwind CSS, React Query
         - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
-- [] **Admin — Custom Quota & Limits Overrider**
+- [ ] **Admin — Custom Quota & Limits Overrider**
     - Folder: `packages/database`
     - Goal: Allow admins to grant special resource limits to specific customers without changing their global billing plan.
     - Technical Details (PRD/ARD):
@@ -1650,7 +1650,7 @@
     - Acceptance Criteria:
         - A customer can be granted more storage or connections than their "Pro" plan normally allows.
         - System accurately calculates usage against these manual overrides if they exist.
-- [] **Logging & Monitoring**
+- [ ] **Logging & Monitoring**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
@@ -1660,7 +1660,7 @@
         - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
         - Stack: Next.js (App Router), Tailwind CSS, React Query
         - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
-- [] **Admin — Global Database & Snapshot Browser**
+- [ ] **Admin — Global Database & Snapshot Browser**
     - Folder: `apps/web`
     - Goal: Allow admins to find any customer resource (DB or Snapshot) by ID for debugging.
     - Technical Details (PRD/ARD):
@@ -1684,7 +1684,7 @@
         - Requirements: Filter by "Failed only" or "Stuck in Progress" states.
     - Acceptance Criteria:
         - When a customer says "My snapshot with ID X failed", the admin can instantly find it without knowing the user's email.
-- [] **Admin — User & Organization Suspension System**
+- [ ] **Admin — User & Organization Suspension System**
     - Folder: `apps/web`
     - Goal: Allow admins to cleanly suspend or block users and organizations for security or non-payment reasons.
     - Technical Details (PRD/ARD):
@@ -1716,7 +1716,7 @@
     - Acceptance Criteria:
         - A suspended customer cannot access any DBSnap resources until an admin "Reactivates" them.
         - All background job processing for the customer is safely halted.
-- [] **Basic E2E Tests**
+- [ ] **Basic E2E Tests**
     - Folder: `/`
     - Goal: Critical flows covered.
     - Technical Details (PRD/ARD):
@@ -1739,7 +1739,7 @@
         - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
     - Acceptance Criteria:
         - Playwright/Cypress tests for signup, backup, and diff viewing
-- [] **Engine Unit Test Suite**
+- [ ] **Engine Unit Test Suite**
     - Folder: `/`
     - Goal: 100% test coverage for core backup/diff logic.
     - Technical Details (PRD/ARD):
@@ -1766,7 +1766,7 @@
         - Requirements: Table-driven tests for edge cases (empty collections, large docs)
     - Acceptance Criteria:
         - Core engine passes 100% tests in CI
-- [] **Admin — GDPR & Compliance Data Exporter**
+- [ ] **Admin — GDPR & Compliance Data Exporter**
     - Folder: `apps/web`
     - Goal: Fulfill GDPR "Right to Access" and "Right to Erasure" (Right to be Forgotten) requests.
     - Technical Details (PRD/ARD):
@@ -1787,7 +1787,7 @@
     - Acceptance Criteria:
         - Admins can cleanly purge a customer's entire footprint from the system.
         - Export provides a machine-readable format of the user's data.
-- [] **Performance Benchmark Suite**
+- [ ] **Performance Benchmark Suite**
     - Folder: `/`
     - Goal: Track system performance over time.
     - Technical Details (PRD/ARD):
@@ -1814,7 +1814,7 @@
         - Requirements: Historical tracking of performance metrics
     - Acceptance Criteria:
         - New code must not degrade performance beyond 5% tolerance
-- [] **Admin — Admin-Triggered Customer Support Actions**
+- [ ] **Admin — Admin-Triggered Customer Support Actions**
     - Folder: `apps/web`
     - Goal: Empower support agents to solve technical issues by performing actions on behalf of a customer without sharing credentials.
     - Technical Details (PRD/ARD):
@@ -1847,7 +1847,7 @@
     - Acceptance Criteria:
         - Admins can verify if a customer's DB connection is actually working without having to impersonate the user or see their password.
         - Results of these actions (logs, status) are visible to the admin.
-- [] **Automated Security Scan**
+- [ ] **Automated Security Scan**
     - Folder: `/`
     - Goal: Keep dependencies and code secure.
     - Technical Details (PRD/ARD):
@@ -1871,7 +1871,7 @@
         - Requirements: Secret scanning forcommitted code
     - Acceptance Criteria:
         - No high/critical vulnerabilities in production code
-- [] **System Load Testing**
+- [ ] **System Load Testing**
     - Folder: `apps/worker`
     - Goal: Benchmark system performance with large datasets.
     - Technical Details (PRD/ARD):
@@ -1881,7 +1881,7 @@
         - Requirements: Measure RAM usage (<512MB target via streaming)
     - Acceptance Criteria:
         - Acceptance Criteria: System handles 10GB+ dumps without OOM
-- [] **Encryption Integrity Verification**
+- [ ] **Encryption Integrity Verification**
     - Folder: `packages/crypto-utils`
     - Goal: Ensure data-at-rest is truly unintelligible.
     - Technical Details (PRD/ARD):
@@ -1891,7 +1891,7 @@
         - Requirements: Verify that hex dumps are random/garbage without Master Key
     - Acceptance Criteria:
         - Acceptance Criteria: 100% of samples are encrypted with AES-256-GCM
-- [] **Production Deployment Scripts**
+- [ ] **Production Deployment Scripts**
     - Folder: `/`
     - Goal: Prepare the system for cloud deployment.
     - Technical Details (PRD/ARD):
