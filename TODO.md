@@ -1875,7 +1875,7 @@
         - Requirements: Secret scanning forcommitted code
     - Acceptance Criteria:
         - No high/critical vulnerabilities in production code
-- [ ] **System Load Testing**
+- [x] **System Load Testing**
     - Folder: `apps/worker`
     - Goal: Benchmark system performance with large datasets.
     - Technical Details (PRD/ARD):
@@ -1885,7 +1885,7 @@
         - Requirements: Measure RAM usage (<512MB target via streaming)
     - Acceptance Criteria:
         - Acceptance Criteria: System handles 10GB+ dumps without OOM
-- [ ] **Encryption Integrity Verification**
+- [x] **Encryption Integrity Verification**
     - Folder: `packages/crypto-utils`
     - Goal: Ensure data-at-rest is truly unintelligible.
     - Technical Details (PRD/ARD):
