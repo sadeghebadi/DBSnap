@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useUsers } from "@/lib/hooks/use-users"
 import { Loader2, MoreHorizontal } from "lucide-react"
 import { format } from "date-fns"
+import api from "@/lib/api"
 
 export function UserList() {
     const [page, setPage] = useState(1)
@@ -51,10 +52,43 @@ export function UserList() {
                                 </td>
                                 <td className="p-4 align-middle">{format(new Date(user.createdAt), 'MMM d, yyyy')}</td>
                                 <td className="p-4 align-middle text-right">
-                                    <button className="ghost h-8 w-8 p-0">
-                                        <span className="sr-only">Open menu</span>
-                                        <MoreHorizontal className="h-4 w-4" />
-                                    </button>
+                                    <div className="flex items-center justify-end gap-2">
+                                        <button
+                                            onClick={async () => {
+                                                try {
+                                                    const res = await api.post(`/auth/admin/impersonate/${user.id}`);
+                                                    const adminToken = localStorage.getItem('token');
+                                                    if (adminToken) localStorage.setItem('admin_token', adminToken);
+                                                    localStorage.setItem('token', res.data.access_token);
+                                                    window.location.href = '/dashboard';
+                                                } catch (e) {
+                                                    alert('Failed to impersonate user');
+                                                }
+                                            }}
+                                            className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded hover:bg-primary/90 transition-colors"
+                                        >
+                                            Impersonate
+                                        </button>
+                                        <button
+                                            onClick={async () => {
+                                                const reason = prompt('Please enter a reason for MFA reset:');
+                                                if (!reason) return;
+                                                try {
+                                                    await api.post(`/users/${user.id}/mfa-reset`, { reason });
+                                                    alert('MFA reset successfully');
+                                                } catch (e) {
+                                                    alert('Failed to reset MFA');
+                                                }
+                                            }}
+                                            className="text-xs border border-amber-500 text-amber-500 px-2 py-1 rounded hover:bg-amber-50 transition-colors"
+                                        >
+                                            Reset MFA
+                                        </button>
+                                        <button className="ghost h-8 w-8 p-0">
+                                            <span className="sr-only">Open menu</span>
+                                            <MoreHorizontal className="h-4 w-4" />
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}

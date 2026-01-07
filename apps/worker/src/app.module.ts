@@ -14,6 +14,8 @@ import { BACKUP_QUEUE, RESTORE_QUEUE, DIFF_QUEUE } from './queues/queue.constant
 import { EmailModule } from './email/email.module';
 import { AnalysisModule } from './analysis/analysis.module';
 import { HealthModule } from './health/health.module';
+import { MonitorModule } from './monitor/monitor.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -35,6 +37,8 @@ import { HealthModule } from './health/health.module';
     EmailModule,
     AnalysisModule,
     HealthModule,
+    MonitorModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [

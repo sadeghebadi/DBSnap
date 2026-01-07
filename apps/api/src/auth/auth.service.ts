@@ -206,4 +206,24 @@ export class AuthService {
     async getSessions(userId: string) {
         return this.sessionsService.getActiveSessions(userId);
     }
+
+    async impersonate(adminId: string, userId: string) {
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId },
+            include: { role: true },
+        });
+
+        if (!user) throw new NotFoundException('User not found');
+
+        const payload = {
+            email: user.email,
+            sub: user.id,
+            role: user.role?.name,
+            impersonatorId: adminId
+        };
+
+        return {
+            access_token: this.jwtService.sign(payload),
+        };
+    }
 }

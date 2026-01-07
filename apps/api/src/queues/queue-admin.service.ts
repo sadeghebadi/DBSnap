@@ -64,7 +64,58 @@ export class QueueAdminService {
 
     async getQueueStatus(queueName: string) {
         const queue = this.getQueue(queueName);
-        const counts = await queue.getJobCounts('waiting', 'active', 'failed', 'delayed');
+        const counts = await queue.getJobCounts('waiting', 'active', 'failed', 'delayed', 'completed');
         return counts;
+    }
+
+    async getGlobalQueueStats() {
+        const [backup, restore, diff] = await Promise.all([
+            this.getQueueStatus('backup'),
+            this.getQueueStatus('restore'),
+            this.getQueueStatus('diff'),
+        ]);
+
+        return {
+            backup,
+            restore,
+            diff,
+        };
+    }
+
+    async getActiveWorkers() {
+        const redis = (this.backupQueue as any).client; // Access BullMQ's redis client
+        const keys = await redis.keys('worker:stats:*');
+        if (keys.length === 0) return [];
+
+        const stats = await Promise.all(keys.map((key: string) => redis.get(key)));
+        return stats.filter(s => s).map(s => JSON.parse(s));
+    }
+
+    async sendWorkerCommand(workerId: string, command: string) {
+        const redis = (this.backupQueue as any).client;
+        await redis.publish('worker:commands', JSON.stringify({
+            targetId: workerId,
+            command
+        }));
+        return { success: true };
+    }
+
+    async updateQueueConcurrency(queueName: string, concurrency: number) {
+        const redis = (this.backupQueue as any).client;
+        await redis.set(`queue:settings:${queueName}:concurrency`, concurrency);
+        // Notify workers to reload settings
+        await redis.publish('worker:commands', JSON.stringify({
+            targetId: 'all',
+            command: 'RELOAD_SETTINGS'
+        }));
+        return { success: true };
+    }
+
+    async getQueueSettings(queueName: string) {
+        const redis = (this.backupQueue as any).client;
+        const concurrency = await redis.get(`queue:settings:${queueName}:concurrency`);
+        return {
+            concurrency: concurrency ? parseInt(concurrency) : 5 // Default 5
+        };
     }
 }

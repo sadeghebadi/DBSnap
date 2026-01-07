@@ -8,12 +8,12 @@ export class BillingController {
     constructor(private readonly billingService: BillingService) { }
 
     @Get('status')
-    async getStatus(@Request() req) {
+    async getStatus(@Request() req: any) {
         return this.billingService.getSubscriptionStatus(req.user.userId);
     }
 
     @Post('upgrade')
-    async upgrade(@Request() req, @Body('plan') plan: 'FREE' | 'PRO' | 'TEAM') {
+    async upgrade(@Request() req: any, @Body('plan') plan: 'FREE' | 'PRO' | 'TEAM') {
         return this.billingService.updatePlan(req.user.userId, plan);
     }
 }

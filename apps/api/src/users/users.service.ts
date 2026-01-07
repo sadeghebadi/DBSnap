@@ -32,4 +32,15 @@ export class UsersService {
             }
         };
     }
+
+    async resetMfa(userId: string) {
+        return this.prisma.user.update({
+            where: { id: userId },
+            data: {
+                mfaEnabled: false,
+                mfaSecret: null,
+                backupCodes: [],
+            },
+        });
+    }
 }

@@ -10,7 +10,8 @@ import {
     Database,
     Activity,
     CreditCard,
-    Shield
+    Shield,
+    Tag
 } from "lucide-react"
 
 const sidebarItems = [
@@ -43,6 +44,11 @@ const sidebarItems = [
         title: "Billing",
         href: "/admin/billing",
         icon: CreditCard,
+    },
+    {
+        title: "Promo Codes",
+        href: "/admin/promo-codes",
+        icon: Tag,
     },
     {
         title: "Settings",

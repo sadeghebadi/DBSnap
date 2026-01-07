@@ -16,6 +16,8 @@ import { SessionsService } from './sessions.service';
 import { ApiKeysService } from './api-keys.service';
 import { ApiKeyStrategy } from './strategies/api-key.strategy';
 import { ApiKeysController } from './api-keys.controller';
+import { AdminAuthController } from './admin-auth.controller';
+import { AuditLogsModule } from '../audit-logs/audit-logs.module';
 
 @Module({
   imports: [
@@ -26,6 +28,7 @@ import { ApiKeysController } from './api-keys.controller';
       signOptions: { expiresIn: '60m' },
     }),
     EmailModule,
+    AuditLogsModule,
   ],
   providers: [
     AuthService,
@@ -38,7 +41,7 @@ import { ApiKeysController } from './api-keys.controller';
     ApiKeysService,
     ApiKeyStrategy,
   ],
-  controllers: [AuthController, ApiKeysController],
+  controllers: [AuthController, ApiKeysController, AdminAuthController],
   exports: [AuthService],
 })
 export class AuthModule { }

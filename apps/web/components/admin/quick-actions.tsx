@@ -1,8 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { Plus, UserPlus, Megaphone, AlertTriangle } from "lucide-react"
+import { Plus, UserPlus, Megaphone, AlertTriangle, Tag } from "lucide-react"
 import { CreateOrgModal } from "./create-org-modal"
+import Link from "next/link"
 
 export function QuickActions() {
     const [isOrgModalOpen, setIsOrgModalOpen] = useState(false)
@@ -34,15 +35,15 @@ export function QuickActions() {
                 </div>
             </button>
 
-            <button className="flex items-center gap-4 rounded-xl border bg-card p-6 shadow-sm hover:bg-accent transition-colors text-left">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-                    <Megaphone className="h-5 w-5 text-primary" />
+            <Link href="/admin/promo-codes" className="flex items-center gap-4 rounded-xl border bg-card p-6 shadow-sm hover:bg-accent transition-colors text-left">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-rose-500/10">
+                    <Tag className="h-5 w-5 text-rose-600" />
                 </div>
                 <div>
-                    <div className="font-semibold">System Notice</div>
-                    <div className="text-xs text-muted-foreground">Broadcast message</div>
+                    <div className="font-semibold">Promo Codes</div>
+                    <div className="text-xs text-muted-foreground">Manage discounts</div>
                 </div>
-            </button>
+            </Link>
 
             <button className="flex items-center gap-4 rounded-xl border bg-card p-6 shadow-sm hover:bg-accent transition-colors text-left">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-500/10">
@@ -50,7 +51,7 @@ export function QuickActions() {
                 </div>
                 <div>
                     <div className="font-semibold">Maintenance</div>
-                    <div className="text-xs text-muted-foreground">Toggle maintenance mode</div>
+                    <div className="text-xs text-muted-foreground">Global toggle</div>
                 </div>
             </button>
         </div>

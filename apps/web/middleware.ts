@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { jwtDecode } from "jwt-decode";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
     const token = request.cookies.get('token')?.value || ""; // Adjust if storing in localStorage vs cookies meant for Server Components.
     // NOTE: Since the current Auth implementation stores token in localStorage on client side, 
     // middleware (server-side) cannot access it directly unless it's also set as a cookie or passed in headers.
@@ -38,6 +38,22 @@ export function middleware(request: NextRequest) {
     // If I cannot modify the Login page easily to set cookies without breaking things, I will ALSO add a client-side check.
 
     // Actually, I'll update the Login page to set a cookie as well. It's a small change.
+
+    // 3. MAINTENANCE MODE CHECK
+    const maintenanceRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'}/maintenance/status`, {
+        next: { revalidate: 0 } // Don't cache in middleware
+    }).catch(() => null);
+
+    if (maintenanceRes?.ok) {
+        const maintenance = await maintenanceRes.json();
+        if (maintenance.enabled && !request.nextUrl.pathname.startsWith('/maintenance')) {
+            // Allow whitelisted IPs (if we can reliably get IP here)
+            const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || "";
+            if (!maintenance.whitelist.includes(ip)) {
+                return NextResponse.redirect(new URL('/maintenance', request.url))
+            }
+        }
+    }
 
     if (request.nextUrl.pathname.startsWith('/admin')) {
         if (!token) {

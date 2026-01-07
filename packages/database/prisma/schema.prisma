@@ -32,6 +32,7 @@ model User {
   projects      Project[]
   sessions      Session[]
   apiKeys       ApiKey[]
+  auditLogs     AuditLog[]
 }
 
 model ApiKey {
@@ -101,6 +102,7 @@ model Project {
   databases   Database[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+  notificationChannels NotificationChannel[]
 }
 
 model Database {
@@ -206,4 +208,57 @@ enum DiffStatus {
   Processing
   Completed
   Failed
+}
+
+model AuditLog {
+  id             String   @id @default(uuid())
+  userId         String?
+  user           User?    @relation(fields: [userId], references: [id])
+  action         String   // e.g. "USER_LOGIN", "BACKUP_TRIGGERED"
+  resourceType   String?  // e.g. "Backup", "Project"
+  resourceId     String?
+  metadata       Json?    // { "ip": "...", "details": "..." }
+  createdAt      DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+model PromoCode {
+  id            String       @id @default(uuid())
+  code          String       @unique
+  discountType  DiscountType @default(PERCENT)
+  discountValue Float
+  expiresAt     DateTime?
+  usageLimit    Int?
+  usageCount    Int          @default(0)
+  isActive      Boolean      @default(true)
+  eligiblePlans UserPlan[]   @default([FREE, PRO, TEAM])
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+enum DiscountType {
+  PERCENT
+  AMOUNT
+}
+
+model NotificationChannel {
+  id        String                @id @default(uuid())
+  projectId String
+  type      NotificationChannelType
+  config    Json                  // { "url": "...", "email": "..." }
+  events    String[]              @default(["BACKUP_SUCCESS", "BACKUP_FAILURE", "DIFF_READY"])
+  isEnabled Boolean               @default(true)
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
+
+  project   Project               @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+enum NotificationChannelType {
+  EMAIL
+  SLACK
+  WEBHOOK
 }

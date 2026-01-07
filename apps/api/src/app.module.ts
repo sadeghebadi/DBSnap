@@ -16,9 +16,13 @@ import { JobsModule } from './jobs/jobs.module';
 import { QueueAdminModule } from './queues/queue-admin.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { BillingModule } from './billing/billing.module';
+import { AuditLogsModule } from './audit-logs/audit-logs.module';
 
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { RedisModule } from './common/redis/redis.module';
+import { MaintenanceModule } from './maintenance/maintenance.module';
+import { MaintenanceGuard } from './common/guards/maintenance.guard';
 
 @Module({
   imports: [
@@ -39,6 +43,7 @@ import { APP_GUARD } from '@nestjs/core';
         },
       },
     }),
+    RedisModule,
     UsersModule,
     AuthModule,
     EmailModule,
@@ -53,6 +58,8 @@ import { APP_GUARD } from '@nestjs/core';
     SchedulerModule,
     AnalyticsModule,
     BillingModule,
+    AuditLogsModule,
+    MaintenanceModule,
     BackupsModule,
     DiffsModule,
     JobsModule,
@@ -64,7 +71,11 @@ import { APP_GUARD } from '@nestjs/core';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard
-    }
+    },
+    {
+      provide: APP_GUARD,
+      useClass: MaintenanceGuard,
+    },
   ],
 })
 export class AppModule { }

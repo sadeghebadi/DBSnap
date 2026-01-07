@@ -1415,7 +1415,7 @@
     - Acceptance Criteria:
         - Users can subscribe to a plan and upgrade/cancel via the UI.
         - System enforces limits based on the active plan.
-- [ ] **System Health Dashboard**
+- [x] **System Health Dashboard**
     - Folder: `/`
     - Goal: Monitor the internal health and stability of the DBSnap system.
     - Technical Details (PRD/ARD):
@@ -1441,7 +1441,7 @@
     - Acceptance Criteria:
         - Admins have real-time visibility into the system's operational state.
         - Dashboard provides clear indicators for system anomalies.
-- [ ] **Admin Global Audit Log Viewer**
+- [x] **Admin Global Audit Log Viewer**
     - Folder: `apps/web`
     - Goal: Provide a centralized view of all critical actions performed across the entire system for security auditing.
     - Technical Details (PRD/ARD):
@@ -1461,7 +1461,7 @@
     - Acceptance Criteria:
         - Admins can track exactly who did what and when across the platform.
         - High-volume log data is paginated and remains searchable.
-- [ ] **Admin User Impersonation**
+- [x] **Admin User Impersonation**
     - Folder: `/`
     - Goal: Allow support admins to view the application exactly as a specific user sees it to troubleshoot issues.
     - Technical Details (PRD/ARD):
@@ -1481,7 +1481,7 @@
     - Acceptance Criteria:
         - Admin can access the dashboard of the impersonated user with their permissions.
         - Security boundary is maintained (Admin cannot see the user's actual password).
-- [ ] **Admin MFA Reset Support**
+- [x] **Admin MFA Reset Support**
     - Folder: `/`
     - Goal: Allow admins to help users who have lost access to their MFA device.
     - Technical Details (PRD/ARD):
@@ -1498,7 +1498,7 @@
         - Requirements: Notification email sent to the user when their MFA is disabled by an admin.
     - Acceptance Criteria:
         - User can log in with just their password after an admin-triggered MFA reset.
-- [ ] **Admin Maintenance Mode Toggle**
+- [x] **Admin Maintenance Mode Toggle**
     - Folder: `apps/api`
     - Goal: Allow admins to put the entire application or specific services into maintenance mode during upgrades.
     - Technical Details (PRD/ARD):
@@ -1525,7 +1525,7 @@
     - Acceptance Criteria:
         - When enabled, non-whitelisted users see a maintenance page and cannot use the app.
         - Critical background jobs (like scheduled backups) can be optionally paused or continued.
-- [ ] **Admin Promo Code Management**
+- [x] **Admin Promo Code Management**
     - Folder: `apps/web`
     - Goal: Create and manage promotional codes to attract new users or reward existing ones.
     - Technical Details (PRD/ARD):
@@ -1541,7 +1541,7 @@
     - Acceptance Criteria:
         - Admins can generate codes that users can apply during the checkout process.
         - Expired or deactivated codes are rejected by the system.
-- [ ] **Admin Worker Pool Control**
+- [x] **Admin Worker Pool Control**
     - Folder: `/`
     - Goal: Directly manage the background worker infrastructure from the Admin Panel.
     - Technical Details (PRD/ARD):
