@@ -40,14 +40,15 @@ export class BackupsService {
         });
     }
 
-    async triggerBackup(databaseId: string) {
+
+    async triggerBackup(databaseId: string, metadata?: { triggeredByAdmin: boolean; adminId: string }) {
         const database = await this.prisma.database.findUnique({ where: { id: databaseId } });
         if (!database) throw new NotFoundException('Database not found');
 
         const job = await this.backupQueue.add('backup-job', {
             databaseId,
-            projectId: database.projectId
-            // other payload needed by worker 
+            projectId: database.projectId,
+            metadata // Pass metadata to worker
         });
 
         return { success: true, jobId: job.id, message: 'Backup triggered' };

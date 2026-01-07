@@ -1791,7 +1791,7 @@
     - Acceptance Criteria:
         - Admins can cleanly purge a customer's entire footprint from the system.
         - Export provides a machine-readable format of the user's data.
-- [ ] **Performance Benchmark Suite**
+- [x] **Performance Benchmark Suite**
     - Folder: `/`
     - Goal: Track system performance over time.
     - Technical Details (PRD/ARD):

@@ -147,4 +147,87 @@ export class ConnectionsService {
         // Add ownership check ideally
         return this.prisma.database.delete({ where: { id } });
     }
+
+    async testConnection(id: string): Promise<{ success: boolean; message: string; latencyMs?: number; version?: string }> {
+        const database = await this.prisma.database.findUnique({ where: { id } });
+        if (!database) {
+            throw new NotFoundException('Database not found');
+        }
+
+        // Decrypt connection string
+        const connectionString = this.encryptionService.decrypt({
+            iv: database.iv,
+            content: database.connectionStringEnc,
+            authTag: database.authTag
+        });
+
+        // Decrypt SSH if applicable
+        let sshOptions;
+        if (database.isSshTunnel && database.sshHost && database.sshUsername && database.sshPrivateKeyEnc && database.sshPrivateKeyIV && database.sshPrivateKeyAuthTag) {
+            const privateKey = this.encryptionService.decrypt({
+                iv: database.sshPrivateKeyIV,
+                content: database.sshPrivateKeyEnc,
+                authTag: database.sshPrivateKeyAuthTag
+            });
+            sshOptions = {
+                host: database.sshHost,
+                port: database.sshPort || 22,
+                username: database.sshUsername,
+                privateKey
+            };
+        }
+
+        // Decrypt Proxy if applicable
+        let proxyOptions;
+        if (database.isProxy && database.proxyHost && database.proxyPort) {
+            let password;
+            if (database.proxyPasswordEnc && database.proxyPasswordIV && database.proxyPasswordAuthTag) {
+                password = this.encryptionService.decrypt({
+                    iv: database.proxyPasswordIV,
+                    content: database.proxyPasswordEnc,
+                    authTag: database.proxyPasswordAuthTag
+                });
+            }
+
+            proxyOptions = {
+                host: database.proxyHost,
+                port: database.proxyPort,
+                username: database.proxyUsername || undefined,
+                password
+            };
+        }
+
+        // Decrypt SSL if applicable
+        const sslOptions: any = {
+            rejectUnauthorized: database.sslRejectUnauthorized !== false, // default true if null
+            mode: database.sslMode || undefined
+        };
+
+        if (database.sslCaEnc && database.sslCaIV && database.sslCaAuthTag) {
+            sslOptions.ca = this.encryptionService.decrypt({ iv: database.sslCaIV, content: database.sslCaEnc, authTag: database.sslCaAuthTag });
+        }
+        if (database.sslCertEnc && database.sslCertIV && database.sslCertAuthTag) {
+            sslOptions.cert = this.encryptionService.decrypt({ iv: database.sslCertIV, content: database.sslCertEnc, authTag: database.sslCertAuthTag });
+        }
+        if (database.sslKeyEnc && database.sslKeyIV && database.sslKeyAuthTag) {
+            sslOptions.key = this.encryptionService.decrypt({ iv: database.sslKeyIV, content: database.sslKeyEnc, authTag: database.sslKeyAuthTag });
+        }
+
+        const startTime = Date.now();
+        const result = await this.validator.validateConnection(
+            database.type,
+            connectionString,
+            sshOptions,
+            proxyOptions,
+            sslOptions
+        );
+        const latencyMs = Date.now() - startTime;
+
+        return {
+            ...result,
+            message: result.message || 'Connection successful',
+            latencyMs: result.success ? latencyMs : undefined
+        };
+    }
 }
+

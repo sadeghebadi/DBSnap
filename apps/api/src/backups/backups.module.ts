@@ -25,5 +25,6 @@ import { BACKUP_QUEUE, RESTORE_QUEUE } from '../queues/queue.constants';
             useClass: PrismaClient
         }
     ],
+    exports: [BackupsService]
 })
 export class BackupsModule { }

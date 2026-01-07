@@ -12,5 +12,6 @@ import { ConnectionsController } from './connections.controller';
     imports: [PrismaModule, EncryptionModule, DatabaseModule],
     controllers: [ProjectsController, ConnectionsController],
     providers: [ProjectsService, ConnectionsService],
+    exports: [ConnectionsService]
 })
 export class ProjectsModule { }
