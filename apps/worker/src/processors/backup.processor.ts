@@ -6,6 +6,7 @@ import { DumperFactory } from '../dumpers/dumper.factory';
 import { EncryptionService } from '../encryption/encryption.service';
 import { StorageService } from '../storage/storage.service';
 import { PrismaClient } from '@dbsnap/database';
+import { EmailService } from '../email/email.service';
 
 @Processor(BACKUP_QUEUE)
 export class BackupProcessor extends WorkerHost {
@@ -15,7 +16,8 @@ export class BackupProcessor extends WorkerHost {
         private dumperFactory: DumperFactory,
         private encryptionService: EncryptionService,
         private storageService: StorageService,
-        @Inject('PRISMA_CLIENT') private prisma: PrismaClient
+        @Inject('PRISMA_CLIENT') private prisma: PrismaClient,
+        private emailService: EmailService
     ) {
         super();
     }
@@ -110,6 +112,14 @@ export class BackupProcessor extends WorkerHost {
                 });
             }
 
+            // Notify User
+            if (database) {
+                await this.emailService.sendBackupSuccess('user@example.com', { // TODO: Fetch user email from DB via Project->User
+                    databaseName: database.name,
+                    sizeBytes: '0'
+                });
+            }
+
             return {
                 success: true,
                 backupId: backupId || 'new',
@@ -125,6 +135,12 @@ export class BackupProcessor extends WorkerHost {
                     data: { status: 'Failed' }
                 });
             }
+
+            // Notify User (DB might be null if findUnique failed, handle gracefully)
+            await this.emailService.sendBackupFailure('user@example.com', {
+                databaseName: databaseId, // Use ID as fallback name
+                error: error.message
+            });
             throw error;
         }
     }

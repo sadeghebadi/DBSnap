@@ -1165,7 +1165,7 @@
         - Streaming: Data is encrypted via stream pipe (CipherIV) before leaving worker memory to S3
         - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
 
-# Phase 7: Web Ui (Minimal)
+# Phase 7: Web Ui (Advance)
 
 - [ ] **Auth Pages**
     - Folder: `/`
@@ -1215,7 +1215,7 @@
     - Functional Details:
         - Features: Table view
         - Features: Status indicators
-- [ ] **Diff Viewer (Simple)**
+- [ ] **Diff Viewer (Advanced)**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
@@ -1238,7 +1238,7 @@
 
 - [ ] **Admin — Admin Panel UI Shell & Navigation**
     - Folder: `/`
-    - Goal: Create the foundational layout for the Admin Panel that provides consistent navigation and a professional look.
+    - Goal: Create the Advanced layout for the Admin Panel that provides consistent navigation and a professional look.
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
         - Diff Viewer: Monaco Editor integration (read-only mode) for visual delta representation

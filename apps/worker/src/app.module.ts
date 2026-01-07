@@ -11,6 +11,7 @@ import { RestoreProcessor } from './processors/restore.processor';
 import { PrismaClient } from '@dbsnap/database';
 import { DiffProcessor } from './processors/diff.processor';
 import { BACKUP_QUEUE, RESTORE_QUEUE, DIFF_QUEUE } from './queues/queue.constants';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { BACKUP_QUEUE, RESTORE_QUEUE, DIFF_QUEUE } from './queues/queue.constant
     DumperModule,
     StorageModule,
     RestorerModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [
