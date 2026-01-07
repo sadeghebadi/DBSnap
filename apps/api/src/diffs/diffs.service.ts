@@ -1,10 +1,13 @@
 import { Injectable, NotFoundException, ForbiddenException, InternalServerErrorException } from '@nestjs/common';
-import { PrismaClient } from '@dbsnap/database';
+import { PrismaClient, DiffStatus } from '@dbsnap/database';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { EncryptionService } from '../encryption/encryption.service';
-import { Readable, Transform } from 'stream';
+import { Readable } from 'stream';
 import { Response } from 'express';
 import split2 from 'split2';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
+import { DIFF_QUEUE } from '../queues/queue.constants';
 
 @Injectable()
 export class DiffsService {
@@ -14,6 +17,7 @@ export class DiffsService {
     constructor(
         private prisma: PrismaClient,
         private encryptionService: EncryptionService,
+        @InjectQueue(DIFF_QUEUE) private diffQueue: Queue,
     ) {
         this.s3 = new S3Client({
             region: process.env.S3_REGION || 'us-east-1',
@@ -25,6 +29,34 @@ export class DiffsService {
             forcePathStyle: true,
         });
         this.bucketName = process.env.S3_BUCKET_NAME || 'dbsnap-backups';
+    }
+
+    async triggerDiff(userId: string, snapshotAId: string, snapshotBId: string) {
+        // Validation: Verify existence and ownership
+        const snapshotA = await this.prisma.backup.findUnique({ where: { id: snapshotAId }, include: { database: { include: { project: true } } } });
+        const snapshotB = await this.prisma.backup.findUnique({ where: { id: snapshotBId }, include: { database: { include: { project: true } } } });
+
+        if (!snapshotA || !snapshotB) throw new NotFoundException('One or both snapshots not found');
+        if (snapshotA.database.project.userId !== userId) throw new ForbiddenException('Access denied');
+        if (snapshotB.database.project.userId !== userId) throw new ForbiddenException('Access denied');
+
+        // Create Pending Diff Record
+        const diff = await this.prisma.diff.create({
+            data: {
+                snapshotAId,
+                snapshotBId,
+                status: DiffStatus.Pending,
+            }
+        });
+
+        // Add to Queue
+        await this.diffQueue.add('diff-job', {
+            diffId: diff.id,
+            snapshotAId,
+            snapshotBId
+        });
+
+        return { success: true, diffId: diff.id, message: 'Diff calculation triggered' };
     }
 
     async getDiff(diffId: string, userId: string) {
@@ -55,26 +87,6 @@ export class DiffsService {
             throw new NotFoundException('No detail file available for this diff');
         }
 
-        // We use the encryption key of Snapshot B (the "newer" one usually) or strictly SnapshotA?
-        // Actually, the DiffProcessor creates a NEW file. It should use an encryption key.
-        // Wait, DiffProcessor doesn't store separate encryption metadata for the Diff file.
-        // It SHOULD. For now, assuming it reuses SnapshotA's key or something?
-        // Checking DiffProcessor implementation: It didn't upload anything yet.
-        // IMPORTANT: The current implementation assumes the diff file is encrypted.
-        // Since we are fixing the upload later, we assume standard metadata will be stored.
-        // But where? Diff model has `summary` but no separate `metadata`.
-        // We might need to add `metadata` to Diff model for IV/AuthTag.
-        // For MVP, if the file is missing, we error.
-
-        // TEMPORARY: Assume unencrypted for the very first pass OR 
-        // Assume we will fetch metadata from a field we forgot to add.
-        // Let's assume we use SnapshotB's encryption key for now as a fallback/convention 
-        // or effectively we can't decrypt without IV.
-
-        // Re-reading Schema: Diff has 'summary' Json.
-        // Ideally we store { iv, authTag } in 'summary' or a new field.
-        // For now, I'll assume 'summary' contains encryption details if it's not just stats.
-
         const command = new GetObjectCommand({
             Bucket: this.bucketName,
             Key: diff.s3DetailKey,
@@ -83,10 +95,6 @@ export class DiffsService {
         try {
             const result = await this.s3.send(command);
             const stream = result.Body as Readable;
-
-            // TODO: Retrieve IV/AuthTag from Diff metadata (to be added)
-            // For now, streaming raw (encrypted) or erroring if logic incomplete
-            // To make this compile and "work" for empty files:
 
             stream.pipe(res);
         } catch (e) {
@@ -126,7 +134,7 @@ export class DiffsService {
             await new Promise<void>((resolve, reject) => {
                 stream
                     .pipe(split2(JSON.parse))
-                    .on('data', (line) => {
+                    .on('data', (line: any) => {
                         if (lineCount >= startLine && lineCount < endLine) {
                             lines.push(line);
                         }
@@ -137,7 +145,7 @@ export class DiffsService {
                         }
                     })
                     .on('end', () => resolve())
-                    .on('error', (err) => reject(err));
+                    .on('error', (err: any) => reject(err));
             });
 
             return {

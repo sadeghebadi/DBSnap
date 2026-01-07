@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Res, UseGuards, Request, Query } from '@nestjs/common';
+import { Controller, Get, Param, Res, UseGuards, Request, Query, Post, Body } from '@nestjs/common';
 import type { Response } from 'express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { DiffsService } from './diffs.service';
@@ -11,6 +11,11 @@ export class DiffsController {
     @Get(':id')
     async getDiff(@Param('id') id: string, @Request() req: any) {
         return this.diffsService.getDiff(id, req.user.userId);
+    }
+
+    @Post('trigger')
+    async triggerDiff(@Request() req: any, @Body() body: { snapshotAId: string, snapshotBId: string }) {
+        return this.diffsService.triggerDiff(req.user.userId, body.snapshotAId, body.snapshotBId);
     }
 
     @Get(':id/download')

@@ -14,9 +14,17 @@ import { BackupsModule } from './backups/backups.module';
 import { DiffsModule } from './diffs/diffs.module';
 import { JobsModule } from './jobs/jobs.module';
 import { QueueAdminModule } from './queues/queue-admin.module';
+import { AnalyticsModule } from './analytics/analytics.module';
+
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot([{
+      ttl: 60000,
+      limit: 10,
+    }]),
     LoggerModule.forRoot({
       pinoHttp: {
         transport: process.env.NODE_ENV !== 'production' ? { target: 'pino-pretty' } : undefined,
@@ -34,7 +42,6 @@ import { QueueAdminModule } from './queues/queue-admin.module';
     AuthModule,
     EmailModule,
     ProjectsModule,
-    ProjectsModule,
     DatabaseModule,
     BullModule.forRoot({
       connection: {
@@ -43,12 +50,19 @@ import { QueueAdminModule } from './queues/queue-admin.module';
       },
     }),
     SchedulerModule,
+    AnalyticsModule,
     BackupsModule,
     DiffsModule,
     JobsModule,
     QueueAdminModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard
+    }
+  ],
 })
 export class AppModule { }

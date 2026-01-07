@@ -1128,7 +1128,7 @@
     - Functional Details:
         - Endpoints: List snapshots
         - Endpoints: Trigger snapshot
-- [ ] **Diff API**
+- [x] **Diff API**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - API: JWT + refresh tokens, GitHub/Google OAuth integration
@@ -1149,7 +1149,7 @@
     - Functional Details:
         - Endpoints: Request diff
         - Endpoints: Fetch result
-- [ ] **Rate Limiting**
+- [x] **Rate Limiting**
     - Folder: `/`
     - Goal: Prevent abuse.
     - Technical Details (PRD/ARD):
@@ -1167,7 +1167,7 @@
 
 # Phase 7: Web Ui (Advance)
 
-- [ ] **Auth Pages**
+- [x] **Auth Pages**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - API: JWT + refresh tokens, GitHub/Google OAuth integration
@@ -1183,7 +1183,7 @@
     - Functional Details:
         - Pages: Login
         - Pages: Register
-- [ ] **Connections UI**
+- [x] **Connections UI**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
@@ -1197,7 +1197,7 @@
         - Features: Add
         - Features: Test
         - Features: List
-- [ ] **Snapshot List Page**
+- [x] **Snapshot List Page**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
@@ -1215,7 +1215,7 @@
     - Functional Details:
         - Features: Table view
         - Features: Status indicators
-- [ ] **Diff Viewer (Advanced)**
+- [x] **Diff Viewer (Advanced)**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
@@ -1236,7 +1236,7 @@
 
 # Phase 8: Admin Panel
 
-- [ ] **Admin — Admin Panel UI Shell & Navigation**
+- [x] **Admin — Admin Panel UI Shell & Navigation**
     - Folder: `/`
     - Goal: Create the Advanced layout for the Admin Panel that provides consistent navigation and a professional look.
     - Technical Details (PRD/ARD):
@@ -1265,7 +1265,7 @@
     - Acceptance Criteria:
         - Navigation between all admin sections is smooth.
         - Admin shell is separate from the customer dashboard shell to prevent UI bleed.
-- [ ] **Admin — Admin Authentication & Authorization Guard**
+- [x] **Admin — Admin Authentication & Authorization Guard**
     - Folder: `packages/database`
     - Goal: Ensure that the Admin Panel is inaccessible to regular customers and properly integrated with the auth flow.
     - Technical Details (PRD/ARD):

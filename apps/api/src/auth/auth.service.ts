@@ -38,7 +38,7 @@ export class AuthService {
 
         const sessionId = await this.sessionsService.createSession(user.id, ipAddress, userAgent);
 
-        const payload = { email: user.email, sub: user.id, sid: sessionId };
+        const payload = { email: user.email, sub: user.id, sid: sessionId, role: user.role?.name };
         return {
             access_token: this.jwtService.sign(payload),
         };

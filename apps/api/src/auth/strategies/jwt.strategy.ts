@@ -20,6 +20,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             const isValid = await this.sessionsService.validateSession(payload.sid);
             if (!isValid) return null;
         }
-        return { userId: payload.sub, email: payload.email, sessionId: payload.sid };
+        return { userId: payload.sub, email: payload.email, sessionId: payload.sid, role: payload.role };
     }
 }
