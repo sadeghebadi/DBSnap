@@ -1679,12 +1679,16 @@
     - Functional Details:
         - Requirements: Global searchable list of all Databases across all customers.
         - Requirements: Global searchable list of all Snapshots across all customers.
-        - Requirements: Search by ID, name, or connection string hash.
-        - Requirements: Display failure reasons and logs directly in the list for quick diagnosis.
-        - Requirements: Filter by "Failed only" or "Stuck in Progress" states.
     - Acceptance Criteria:
         - When a customer says "My snapshot with ID X failed", the admin can instantly find it without knowing the user's email.
-- [ ] **Admin — User & Organization Suspension System**
+- [x] **Admin — User & Organization Suspension System** <!-- id: 50 -->
+    - [x] Create implementation plan <!-- id: 51 -->
+    - [x] Update Prisma schema with suspension fields <!-- id: 52 -->
+    - [x] Update Auth Guard and Login logic for suspension check <!-- id: 53 -->
+    - [x] Implement Admin API endpoints for suspension management <!-- id: 54 -->
+    - [x] Add suspension checks to Worker processors <!-- id: 55 -->
+    - [x] Create Suspension UI in Web Application <!-- id: 56 -->
+    - [x] Verify functionality and email notifications <!-- id: 57 -->
     - Folder: `apps/web`
     - Goal: Allow admins to cleanly suspend or block users and organizations for security or non-payment reasons.
     - Technical Details (PRD/ARD):
