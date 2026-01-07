@@ -1,5 +1,5 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
-import { PrismaClient, NotificationChannelType } from '@prisma/client';
+import { PrismaClient, NotificationChannelType } from '@dbsnap/database';
 import { EmailService } from '../email/email.service';
 import { WebhookService } from './webhook.service';
 

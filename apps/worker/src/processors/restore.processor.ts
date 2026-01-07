@@ -6,6 +6,7 @@ import { RestorerFactory } from '../restorers/restorer.factory';
 import { EncryptionService } from '../encryption/encryption.service';
 import { StorageService } from '../storage/storage.service';
 import { PrismaClient } from '@dbsnap/database';
+import { NotificationOrchestratorService } from '../notifications/notification-orchestrator.service';
 
 @Processor(RESTORE_QUEUE)
 export class RestoreProcessor extends WorkerHost {
@@ -15,7 +16,8 @@ export class RestoreProcessor extends WorkerHost {
         private restorerFactory: RestorerFactory,
         private encryptionService: EncryptionService,
         private storageService: StorageService,
-        @Inject('PRISMA_CLIENT') private prisma: PrismaClient
+        @Inject('PRISMA_CLIENT') private prisma: PrismaClient,
+        private notificationOrchestrator: NotificationOrchestratorService
     ) {
         super();
     }
@@ -75,10 +77,26 @@ export class RestoreProcessor extends WorkerHost {
             await restorer.restore(connectionString, decryptStream, { tables, mode });
 
             this.logger.log(`Restore complete.`);
+
+            // Notify User
+            await this.notificationOrchestrator.send(targetDb.projectId, 'RESTORE_SUCCESS', {
+                databaseName: targetDb.name
+            });
+
             return { success: true };
 
         } catch (error: any) {
             this.logger.error(`Restore failed: ${error.message}`, error.stack);
+
+            // Notify User
+            const targetDb = await this.prisma.database.findUnique({ where: { id: job.data.targetDatabaseId } });
+            if (targetDb) {
+                await this.notificationOrchestrator.send(targetDb.projectId, 'RESTORE_FAILURE', {
+                    databaseName: targetDb.name,
+                    error: error.message
+                });
+            }
+
             throw error;
         }
     }

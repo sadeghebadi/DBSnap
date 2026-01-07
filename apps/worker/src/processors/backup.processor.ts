@@ -6,8 +6,8 @@ import { DumperFactory } from '../dumpers/dumper.factory';
 import { EncryptionService } from '../encryption/encryption.service';
 import { StorageService } from '../storage/storage.service';
 import { PrismaClient } from '@dbsnap/database';
-import { EmailService } from '../email/email.service';
 import { AnalysisService } from '../analysis/analysis.service';
+import { NotificationOrchestratorService } from '../notifications/notification-orchestrator.service';
 
 @Processor(BACKUP_QUEUE)
 export class BackupProcessor extends WorkerHost {
@@ -18,7 +18,7 @@ export class BackupProcessor extends WorkerHost {
         private encryptionService: EncryptionService,
         private storageService: StorageService,
         @Inject('PRISMA_CLIENT') private prisma: PrismaClient,
-        private emailService: EmailService,
+        private notificationOrchestrator: NotificationOrchestratorService,
         private analysisService: AnalysisService
     ) {
         super();
@@ -119,7 +119,7 @@ export class BackupProcessor extends WorkerHost {
 
             // Notify User
             if (database) {
-                await this.emailService.sendBackupSuccess('user@example.com', {
+                await this.notificationOrchestrator.send(database.projectId, 'BACKUP_SUCCESS', {
                     databaseName: database.name,
                     sizeBytes: '0'
                 });
@@ -151,10 +151,15 @@ export class BackupProcessor extends WorkerHost {
             }
 
             // Notify User (DB might be null if findUnique failed, handle gracefully)
-            await this.emailService.sendBackupFailure('user@example.com', {
-                databaseName: databaseId, // Use ID as fallback name
-                error: error.message
-            });
+            if (backupId) {
+                const db = await this.prisma.database.findUnique({ where: { id: databaseId } });
+                if (db) {
+                    await this.notificationOrchestrator.send(db.projectId, 'BACKUP_FAILURE', {
+                        databaseName: db.name,
+                        error: error.message
+                    });
+                }
+            }
             throw error;
         }
     }

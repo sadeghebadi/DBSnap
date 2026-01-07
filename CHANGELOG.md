@@ -8,7 +8,10 @@ All notable changes to this project will be documented in this file.
 - **Admin**: User Impersonation support for troubleshooting.
 - **Admin**: MFA Reset capability with mandatory auditing.
 - **Admin**: Multi-service Health Dashboard with near real-time queue metrics.
-- **Admin**: Global Audit Log Viewer with pagination and filtering.
+- **Admin**: Global- Added Alert & Notification System with Slack, Email, and Webhook support.
+- Implemented Project-specific notification settings in the web UI.
+- Integrated notification orchestration in background workers.
+- Added Admin Worker Pool Control with real-time health monitoring and dynamic concurrency.
 - **Billing**: Plan-based feature gating and mock subscription management.
 - **Auth**: Automated MFA flow and session tracking.
 

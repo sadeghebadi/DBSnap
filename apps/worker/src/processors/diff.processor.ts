@@ -5,7 +5,7 @@ import { PrismaClient } from '@dbsnap/database';
 import { EncryptionService } from '../encryption/encryption.service';
 import { StorageService } from '../storage/storage.service';
 import { MongoDiffEngine, SqlDiffEngine, DiffResult } from '@dbsnap/diff-engine';
-import { EmailService } from '../email/email.service';
+import { NotificationOrchestratorService } from '../notifications/notification-orchestrator.service';
 import { Readable } from 'stream';
 import { promisify } from 'util';
 import { pipeline } from 'stream';
@@ -24,7 +24,7 @@ export class DiffProcessor extends WorkerHost {
         @Inject('PRISMA_CLIENT') private readonly prisma: PrismaClient,
         private readonly encryptionService: EncryptionService,
         private readonly storageService: StorageService,
-        private readonly emailService: EmailService
+        private readonly notificationOrchestrator: NotificationOrchestratorService
     ) {
         super();
     }
@@ -103,7 +103,7 @@ export class DiffProcessor extends WorkerHost {
             this.logger.log(`Diff completed for ${diffId}: +${result.added} -${result.removed} ~${result.modified}`);
 
             // Notify User
-            await this.emailService.sendDiffReady('user@example.com', { // TODO: Fetch user email
+            await this.notificationOrchestrator.send(snapshotA.database.projectId, 'DIFF_READY', {
                 diffId,
                 summary: `+${result.added} -${result.removed} ~${result.modified}`
             });

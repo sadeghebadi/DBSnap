@@ -984,7 +984,7 @@
         - States: Running
         - States: Failed
         - States: Completed
-- [ ] **Alert & Notification System**
+- [x] **Alert & Notification System**
     - Folder: `/`
     - Goal: Notify users of job outcomes.
     - Technical Details (PRD/ARD):

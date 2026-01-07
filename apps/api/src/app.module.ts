@@ -64,6 +64,8 @@ import { MaintenanceGuard } from './common/guards/maintenance.guard';
     DiffsModule,
     JobsModule,
     QueueAdminModule,
+    OrganizationsModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [
