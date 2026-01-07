@@ -23,6 +23,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { RedisModule } from './common/redis/redis.module';
 import { MaintenanceModule } from './maintenance/maintenance.module';
 import { MaintenanceGuard } from './common/guards/maintenance.guard';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -64,7 +65,6 @@ import { MaintenanceGuard } from './common/guards/maintenance.guard';
     DiffsModule,
     JobsModule,
     QueueAdminModule,
-    OrganizationsModule,
     NotificationsModule,
   ],
   controllers: [AppController],
