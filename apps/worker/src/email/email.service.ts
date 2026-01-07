@@ -15,4 +15,8 @@ export class EmailService {
     async sendDiffReady(email: string, details: { diffId: string, summary: string }) {
         this.logger.log(`[Mock] Sending Diff Ready Email to ${email}. ID: ${details.diffId}`);
     }
+
+    async sendAnomalyAlert(email: string, details: { databaseName: string, alertType: string, description: string }) {
+        this.logger.warn(`[Mock] Sending Anomaly Alert to ${email}: ${details.alertType} - ${details.description} for ${details.databaseName}`);
+    }
 }
