@@ -154,63 +154,74 @@ export class ConnectionsService {
             throw new NotFoundException('Database not found');
         }
 
-        // Decrypt connection string
-        const connectionString = this.encryptionService.decrypt({
-            iv: database.iv,
-            content: database.connectionStringEnc,
-            authTag: database.authTag
-        });
-
-        // Decrypt SSH if applicable
-        let sshOptions;
-        if (database.isSshTunnel && database.sshHost && database.sshUsername && database.sshPrivateKeyEnc && database.sshPrivateKeyIV && database.sshPrivateKeyAuthTag) {
-            const privateKey = this.encryptionService.decrypt({
-                iv: database.sshPrivateKeyIV,
-                content: database.sshPrivateKeyEnc,
-                authTag: database.sshPrivateKeyAuthTag
-            });
-            sshOptions = {
-                host: database.sshHost,
-                port: database.sshPort || 22,
-                username: database.sshUsername,
-                privateKey
-            };
-        }
-
-        // Decrypt Proxy if applicable
-        let proxyOptions;
-        if (database.isProxy && database.proxyHost && database.proxyPort) {
-            let password;
-            if (database.proxyPasswordEnc && database.proxyPasswordIV && database.proxyPasswordAuthTag) {
-                password = this.encryptionService.decrypt({
-                    iv: database.proxyPasswordIV,
-                    content: database.proxyPasswordEnc,
-                    authTag: database.proxyPasswordAuthTag
-                });
-            }
-
-            proxyOptions = {
-                host: database.proxyHost,
-                port: database.proxyPort,
-                username: database.proxyUsername || undefined,
-                password
-            };
-        }
-
-        // Decrypt SSL if applicable
+        let connectionString: string;
+        let sshOptions: any;
+        let proxyOptions: any;
         const sslOptions: any = {
-            rejectUnauthorized: database.sslRejectUnauthorized !== false, // default true if null
+            rejectUnauthorized: database.sslRejectUnauthorized !== false,
             mode: database.sslMode || undefined
         };
 
-        if (database.sslCaEnc && database.sslCaIV && database.sslCaAuthTag) {
-            sslOptions.ca = this.encryptionService.decrypt({ iv: database.sslCaIV, content: database.sslCaEnc, authTag: database.sslCaAuthTag });
-        }
-        if (database.sslCertEnc && database.sslCertIV && database.sslCertAuthTag) {
-            sslOptions.cert = this.encryptionService.decrypt({ iv: database.sslCertIV, content: database.sslCertEnc, authTag: database.sslCertAuthTag });
-        }
-        if (database.sslKeyEnc && database.sslKeyIV && database.sslKeyAuthTag) {
-            sslOptions.key = this.encryptionService.decrypt({ iv: database.sslKeyIV, content: database.sslKeyEnc, authTag: database.sslKeyAuthTag });
+        try {
+            // Decrypt connection string
+            connectionString = this.encryptionService.decrypt({
+                iv: database.iv,
+                content: database.connectionStringEnc,
+                authTag: database.authTag
+            });
+
+            // Decrypt SSH if applicable
+            if (database.isSshTunnel && database.sshHost && database.sshUsername && database.sshPrivateKeyEnc && database.sshPrivateKeyIV && database.sshPrivateKeyAuthTag) {
+                const privateKey = this.encryptionService.decrypt({
+                    iv: database.sshPrivateKeyIV,
+                    content: database.sshPrivateKeyEnc,
+                    authTag: database.sshPrivateKeyAuthTag
+                });
+                sshOptions = {
+                    host: database.sshHost,
+                    port: database.sshPort || 22,
+                    username: database.sshUsername,
+                    privateKey
+                };
+            }
+
+            // Decrypt Proxy if applicable
+            if (database.isProxy && database.proxyHost && database.proxyPort) {
+                let password;
+                if (database.proxyPasswordEnc && database.proxyPasswordIV && database.proxyPasswordAuthTag) {
+                    password = this.encryptionService.decrypt({
+                        iv: database.proxyPasswordIV,
+                        content: database.proxyPasswordEnc,
+                        authTag: database.proxyPasswordAuthTag
+                    });
+                }
+
+                proxyOptions = {
+                    host: database.proxyHost,
+                    port: database.proxyPort,
+                    username: database.proxyUsername || undefined,
+                    password
+                };
+            }
+
+            // Decrypt SSL if applicable
+            if (database.sslCaEnc && database.sslCaIV && database.sslCaAuthTag) {
+                sslOptions.ca = this.encryptionService.decrypt({ iv: database.sslCaIV, content: database.sslCaEnc, authTag: database.sslCaAuthTag });
+            }
+            if (database.sslCertEnc && database.sslCertIV && database.sslCertAuthTag) {
+                sslOptions.cert = this.encryptionService.decrypt({ iv: database.sslCertIV, content: database.sslCertEnc, authTag: database.sslCertAuthTag });
+            }
+            if (database.sslKeyEnc && database.sslKeyIV && database.sslKeyAuthTag) {
+                sslOptions.key = this.encryptionService.decrypt({ iv: database.sslKeyIV, content: database.sslKeyEnc, authTag: database.sslKeyAuthTag });
+            }
+        } catch (error) {
+            console.error('Decryption failed for database:', id, error);
+            // Return a clean failure instead of 500
+            return {
+                success: false,
+                message: 'Decryption failed. The database connection details might be invalid or corrupted.',
+                latencyMs: 0
+            };
         }
 
         const startTime = Date.now();

@@ -1,9 +1,18 @@
+import { PrismaClient } from '@dbsnap/database';
 
-const { PrismaClient } = require('@dbsnap/database');
 const prisma = new PrismaClient();
+
 async function main() {
-    const admin = await prisma.user.findUnique({ where: { email: 'admin@dbsnap.com' } });
-    console.log('Admin User:', admin ? 'Found' : 'Not Found');
-    if (admin) console.log('Password Hash:', admin.password ? 'Exists' : 'Missing');
+    console.log('Checking Admin...');
+    const admin = await prisma.user.findUnique({
+        where: { email: 'admin@dbsnap.com' }
+    });
+    console.log('Admin:', admin);
+
+    const databases = await prisma.database.findMany();
+    console.log('Databases:', databases.map(d => ({ id: d.id, name: d.name })));
 }
-main().finally(() => prisma.$disconnect());
+
+main()
+    .catch(console.error)
+    .finally(() => prisma.$disconnect());

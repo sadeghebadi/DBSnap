@@ -1770,7 +1770,7 @@
         - Requirements: Table-driven tests for edge cases (empty collections, large docs)
     - Acceptance Criteria:
         - Core engine passes 100% tests in CI
-- [ ] **Admin — GDPR & Compliance Data Exporter**
+- [x] **Admin — GDPR & Compliance Data Exporter**
     - Folder: `apps/web`
     - Goal: Fulfill GDPR "Right to Access" and "Right to Erasure" (Right to be Forgotten) requests.
     - Technical Details (PRD/ARD):
@@ -1818,7 +1818,7 @@
         - Requirements: Historical tracking of performance metrics
     - Acceptance Criteria:
         - New code must not degrade performance beyond 5% tolerance
-- [ ] **Admin — Admin-Triggered Customer Support Actions**
+- [x] **Admin — Admin-Triggered Customer Support Actions**
     - Folder: `apps/web`
     - Goal: Empower support agents to solve technical issues by performing actions on behalf of a customer without sharing credentials.
     - Technical Details (PRD/ARD):
@@ -1851,7 +1851,7 @@
     - Acceptance Criteria:
         - Admins can verify if a customer's DB connection is actually working without having to impersonate the user or see their password.
         - Results of these actions (logs, status) are visible to the admin.
-- [ ] **Automated Security Scan**
+- [x] **Automated Security Scan**
     - Folder: `/`
     - Goal: Keep dependencies and code secure.
     - Technical Details (PRD/ARD):

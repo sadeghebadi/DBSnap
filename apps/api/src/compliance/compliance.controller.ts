@@ -28,15 +28,15 @@ export class ComplianceController {
     @Patch('legal-hold/:userId')
     @UseGuards(RolesGuard)
     @Roles('ADMIN')
-    async toggleLegalHold(@Param('userId') userId: string, @Body('isLegalHold') isLegalHold: boolean) {
-        return this.complianceService.toggleLegalHold(userId, isLegalHold);
+    async toggleLegalHold(@Param('userId') userId: string, @Body('isLegalHold') isLegalHold: boolean, @Request() req: any) {
+        return this.complianceService.toggleLegalHold(userId, isLegalHold, req.user.id);
     }
 
     @Post(':userId/export')
     @UseGuards(RolesGuard)
     @Roles('ADMIN')
-    async adminRequestExport(@Param('userId') userId: string) {
-        return this.complianceService.requestExport(userId);
+    async adminRequestExport(@Param('userId') userId: string, @Request() req: any) {
+        return this.complianceService.requestExport(userId, req.user.id);
     }
 
     @Get(':userId/exports')
@@ -49,7 +49,7 @@ export class ComplianceController {
     @Delete(':userId/data')
     @UseGuards(RolesGuard)
     @Roles('ADMIN')
-    async adminDeleteAccount(@Param('userId') userId: string) {
-        return this.complianceService.deleteAccount(userId);
+    async adminDeleteAccount(@Param('userId') userId: string, @Request() req: any) {
+        return this.complianceService.deleteAccount(userId, req.user.id);
     }
 }

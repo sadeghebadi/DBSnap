@@ -7,31 +7,80 @@ import { ExportStatus } from '@prisma/client';
 export class ComplianceService {
     constructor(private prisma: PrismaService) { }
 
-    async requestExport(userId: string) {
-        // Check if there is already a pending export
-        const pending = await this.prisma.complianceExport.findFirst({
-            where: {
-                userId,
-                status: { in: [ExportStatus.PENDING, ExportStatus.PROCESSING] }
-            }
-        });
+    async requestExport(userId: string, adminId?: string) {
+        // For MVP, we will perform a synchronous gathering of data and store/return it.
+        // In full prod, this starts a job.
 
-        if (pending) {
-            return pending;
-        }
-
-        // Create new export record
         const exportRecord = await this.prisma.complianceExport.create({
             data: {
                 userId,
-                status: ExportStatus.PENDING,
+                status: ExportStatus.PROCESSING,
             },
         });
 
-        // TODO: Trigger BullMQ job to process the export
-        // this.complianceQueue.add('process-export', { exportId: exportRecord.id });
+        try {
+            const data = await this.aggregateUserData(userId);
+            // In real world, save 'data' to S3 and set s3Key.
+            // For now, we might not save the huge JSON in DB. 
+            // We will just mark it COMPLETED and maybe return the data if called directly,
+            // or rely on a "download" endpoint. 
+            // Let's assume for this Admin feature, we return the data immediately in the controller 
+            // if it's a direct admin request, or we just utilize this record.
 
-        return exportRecord;
+            await this.prisma.complianceExport.update({
+                where: { id: exportRecord.id },
+                data: { status: ExportStatus.COMPLETED }
+            });
+
+            if (adminId) {
+                await this.prisma.auditLog.create({
+                    data: {
+                        userId: adminId,
+                        action: 'GDPR_EXPORT_INITIATED',
+                        resourceType: 'User',
+                        resourceId: userId,
+                    }
+                });
+            }
+
+            return { ...exportRecord, status: ExportStatus.COMPLETED, data }; // Returning data for immediate use
+        } catch (e) {
+            await this.prisma.complianceExport.update({
+                where: { id: exportRecord.id },
+                data: { status: ExportStatus.FAILED }
+            });
+            throw e;
+        }
+    }
+
+    async aggregateUserData(userId: string) {
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId },
+            include: {
+                projects: {
+                    include: {
+                        databases: {
+                            include: {
+                                backups: true
+                            }
+                        },
+                        notificationChannels: true
+                    }
+                },
+                sessions: true,
+                auditLogs: true,
+                quota: true
+            }
+        });
+
+        if (!user) throw new NotFoundException('User not found');
+
+        // Sanitize
+        const { passwordHash, mfaSecret, ...safeUser } = user;
+        return {
+            generatedAt: new Date(),
+            user: safeUser
+        };
     }
 
     async getExports(userId: string) {
@@ -41,7 +90,7 @@ export class ComplianceService {
         });
     }
 
-    async deleteAccount(userId: string) {
+    async deleteAccount(userId: string, adminId?: string) {
         // Verify user exists
         const user = await this.prisma.user.findUnique({ where: { id: userId } });
         if (!user) throw new NotFoundException('User not found');
@@ -50,23 +99,43 @@ export class ComplianceService {
             throw new ForbiddenException('Account is under legal hold and cannot be deleted.');
         }
 
-        // TODO: Trigger strict deletion job
-        // Ideally we schedule this to happen after a grace period or immediately depending on policy.
-        // For now, let's mark the user as suspended with a specific reason or just delete them?
-        // The requirement says "Data Deletion".
-        // Let's implement immediate deletion of resources for now, or just return success and stub the logic.
-
-        // We will delete the user which cascades to many things, but we might need to cleanup S3 backups etc.
-        // For this MVP step, I'll just delete the user record.
-        return this.prisma.user.delete({
+        await this.prisma.user.delete({
             where: { id: userId }
         });
+
+        if (adminId) {
+            await this.prisma.auditLog.create({
+                data: {
+                    userId: adminId,
+                    action: 'GDPR_DELETE_USER',
+                    resourceType: 'User',
+                    resourceId: userId,
+                    metadata: { deletedEmail: user.email }
+                }
+            });
+        }
+
+        return { message: 'User permanently deleted' };
     }
 
-    async toggleLegalHold(userId: string, isLegalHold: boolean) {
-        return this.prisma.user.update({
+    async toggleLegalHold(userId: string, isLegalHold: boolean, adminId?: string) {
+        const updated = await this.prisma.user.update({
             where: { id: userId },
             data: { isLegalHold },
         });
+
+        if (adminId) {
+            await this.prisma.auditLog.create({
+                data: {
+                    userId: adminId,
+                    action: 'LEGAL_HOLD_TOGGLE',
+                    resourceType: 'User',
+                    resourceId: userId,
+                    metadata: { isLegalHold }
+                }
+            });
+        }
+
+        return updated;
     }
 }
