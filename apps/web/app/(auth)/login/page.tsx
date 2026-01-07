@@ -16,14 +16,12 @@ export default function LoginPage() {
         try {
             const result = await api.post("/auth/login", data);
 
-            // Assuming result.data contains { accessToken }
-            if (result.data.accessToken) {
-                localStorage.setItem("token", result.data.accessToken)
-                document.cookie = `token=${result.data.accessToken}; path=/; max-age=3600; SameSite=Strict` // Set cookie for middleware;
+            // Assuming result.data contains { access_token }
+            if (result.data.access_token) {
+                localStorage.setItem("token", result.data.access_token)
+                document.cookie = `token=${result.data.access_token}; path=/; max-age=3600; SameSite=Strict` // Set cookie for middleware;
                 // Redirect to dashboard
-                // router.push("/dashboard"); 
-                // For now, root
-                router.push("/");
+                router.push("/dashboard");
             }
         } catch (error) {
             console.error("Login failed", error);

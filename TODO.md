@@ -1720,7 +1720,7 @@
     - Acceptance Criteria:
         - A suspended customer cannot access any DBSnap resources until an admin "Reactivates" them.
         - All background job processing for the customer is safely halted.
-- [ ] **Basic E2E Tests**
+- [x] **Basic E2E Tests**
     - Folder: `/`
     - Goal: Critical flows covered.
     - Technical Details (PRD/ARD):
@@ -1743,7 +1743,7 @@
         - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
     - Acceptance Criteria:
         - Playwright/Cypress tests for signup, backup, and diff viewing
-- [ ] **Engine Unit Test Suite**
+- [x] **Engine Unit Test Suite**
     - Folder: `/`
     - Goal: 100% test coverage for core backup/diff logic.
     - Technical Details (PRD/ARD):
