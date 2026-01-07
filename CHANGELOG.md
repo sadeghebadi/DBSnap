@@ -9,6 +9,11 @@ All notable changes to this project will be documented in this file.
 - **Admin**: MFA Reset capability with mandatory auditing.
 - **Admin**: Multi-service Health Dashboard with near real-time queue metrics.
 - **Admin**: Global- Added Alert & Notification System with Slack, Email, and Webhook support.
+- **Hardening**: Implemented AES-256-GCM encryption for Audit Log metadata.
+- **Hardening**: Standardized API error handling with typed exceptions and global filters.
+- **Observability**: Added `/health` endpoint and enhanced structured logging with user context.
+- **Admin**: Integrated real-time telemetry and success rate tracking into the Admin Dashboard.
+- **Admin**: Global Resource Browser for searching and inspecting databases and snapshots across all organizations.
 - Implemented Project-specific notification settings in the web UI.
 - Integrated notification orchestration in background workers.
 - Added Admin Worker Pool Control with real-time health monitoring and dynamic concurrency.

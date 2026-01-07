@@ -36,8 +36,8 @@ const sidebarItems = [
         icon: Activity,
     },
     {
-        title: "Databases",
-        href: "/admin/databases",
+        title: "Resource Browser",
+        href: "/admin/browser",
         icon: Database,
     },
     {

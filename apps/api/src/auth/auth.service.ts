@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -22,6 +22,9 @@ export class AuthService {
     async validateUser(email: string, pass: string): Promise<any> {
         const user = await this.usersService.findOne(email);
         if (user && user.passwordHash && await bcrypt.compare(pass, user.passwordHash)) {
+            if (user.isSuspended) {
+                throw new ForbiddenException(user.suspensionReason || 'Account suspended');
+            }
             if (!user.isVerified) {
                 throw new BadRequestException('Email not verified');
             }
@@ -32,6 +35,9 @@ export class AuthService {
     }
 
     async login(user: any, ipAddress?: string, userAgent?: string) {
+        if (user.isSuspended) {
+            throw new ForbiddenException(user.suspensionReason || 'Account suspended');
+        }
         if (user.mfaEnabled) {
             return { mfaRequired: true };
         }
@@ -125,6 +131,9 @@ export class AuthService {
         });
 
         if (existingUser) {
+            if (existingUser.isSuspended) {
+                throw new ForbiddenException(existingUser.suspensionReason || 'Account suspended');
+            }
             // If user exists but no provider, link it or just return user
             // Ideally we should check if existingUser.provider matches or we allow merging.
             // For MVP, if email matches, we log them in. 

@@ -125,4 +125,63 @@ export class AnalyticsService {
             recentActivity: allBackups
         };
     }
+
+    async getGlobalDatabases(query?: string, type?: string) {
+        return this.prisma.database.findMany({
+            where: {
+                OR: query ? [
+                    { id: { contains: query, mode: 'insensitive' } },
+                    { name: { contains: query, mode: 'insensitive' } },
+                ] : undefined,
+                type: type ? (type as any) : undefined,
+            },
+            include: {
+                project: {
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                email: true,
+                            }
+                        }
+                    }
+                },
+                _count: {
+                    select: { backups: true }
+                }
+            },
+            orderBy: { createdAt: 'desc' },
+            take: 100,
+        });
+    }
+
+    async getGlobalSnapshots(query?: string, status?: string) {
+        return this.prisma.backup.findMany({
+            where: {
+                OR: query ? [
+                    { id: { contains: query, mode: 'insensitive' } },
+                    { database: { name: { contains: query, mode: 'insensitive' } } },
+                ] : undefined,
+                status: status ? (status as any) : undefined,
+            },
+            include: {
+                database: {
+                    include: {
+                        project: {
+                            include: {
+                                user: {
+                                    select: {
+                                        id: true,
+                                        email: true,
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            orderBy: { startedAt: 'desc' },
+            take: 100,
+        });
+    }
 }

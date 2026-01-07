@@ -25,6 +25,7 @@ import { MaintenanceModule } from './maintenance/maintenance.module';
 import { MaintenanceGuard } from './common/guards/maintenance.guard';
 import { NotificationsModule } from './notifications/notifications.module';
 import { QuotasModule } from './quotas/quotas.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { QuotasModule } from './quotas/quotas.module';
             id: req.id,
             method: req.method,
             url: req.url,
+            userId: req.user?.id, // Capture userId if available
           }),
         },
       },
@@ -68,6 +70,7 @@ import { QuotasModule } from './quotas/quotas.module';
     QueueAdminModule,
     NotificationsModule,
     QuotasModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [

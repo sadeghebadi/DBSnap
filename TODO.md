@@ -1611,7 +1611,7 @@
     - Acceptance Criteria:
         - Admins can navigate from a User to their Organization, and from there see every resource the customer has created.
         - Search within the Org view to find a specific database ID or snapshot.
-- [ ] **Error Handling Strategy**
+- [x] **Error Handling Strategy**
     - Folder: `/`
     - Goal: Typed errors only.
     - Technical Details (PRD/ARD):
@@ -1650,7 +1650,7 @@
     - Acceptance Criteria:
         - A customer can be granted more storage or connections than their "Pro" plan normally allows.
         - System accurately calculates usage against these manual overrides if they exist.
-- [ ] **Logging & Monitoring**
+- [x] **Logging & Monitoring**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
@@ -1660,7 +1660,7 @@
         - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
         - Stack: Next.js (App Router), Tailwind CSS, React Query
         - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
-- [ ] **Admin — Global Database & Snapshot Browser**
+- [x] **Admin — Global Database & Snapshot Browser**
     - Folder: `apps/web`
     - Goal: Allow admins to find any customer resource (DB or Snapshot) by ID for debugging.
     - Technical Details (PRD/ARD):

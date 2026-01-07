@@ -1,34 +1,31 @@
 "use client"
 
-import { useAnalytics } from "@/lib/hooks/use-analytics"
+import { useAnalytics, useTelemetry } from "@/lib/hooks/use-analytics"
 import { Users, Database, Server, HardDrive, Loader2 } from "lucide-react"
 import { bytesToSize } from "@/lib/utils"
 
 export function StatsCards() {
-    const { overview, isLoading, error } = useAnalytics()
+    const { overview, isLoading: isOverviewLoading } = useAnalytics()
+    const { telemetry, isLoading: isTelemetryLoading } = useTelemetry()
 
-    if (isLoading) {
+    if (isOverviewLoading || isTelemetryLoading) {
         return <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4"><Loader2 className="animate-spin" /></div>
     }
 
-    if (error) {
-        return <div className="text-red-500">Failed to load analytics.</div>
-    }
-
-    if (!overview) return null
+    if (!overview || !telemetry) return null
 
     const cards = [
         {
             title: "Total Users",
             value: overview.totalUsers,
             icon: Users,
-            description: "+10% from last month (mock)"
+            description: "Registered accounts"
         },
         {
-            title: "Projects",
-            value: overview.totalProjects,
+            title: "Backup Success Rate",
+            value: `${telemetry.backupSuccessRate.toFixed(1)}%`,
             icon: Server,
-            description: "Active projects"
+            description: "Last 24 hours"
         },
         {
             title: "Databases",

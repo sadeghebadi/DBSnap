@@ -29,6 +29,10 @@ model User {
   mfaEnabled    Boolean   @default(false)
   backupCodes   String[]  @default([])
 
+  isSuspended           Boolean   @default(false)
+  suspensionReason      String?
+  suspensionInternalNote String?
+
   projects      Project[]
   sessions      Session[]
   apiKeys       ApiKey[]
@@ -103,6 +107,11 @@ model Project {
   databases   Database[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+  
+  isSuspended           Boolean   @default(false)
+  suspensionReason      String?
+  suspensionInternalNote String?
+
   notificationChannels NotificationChannel[]
 }
 

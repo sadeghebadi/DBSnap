@@ -12,4 +12,8 @@ export class EmailService {
     async sendPasswordResetEmail(email: string, token: string) {
         this.logger.log(`[Mock] Sending Password Reset Email to ${email} with token: ${token}`);
     }
+
+    async sendGenericEmail(email: string, subject: string, text: string) {
+        this.logger.log(`[Mock] Sending Email to ${email} | Subject: ${subject} | Content: ${text}`);
+    }
 }
