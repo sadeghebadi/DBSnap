@@ -1003,7 +1003,7 @@
         - Requirements: Email alerts
     - Acceptance Criteria:
         - Notifications sent on failure/success
-- [ ] **Threshold Alert Worker**
+- [x] **Threshold Alert Worker**
     - Folder: `/`
     - Goal: Monitor size/growth anomalies.
     - Technical Details (PRD/ARD):
@@ -1032,7 +1032,7 @@
         - Requirements: Trigger alert if exceeds threshold
     - Acceptance Criteria:
         - Automated alerts for unusual data spikes
-- [ ] **Worker Self-Healing & Health Checks**
+- [x] **Worker Self-Healing & Health Checks**
     - Folder: `/`
     - Goal: Ensure high availability of worker processes.
     - Technical Details (PRD/ARD):
@@ -1055,7 +1055,7 @@
         - Requirements: Liveness/Readiness probes (K8s compatible)
     - Acceptance Criteria:
         - System detects and recovers a crashed worker within 30s
-- [ ] **Dead Letter Queue (DLQ) Management**
+- [x] **Dead Letter Queue (DLQ) Management**
     - Folder: `/`
     - Goal: Allow admins to inspect and retry failed jobs stored in the Dead Letter Queue.
     - Technical Details (PRD/ARD):
@@ -1076,7 +1076,7 @@
     - Acceptance Criteria:
         - Failed jobs can be analyzed and restarted through the Admin Panel interface.
         - Admins can clear the DLQ or specific failed jobs.
-- [ ] **Dynamic Worker Scaling Logic**
+- [x] **Dynamic Worker Scaling Logic**
     - Folder: `/`
     - Goal: Optimize cost and performance by scaling workers based on load.
     - Technical Details (PRD/ARD):
@@ -1107,7 +1107,7 @@
 
 # Phase 6: Api Layer
 
-- [ ] **Snapshot API**
+- [x] **Snapshot API**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - API: JWT + refresh tokens, GitHub/Google OAuth integration

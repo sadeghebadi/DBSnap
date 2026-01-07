@@ -13,6 +13,7 @@ import { SchedulerModule } from './scheduler/scheduler.module';
 import { BackupsModule } from './backups/backups.module';
 import { DiffsModule } from './diffs/diffs.module';
 import { JobsModule } from './jobs/jobs.module';
+import { QueueAdminModule } from './queues/queue-admin.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { JobsModule } from './jobs/jobs.module';
     BackupsModule,
     DiffsModule,
     JobsModule,
+    QueueAdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],

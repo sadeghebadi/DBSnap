@@ -4,6 +4,9 @@ import { EncryptionService } from '../encryption/encryption.service';
 import { PrismaClient } from '@dbsnap/database';
 import { Response } from 'express';
 import { Readable } from 'stream';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
+import { BACKUP_QUEUE, RESTORE_QUEUE } from '../queues/queue.constants';
 
 @Injectable()
 export class BackupsService {
@@ -13,6 +16,8 @@ export class BackupsService {
     constructor(
         private prisma: PrismaClient,
         private encryptionService: EncryptionService,
+        @InjectQueue(BACKUP_QUEUE) private backupQueue: Queue,
+        @InjectQueue(RESTORE_QUEUE) private restoreQueue: Queue,
     ) {
         this.s3 = new S3Client({
             region: process.env.S3_REGION || 'us-east-1',
@@ -24,6 +29,40 @@ export class BackupsService {
             forcePathStyle: true,
         });
         this.bucketName = process.env.S3_BUCKET_NAME || 'dbsnap-backups';
+    }
+
+    async getProjectBackups(projectId: string) {
+        // Assume simplified relation linkage
+        return this.prisma.backup.findMany({
+            where: { database: { projectId } },
+            orderBy: { startedAt: 'desc' },
+            include: { database: true }
+        });
+    }
+
+    async triggerBackup(databaseId: string) {
+        const database = await this.prisma.database.findUnique({ where: { id: databaseId } });
+        if (!database) throw new NotFoundException('Database not found');
+
+        const job = await this.backupQueue.add('backup-job', {
+            databaseId,
+            projectId: database.projectId
+            // other payload needed by worker 
+        });
+
+        return { success: true, jobId: job.id, message: 'Backup triggered' };
+    }
+
+    async triggerRestore(backupId: string) {
+        const backup = await this.prisma.backup.findUnique({ where: { id: backupId } });
+        if (!backup) throw new NotFoundException('Backup not found');
+
+        const job = await this.restoreQueue.add('restore-job', {
+            backupId,
+            // worker fetches metadata from DB using ID
+        });
+
+        return { success: true, jobId: job.id, message: 'Restore triggered' };
     }
 
     async exportBackup(id: string, res: Response) {

@@ -7,6 +7,7 @@ import { EncryptionService } from '../encryption/encryption.service';
 import { StorageService } from '../storage/storage.service';
 import { PrismaClient } from '@dbsnap/database';
 import { EmailService } from '../email/email.service';
+import { AnalysisService } from '../analysis/analysis.service';
 
 @Processor(BACKUP_QUEUE)
 export class BackupProcessor extends WorkerHost {
@@ -17,7 +18,8 @@ export class BackupProcessor extends WorkerHost {
         private encryptionService: EncryptionService,
         private storageService: StorageService,
         @Inject('PRISMA_CLIENT') private prisma: PrismaClient,
-        private emailService: EmailService
+        private emailService: EmailService,
+        private analysisService: AnalysisService
     ) {
         super();
     }
@@ -101,28 +103,40 @@ export class BackupProcessor extends WorkerHost {
                 completedAt: new Date()
             };
 
+            let finalBackupId = backupId;
+
             if (backupId) {
                 await this.prisma.backup.update({
                     where: { id: backupId },
                     data: backupData
                 });
             } else {
-                await this.prisma.backup.create({
+                const newBackup = await this.prisma.backup.create({
                     data: backupData
                 });
+                finalBackupId = newBackup.id;
             }
 
             // Notify User
             if (database) {
-                await this.emailService.sendBackupSuccess('user@example.com', { // TODO: Fetch user email from DB via Project->User
+                await this.emailService.sendBackupSuccess('user@example.com', {
                     databaseName: database.name,
                     sizeBytes: '0'
                 });
             }
 
+            // Check for Anomalies
+            if (finalBackupId) {
+                try {
+                    await this.analysisService.checkAnomalies(finalBackupId);
+                } catch (e) {
+                    this.logger.error('Analysis failed', e);
+                }
+            }
+
             return {
                 success: true,
-                backupId: backupId || 'new',
+                backupId: backupId,
                 key
             };
 

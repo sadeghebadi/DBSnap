@@ -5,8 +5,18 @@ import { DatabaseModule } from '../database/database.module';
 import { EncryptionModule } from '../encryption/encryption.module';
 import { PrismaClient } from '@dbsnap/database';
 
+import { BullModule } from '@nestjs/bullmq';
+import { BACKUP_QUEUE, RESTORE_QUEUE } from '../queues/queue.constants';
+
 @Module({
-    imports: [DatabaseModule, EncryptionModule],
+    imports: [
+        DatabaseModule,
+        EncryptionModule,
+        BullModule.registerQueue(
+            { name: BACKUP_QUEUE },
+            { name: RESTORE_QUEUE },
+        )
+    ],
     controllers: [BackupsController],
     providers: [
         BackupsService,
