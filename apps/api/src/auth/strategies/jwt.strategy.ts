@@ -3,9 +3,11 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { env } from '@dbsnap/config';
 
+import { SessionsService } from '../sessions.service';
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-    constructor() {
+    constructor(private sessionsService: SessionsService) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
@@ -14,6 +16,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(payload: any) {
-        return { userId: payload.sub, email: payload.email };
+        if (payload.sid) {
+            const isValid = await this.sessionsService.validateSession(payload.sid);
+            if (!isValid) return null;
+        }
+        return { userId: payload.sub, email: payload.email, sessionId: payload.sid };
     }
 }

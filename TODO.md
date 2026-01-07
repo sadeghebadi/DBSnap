@@ -208,7 +208,7 @@
         - Endpoints: Refresh token
     - Acceptance Criteria:
         - Protected routes require token
-- [ ] **RBAC Roles**
+- [x] **RBAC Roles**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - API: JWT + refresh tokens, GitHub/Google OAuth integration
@@ -229,7 +229,7 @@
         - Feature: Dynamic Role & Permission creation via Admin Panel
     - Acceptance Criteria:
         - Permissions enforced on APIs
-- [ ] **Email Verification & Password Reset**
+- [x] **Email Verification & Password Reset**
     - Folder: `/`
     - Goal: Secure user accounts via verification and recovery.
     - Technical Details (PRD/ARD):
@@ -246,7 +246,7 @@
     - Acceptance Criteria:
         - Unverified users cannot access core features
         - Password can be reset via email link
-- [ ] **OAuth Integration**
+- [x] **OAuth Integration**
     - Folder: `/`
     - Goal: Simplify onboarding with social login.
     - Technical Details (PRD/ARD):
@@ -266,7 +266,7 @@
     - Acceptance Criteria:
         - User can sign up/login via 3rd party
         - Existing email accounts can link to OAuth
-- [ ] **Project Management API**
+- [x] **Project Management API**
     - Folder: `/`
     - Goal: Manage projects as containers for DB connections.
     - Technical Details (PRD/ARD):
@@ -285,7 +285,7 @@
         - Requirements: Assign projects to organizations
     - Acceptance Criteria:
         - Project ownership enforced
-- [ ] **Multi-Factor Authentication (MFA)**
+- [x] **Multi-Factor Authentication (MFA)**
     - Folder: `/`
     - Goal: Add an extra layer of security for user accounts.
     - Technical Details (PRD/ARD):

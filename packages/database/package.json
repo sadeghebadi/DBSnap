@@ -17,6 +17,10 @@
         "@types/node": "^20.11.24",
         "eslint": "^9.39.2",
         "prisma": "^6.2.1",
+        "ts-node": "^10.9.2",
         "typescript": "^5.3.3"
+    },
+    "prisma": {
+        "seed": "ts-node prisma/seed.ts"
     }
 }
