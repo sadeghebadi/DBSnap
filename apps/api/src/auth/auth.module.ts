@@ -13,6 +13,9 @@ import { GoogleStrategy } from './strategies/google.strategy';
 import { GithubStrategy } from './strategies/github.strategy';
 import { MfaService } from './mfa.service';
 import { SessionsService } from './sessions.service';
+import { ApiKeysService } from './api-keys.service';
+import { ApiKeyStrategy } from './strategies/api-key.strategy';
+import { ApiKeysController } from './api-keys.controller';
 
 @Module({
   imports: [
@@ -24,8 +27,18 @@ import { SessionsService } from './sessions.service';
     }),
     EmailModule,
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy, GoogleStrategy, GithubStrategy, MfaService, SessionsService],
-  controllers: [AuthController],
+  providers: [
+    AuthService,
+    LocalStrategy,
+    JwtStrategy,
+    GoogleStrategy,
+    GithubStrategy,
+    MfaService,
+    SessionsService,
+    ApiKeysService,
+    ApiKeyStrategy,
+  ],
+  controllers: [AuthController, ApiKeysController],
   exports: [AuthService],
 })
 export class AuthModule { }

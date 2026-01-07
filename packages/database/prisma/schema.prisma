@@ -31,6 +31,22 @@ model User {
 
   projects      Project[]
   sessions      Session[]
+  apiKeys       ApiKey[]
+}
+
+model ApiKey {
+  id        String    @id @default(cuid())
+  name      String
+  keyHash   String    @unique
+  prefix    String
+  scopes    String[]  @default([])
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastUsedAt DateTime?
+  expiresAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
 }
 
 model Session {
@@ -92,12 +108,42 @@ model Database {
   name           String
   projectId      String
   // Encrypted connection details
-  connectionUri  String   // Encrypted
+  // Encrypted connection details
+  connectionStringEnc String   // AES-256-GCM Encrypted
+  iv                  String   // Initialization Vector (12 bytes/16 chars usually for GCM, but string storage)
+  authTag             String   // GCM Auth Tag
   type           DbType
   version        String?
   isStaticIp     Boolean  @default(false)
-  isSshTunnel    Boolean  @default(false)
-  createdAt      DateTime @default(now())
+  isSshTunnel          Boolean  @default(false)
+  sshHost              String?
+  sshPort              Int?     @default(22)
+  sshUsername          String?
+  sshPrivateKeyEnc     String?
+  sshPrivateKeyIV      String?
+  sshPrivateKeyAuthTag String?
+
+  isProxy              Boolean  @default(false)
+  proxyHost            String?
+  proxyPort            Int?
+  proxyUsername        String?
+  proxyPasswordEnc     String?
+  proxyPasswordIV      String?
+  proxyPasswordAuthTag String?
+
+  sslMode              String?  // 'require', 'verify-full', 'disable'
+  sslCaEnc             String?
+  sslCaIV              String?
+  sslCaAuthTag         String?
+  sslCertEnc           String?
+  sslCertIV            String?
+  sslCertAuthTag       String?
+  sslKeyEnc            String?
+  sslKeyIV             String?
+  sslKeyAuthTag        String?
+  sslRejectUnauthorized Boolean? @default(true)
+  
+  createdAt            DateTime @default(now())
   updatedAt      DateTime @updatedAt
   
   project        Project  @relation(fields: [projectId], references: [id])
@@ -118,6 +164,12 @@ model Backup {
   sizeBytes   BigInt    @default(0)
   startedAt   DateTime  @default(now())
   completedAt DateTime?
+
+  // Snapshot Metadata
+  schemaVersion    String?
+  totalRows        BigInt?   @default(0)
+  collectionCounts Json?     // { "users": 100, "posts": 500 }
+  metadata         Json?     // { "compression": "gzip", "engine": "pg_dump" }
   
   database    Database  @relation(fields: [databaseId], references: [id])
   diffsAsA    Diff[]    @relation("SnapshotA")

@@ -314,7 +314,7 @@
         - Requirements: Backup recovery codes
     - Acceptance Criteria:
         - User can enable MFA and it is enforced at login
-- [ ] **Session management & Revocation**
+- [x] **Session management & Revocation**
     - Folder: `/`
     - Goal: Allow users to see and manage active login sessions.
     - Technical Details (PRD/ARD):
@@ -334,7 +334,7 @@
         - Requirements: Individual session revocation
     - Acceptance Criteria:
         - Revoking a session immediately invalidates the JWT
-- [ ] **API Key Management**
+- [x] **API Key Management**
     - Folder: `packages/database`
     - Goal: Allow programmatic access to DBSnap.
     - Technical Details (PRD/ARD):
@@ -362,7 +362,7 @@
 
 # Phase 1: Foundation Tasks
 
-- [ ] **Dummy Test Task**
+- [x] **Dummy Test Task**
     - Folder: `/`
     - Goal: Verify that the AI can follow the new Git workflow (branch, implement, commit, push, copy).
     - Technical Details (PRD/ARD):
@@ -381,7 +381,7 @@
 
 # Phase 2: Database Connections
 
-- [ ] **DB Connection Schema**
+- [x] **DB Connection Schema**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Algorithm: AES-256-GCM authenticated encryption
@@ -397,7 +397,7 @@
         - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
     - Functional Details:
         - Requirements: Encrypted credentials
-- [ ] **Connection Validator**
+- [x] **Connection Validator**
     - Folder: `/`
     - Goal: Validate DB connectivity.
     - Technical Details (PRD/ARD):
@@ -410,7 +410,7 @@
         - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
     - Acceptance Criteria:
         - Returns sanitized metadata
-- [ ] **Connection API**
+- [x] **Connection API**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - API: JWT + refresh tokens, GitHub/Google OAuth integration
@@ -430,7 +430,7 @@
         - Endpoints: List
     - Acceptance Criteria:
         - Permission checks enforced
-- [ ] **Backup Scheduling & Retention**
+- [x] **Backup Scheduling & Retention**
     - Folder: `/`
     - Goal: Automate periodic backups and cleanup.
     - Technical Details (PRD/ARD):
@@ -455,7 +455,7 @@
     - Acceptance Criteria:
         - Workers trigger at specified times
         - Old snapshots are purged based on policy
-- [ ] **SSH Tunnel Support**
+- [x] **SSH Tunnel Support**
     - Folder: `packages/database`
     - Goal: Support databases behind a bastion host.
     - Technical Details (PRD/ARD):
@@ -472,7 +472,7 @@
         - Requirements: Tunnel health monitoring
     - Acceptance Criteria:
         - User can connect to a DB that is only accessible via SSH tunnel
-- [ ] **Static IP / Proxy Support**
+- [x] **Static IP / Proxy Support**
     - Folder: `/`
     - Goal: Support IP whitelisting for strict DB firewalls.
     - Technical Details (PRD/ARD):
@@ -493,7 +493,7 @@
         - Requirements: Proxy configuration in DB connectors
     - Acceptance Criteria:
         - All backup traffic originates from a known, fixed IP address
-- [ ] **SSL/TLS Certificate Support**
+- [x] **SSL/TLS Certificate Support**
     - Folder: `packages/database`
     - Goal: Support databases requiring custom CA or client certificates.
     - Technical Details (PRD/ARD):
@@ -518,7 +518,7 @@
 
 # Phase 3: Snapshot & Backup Core
 
-- [ ] **Snapshot Metadata Model**
+- [x] **Snapshot Metadata Model**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
@@ -538,7 +538,7 @@
         - Fields: timestamp
         - Fields: schemaVersion
         - Fields: storagePath
-- [ ] **Snapshot Creation Logic**
+- [x] **Snapshot Creation Logic**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - API: JWT + refresh tokens, GitHub/Google OAuth integration
@@ -564,7 +564,7 @@
         - Requirements: Dump DB
         - Requirements: Normalize structure
         - Requirements: Store as JSON
-- [ ] **Snapshot Storage Adapter**
+- [x] **Snapshot Storage Adapter**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
@@ -582,7 +582,7 @@
     - Functional Details:
         - Adapters: Local FS
         - Adapters: S3-compatible
-- [ ] **Snapshot Restore (Read-only)**
+- [x] **Snapshot Restore (Read-only)**
     - Folder: `/`
     - Goal: Load snapshot without modifying DB.
     - Technical Details (PRD/ARD):
@@ -601,7 +601,7 @@
         - Stack: Next.js (App Router), Tailwind CSS, React Query
         - Strategy: performRestore job in restore-queue
         - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
-- [ ] **Selective Restore Logic**
+- [x] **Selective Restore Logic**
     - Folder: `packages/database`
     - Goal: Restore specific parts of a database.
     - Technical Details (PRD/ARD):
@@ -620,7 +620,7 @@
         - Requirements: Overwrite vs Append options
     - Acceptance Criteria:
         - Targeted data is restored without affecting others
-- [ ] **Snapshot Export**
+- [x] **Snapshot Export**
     - Folder: `/`
     - Goal: Allow users to download their data.
     - Technical Details (PRD/ARD):
@@ -641,7 +641,7 @@
         - Requirements: Signed download link
     - Acceptance Criteria:
         - User receives valid dump file
-- [ ] **Compression Algorithm Benchmarking**
+- [x] **Compression Algorithm Benchmarking**
     - Folder: `/`
     - Goal: Optimize storage costs and transfer speeds.
     - Technical Details (PRD/ARD):
@@ -658,7 +658,7 @@
         - Requirements: Track compression ratio metrics
     - Acceptance Criteria:
         - Clear recommendation and implementation of the best compression for the project
-- [ ] **Stream-based Snapshot Storage**
+- [x] **Stream-based Snapshot Storage**
     - Folder: `packages/database`
     - Goal: Handle massive databases without memory exhaustion.
     - Technical Details (PRD/ARD):
@@ -680,7 +680,7 @@
         - Requirements: No local intermediate file if possible
     - Acceptance Criteria:
         - Backup of 10GB+ DB finishes with <512MB RAM usage
-- [ ] **Encrypted Data-at-Rest Validation**
+- [x] **Encrypted Data-at-Rest Validation**
     - Folder: `/`
     - Goal: Ensure backups are valid and encrypted as expected.
     - Technical Details (PRD/ARD):
@@ -714,7 +714,7 @@
 
 # Phase 4: Diff Engine (Core Value)
 
-- [ ] **Diff Engine Interface**
+- [x] **Diff Engine Interface**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators

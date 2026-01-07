@@ -7,6 +7,10 @@ import { AuthModule } from './auth/auth.module';
 import { EmailModule } from './email/email.module';
 
 import { ProjectsModule } from './projects/projects.module';
+import { DatabaseModule } from './database/database.module';
+import { BullModule } from '@nestjs/bullmq';
+import { SchedulerModule } from './scheduler/scheduler.module';
+import { BackupsModule } from './backups/backups.module';
 
 @Module({
   imports: [
@@ -27,6 +31,16 @@ import { ProjectsModule } from './projects/projects.module';
     AuthModule,
     EmailModule,
     ProjectsModule,
+    ProjectsModule,
+    DatabaseModule,
+    BullModule.forRoot({
+      connection: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: parseInt(process.env.REDIS_PORT || '6379'),
+      },
+    }),
+    SchedulerModule,
+    BackupsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
