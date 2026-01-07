@@ -26,6 +26,12 @@ export class UsersController {
         return this.usersService.findAll(skip, limit);
     }
 
+    @Get(':userId')
+    @Roles('ADMIN')
+    async findOne(@Param('userId') userId: string) {
+        return this.usersService.findById(userId);
+    }
+
     @Post(':userId/mfa-reset')
     @Roles('ADMIN')
     async resetMfa(

@@ -10,7 +10,8 @@ import { RestorerModule } from './restorers/restorer.module';
 import { RestoreProcessor } from './processors/restore.processor';
 import { PrismaClient } from '@dbsnap/database';
 import { DiffProcessor } from './processors/diff.processor';
-import { BACKUP_QUEUE, RESTORE_QUEUE, DIFF_QUEUE } from './queues/queue.constants';
+import { ComplianceProcessor } from './processors/compliance.processor';
+import { BACKUP_QUEUE, RESTORE_QUEUE, DIFF_QUEUE, COMPLIANCE_QUEUE } from './queues/queue.constants';
 import { EmailModule } from './email/email.module';
 import { AnalysisModule } from './analysis/analysis.module';
 import { HealthModule } from './health/health.module';
@@ -29,6 +30,7 @@ import { NotificationsModule } from './notifications/notifications.module';
       { name: BACKUP_QUEUE },
       { name: RESTORE_QUEUE },
       { name: DIFF_QUEUE },
+      { name: COMPLIANCE_QUEUE },
     ),
     EncryptionModule,
     DumperModule,
@@ -46,6 +48,7 @@ import { NotificationsModule } from './notifications/notifications.module';
     BackupProcessor,
     RestoreProcessor,
     DiffProcessor,
+    ComplianceProcessor,
     {
       provide: 'PRISMA_CLIENT',
       useFactory: () => {

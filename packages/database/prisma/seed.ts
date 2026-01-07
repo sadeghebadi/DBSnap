@@ -87,6 +87,28 @@ async function main() {
             },
         });
     }
+
+    // Seed Admin User
+    console.log('Seeding Admin User...');
+    const adminRole = await prisma.role.findUnique({ where: { name: 'ADMIN' } });
+    if (adminRole) {
+        const passwordHash = '$2b$10$SbUff5sz605dsD5atKjm4OGd86FDfOKEFa9SB93iatqSTD2mOnpl6'; // 'admin'
+
+        await prisma.user.upsert({
+            where: { email: 'admin@dbsnap.com' },
+            update: {
+                roleId: adminRole.id,
+                isVerified: true
+            },
+            create: {
+                email: 'admin@dbsnap.com',
+                passwordHash,
+                roleId: adminRole.id,
+                isVerified: true,
+                plan: 'TEAM'
+            }
+        });
+    }
 }
 
 main()

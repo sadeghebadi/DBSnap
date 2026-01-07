@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import { PassThrough, Readable } from 'stream';
 
@@ -60,5 +60,13 @@ export class StorageService {
 
         const response = await this.s3Client.send(command);
         return response.Body as Readable;
+    }
+
+    async deleteObject(key: string): Promise<void> {
+        this.logger.log(`Deleting S3 object: ${key}`);
+        await this.s3Client.send(new DeleteObjectCommand({
+            Bucket: this.bucketName,
+            Key: key,
+        }));
     }
 }

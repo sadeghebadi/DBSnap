@@ -12,6 +12,17 @@ export class UsersService {
         });
     }
 
+    async findById(id: string) {
+        return this.prisma.user.findUnique({
+            where: { id },
+            include: {
+                role: true,
+                projects: true,
+                auditLogs: { take: 5, orderBy: { createdAt: 'desc' } }
+            },
+        });
+    }
+
     async findAll(skip: number, take: number) {
         const [users, total] = await Promise.all([
             this.prisma.user.findMany({
