@@ -1345,7 +1345,7 @@
         - Requirements: Confirmation modals for destructive actions (e.g., deleting a snapshot).
     - Acceptance Criteria:
         - Admins can perform these "creation" flows without needing to use the public signup/onboarding routes.
-- [ ] **Admin User List**
+- [x] **Admin User List**
     - Folder: `/`
     - Goal: Allow admins to view and manage all users in the system.
     - Technical Details (PRD/ARD):
@@ -1364,7 +1364,7 @@
     - Acceptance Criteria:
         - Admin can see all users across all organizations
         - Search functionality works correctly
-- [ ] **Admin Org Usage Stats**
+- [x] **Admin Org Usage Stats**
     - Folder: `apps/web`
     - Goal: Monitor usage metrics across different organizations to identify heavy users and trends.
     - Technical Details (PRD/ARD):
@@ -1392,7 +1392,7 @@
     - Acceptance Criteria:
         - Admin can see a summary table of all organizations and their usage stats.
         - Stats are updated in near real-time (or periodically).
-- [ ] **Billing & Subscriptions**
+- [x] **Billing & Subscriptions**
     - Folder: `apps/web`
     - Goal: Monetize the platform by integrating a billing system and plan-based gating.
     - Technical Details (PRD/ARD):

@@ -15,6 +15,7 @@ import { DiffsModule } from './diffs/diffs.module';
 import { JobsModule } from './jobs/jobs.module';
 import { QueueAdminModule } from './queues/queue-admin.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { BillingModule } from './billing/billing.module';
 
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
@@ -51,6 +52,7 @@ import { APP_GUARD } from '@nestjs/core';
     }),
     SchedulerModule,
     AnalyticsModule,
+    BillingModule,
     BackupsModule,
     DiffsModule,
     JobsModule,

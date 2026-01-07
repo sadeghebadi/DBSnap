@@ -14,4 +14,10 @@ export class AnalyticsController {
     async getOverview() {
         return this.analyticsService.getOverview();
     }
+
+    @Get('usage')
+    @Roles('ADMIN')
+    async getUsage() {
+        return this.analyticsService.getOrgUsageStats();
+    }
 }

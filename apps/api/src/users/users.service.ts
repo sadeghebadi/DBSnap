@@ -11,4 +11,25 @@ export class UsersService {
             include: { role: true },
         });
     }
+
+    async findAll(skip: number, take: number) {
+        const [users, total] = await Promise.all([
+            this.prisma.user.findMany({
+                skip,
+                take,
+                include: { role: true },
+                orderBy: { createdAt: 'desc' },
+            }),
+            this.prisma.user.count(),
+        ]);
+
+        return {
+            data: users,
+            meta: {
+                total,
+                skip,
+                take,
+            }
+        };
+    }
 }
