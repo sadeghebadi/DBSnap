@@ -6,6 +6,8 @@ import { useState } from "react"
 import { AuthForm } from "@/components/auth/auth-form"
 import api from "@/lib/api"
 
+import { jwtDecode } from "jwt-decode";
+
 export default function LoginPage() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -20,8 +22,13 @@ export default function LoginPage() {
             if (result.data.access_token) {
                 localStorage.setItem("token", result.data.access_token)
                 document.cookie = `token=${result.data.access_token}; path=/; max-age=3600; SameSite=Strict` // Set cookie for middleware;
-                // Redirect to dashboard
-                router.push("/dashboard");
+
+                const decoded: any = jwtDecode(result.data.access_token);
+                if (decoded.role === 'ADMIN') {
+                    router.push("/admin");
+                } else {
+                    router.push("/dashboard");
+                }
             }
         } catch (error) {
             console.error("Login failed", error);
