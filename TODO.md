@@ -1293,7 +1293,7 @@
     - Acceptance Criteria:
         - A user with a 'MEMBER' role cannot see or access any route under `/admin`.
         - Unauthorized attempts are logged in the security audit.
-- [ ] **Admin — Admin Main Dashboard (Overview & Analytics)**
+- [x] **Admin — Admin Main Dashboard (Overview & Analytics)**
     - Folder: `/`
     - Goal: The "First Page" admins see. Provides high-level health and growth metrics for the entire platform.
     - Technical Details (PRD/ARD):
@@ -1325,7 +1325,7 @@
     - Acceptance Criteria:
         - Dashboard provides an immediate sense of system status without looking at detailed logs.
         - Data is refreshed automatically or has a manual refresh button.
-- [ ] **Admin — Resource Creation Workflows (Quick Actions)**
+- [x] **Admin — Resource Creation Workflows (Quick Actions)**
     - Folder: `/`
     - Goal: Streamline administrative tasks like creating new organizations or manually onboarding enterprise customers.
     - Technical Details (PRD/ARD):
