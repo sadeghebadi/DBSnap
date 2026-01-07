@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards, NotFoundException } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -19,5 +19,13 @@ export class AnalyticsController {
     @Roles('ADMIN')
     async getUsage() {
         return this.analyticsService.getOrgUsageStats();
+    }
+
+    @Get('organizations/:id')
+    @Roles('ADMIN')
+    async getOrgDetails(@Param('id') id: string) {
+        const details = await this.analyticsService.getUserResourceDetails(id);
+        if (!details) throw new NotFoundException('User not found');
+        return details;
     }
 }

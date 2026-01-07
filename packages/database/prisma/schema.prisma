@@ -33,6 +33,7 @@ model User {
   sessions      Session[]
   apiKeys       ApiKey[]
   auditLogs     AuditLog[]
+  quota         UserQuota?
 }
 
 model ApiKey {
@@ -261,4 +262,17 @@ enum NotificationChannelType {
   EMAIL
   SLACK
   WEBHOOK
+}
+
+model UserQuota {
+  id               String   @id @default(uuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  maxProjects      Int?
+  maxDatabases     Int?
+  maxStorageGB     Float?
+  retentionDays    Int?
+  ignorePlanLimits Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }

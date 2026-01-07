@@ -3,6 +3,7 @@
 import { useOrgAnalytics } from "@/lib/hooks/use-org-analytics"
 import { Loader2 } from "lucide-react"
 import { bytesToSize } from "@/lib/utils"
+import Link from "next/link"
 
 export function OrgUsageTable() {
     const { usage, isLoading, error } = useOrgAnalytics()
@@ -29,7 +30,14 @@ export function OrgUsageTable() {
                 <tbody>
                     {usage.map((org) => (
                         <tr key={org.userId} className="border-b transition-colors hover:bg-muted/50">
-                            <td className="p-4 align-middle font-medium">{org.email}</td>
+                            <td className="p-4 align-middle font-medium">
+                                <Link
+                                    href={`/admin/organizations/${org.userId}`}
+                                    className="hover:text-blue-600 hover:underline transition-all"
+                                >
+                                    {org.email}
+                                </Link>
+                            </td>
                             <td className="p-4 align-middle text-center">{org.databaseCount}</td>
                             <td className="p-4 align-middle text-center">{org.snapshotCount}</td>
                             <td className="p-4 align-middle text-right">{bytesToSize(Number(org.storageBytes))}</td>

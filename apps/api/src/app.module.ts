@@ -24,6 +24,7 @@ import { RedisModule } from './common/redis/redis.module';
 import { MaintenanceModule } from './maintenance/maintenance.module';
 import { MaintenanceGuard } from './common/guards/maintenance.guard';
 import { NotificationsModule } from './notifications/notifications.module';
+import { QuotasModule } from './quotas/quotas.module';
 
 @Module({
   imports: [
@@ -66,6 +67,7 @@ import { NotificationsModule } from './notifications/notifications.module';
     JobsModule,
     QueueAdminModule,
     NotificationsModule,
+    QuotasModule,
   ],
   controllers: [AppController],
   providers: [

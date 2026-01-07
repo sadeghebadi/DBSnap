@@ -73,4 +73,56 @@ export class AnalyticsService {
             };
         });
     }
+
+    async getUserResourceDetails(userId: string) {
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId },
+            include: {
+                projects: {
+                    include: {
+                        databases: {
+                            include: {
+                                backups: {
+                                    orderBy: { startedAt: 'desc' },
+                                    take: 10,
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        if (!user) return null;
+
+        // Flatten all backups for Recent Activity
+        const allBackups = user.projects.flatMap(p =>
+            p.databases.flatMap(d => d.backups.map(b => ({
+                ...b,
+                databaseName: d.name,
+                projectName: p.name
+            })))
+        ).sort((a, b) => b.startedAt.getTime() - a.startedAt.getTime()).slice(0, 10);
+
+        return {
+            id: user.id,
+            email: user.email,
+            plan: user.plan,
+            createdAt: user.createdAt,
+            projects: user.projects.map(p => ({
+                id: p.id,
+                name: p.name,
+                environment: p.environment,
+                databaseCount: p.databases.length,
+                databases: p.databases.map(d => ({
+                    id: d.id,
+                    name: d.name,
+                    type: d.type,
+                    snapshotCount: d.backups.length,
+                    latestSnapshot: d.backups[0] || null
+                }))
+            })),
+            recentActivity: allBackups
+        };
+    }
 }

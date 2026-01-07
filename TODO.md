@@ -1562,7 +1562,7 @@
 
 # Phase 9: Hardening & Quality
 
-- [ ] **Audit Log**
+- [x] **Audit Log**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Algorithm: AES-256-GCM authenticated encryption
@@ -1586,7 +1586,7 @@
         - Stack: Next.js (App Router), Tailwind CSS, React Query
         - Streaming: Data is encrypted via stream pipe (CipherIV) before leaving worker memory to S3
         - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
-- [ ] **Admin — Organization Resource Explorer (Details View)**
+- [x] **Admin — Organization Resource Explorer (Details View)**
     - Folder: `apps/web`
     - Goal: Provide admins with a 360-degree view of an Organization's resources for deep troubleshooting.
     - Technical Details (PRD/ARD):
@@ -1622,7 +1622,7 @@
         - Models: User (RBAC), Project (Environments), Database (Encrypted), Backup (S3 keys), Diff (Summaries)
         - Stack: Next.js (App Router), Tailwind CSS, React Query
         - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
-- [ ] **Admin — Custom Quota & Limits Overrider**
+- [x] **Admin — Custom Quota & Limits Overrider**
     - Folder: `packages/database`
     - Goal: Allow admins to grant special resource limits to specific customers without changing their global billing plan.
     - Technical Details (PRD/ARD):
