@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaClient } from '@dbsnap/database';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class TelemetryService {
-    constructor(private prisma: PrismaClient) { }
+    constructor(private prisma: PrismaService) { }
 
     async getGlobalKPIs() {
         const [backupsLast24h, storageUsage, backupStatusCounts] = await Promise.all([

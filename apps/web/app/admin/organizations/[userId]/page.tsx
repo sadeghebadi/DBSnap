@@ -126,9 +126,40 @@ export default function OrgDetailsPage({ params }: { params: Promise<{ userId: s
                                             <h3 className="font-semibold text-slate-900">{project.name}</h3>
                                             <p className="text-xs text-muted-foreground mt-0.5">{project.environment} Environment</p>
                                         </div>
-                                        <span className="text-xs font-medium px-2 py-1 bg-white border rounded-lg">
-                                            {project.databases.length} DBs
-                                        </span>
+                                        <div className="flex items-center gap-2">
+                                            {project.isSuspended && (
+                                                <span className="text-[10px] font-bold bg-red-100 text-red-700 px-1.5 py-0.5 rounded border border-red-200">
+                                                    SUSPENDED
+                                                </span>
+                                            )}
+                                            <span className="text-xs font-medium px-2 py-1 bg-white border rounded-lg">
+                                                {project.databases.length} DBs
+                                            </span>
+                                            <button
+                                                onClick={async () => {
+                                                    const isSuspended = !project.isSuspended;
+                                                    const reason = isSuspended ? prompt('Reason for project suspension:') : null;
+                                                    try {
+                                                        await api.patch(`/admin/suspension/projects/${project.id}`, {
+                                                            isSuspended,
+                                                            reason: reason || undefined
+                                                        });
+                                                        alert(`Project ${isSuspended ? 'suspended' : 'reactivated'} successfully`);
+                                                        window.location.reload();
+                                                    } catch (e) {
+                                                        alert('Failed to update project status');
+                                                    }
+                                                }}
+                                                className={cn(
+                                                    "text-[10px] font-bold px-2 py-1 rounded transition-colors border",
+                                                    project.isSuspended
+                                                        ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+                                                        : "bg-red-50 text-red-700 border-red-200 hover:bg-red-100"
+                                                )}
+                                            >
+                                                {project.isSuspended ? "REACTIVATE" : "SUSPEND"}
+                                            </button>
+                                        </div>
                                     </div>
                                     <div className="divide-y">
                                         {project.databases.map((db: any) => (

@@ -55,24 +55,33 @@ export async function middleware(request: NextRequest) {
         }
     }
 
-    if (request.nextUrl.pathname.startsWith('/admin')) {
-        if (!token) {
-            return NextResponse.redirect(new URL('/login', request.url))
-        }
-
+    if (token) {
         try {
             const decoded: any = jwtDecode(token);
-            if (decoded.role !== 'ADMIN') { // Check Role
-                return NextResponse.redirect(new URL('/dashboard', request.url))
+
+            // 4. SUSPENSION CHECK
+            // If user is suspended and not already on /suspended page, redirect
+            if (decoded.isSuspended && !request.nextUrl.pathname.startsWith('/suspended')) {
+                return NextResponse.redirect(new URL('/suspended', request.url))
+            }
+
+            if (request.nextUrl.pathname.startsWith('/admin')) {
+                if (decoded.role !== 'ADMIN') { // Check Role
+                    return NextResponse.redirect(new URL('/dashboard', request.url))
+                }
             }
         } catch (e) {
-            return NextResponse.redirect(new URL('/login', request.url))
+            if (request.nextUrl.pathname.startsWith('/admin') || request.nextUrl.pathname.startsWith('/dashboard')) {
+                return NextResponse.redirect(new URL('/login', request.url))
+            }
         }
+    } else if (request.nextUrl.pathname.startsWith('/admin') || request.nextUrl.pathname.startsWith('/dashboard')) {
+        return NextResponse.redirect(new URL('/login', request.url))
     }
 
     return NextResponse.next()
 }
 
 export const config = {
-    matcher: '/admin/:path*',
+    matcher: ['/admin/:path*', '/dashboard/:path*', '/projects/:path*'],
 }

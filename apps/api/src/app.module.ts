@@ -26,6 +26,8 @@ import { MaintenanceGuard } from './common/guards/maintenance.guard';
 import { NotificationsModule } from './notifications/notifications.module';
 import { QuotasModule } from './quotas/quotas.module';
 import { HealthModule } from './health/health.module';
+import { AdminModule } from './admin/admin.module';
+import { SuspensionGuard } from './common/guards/suspension.guard';
 
 @Module({
   imports: [
@@ -71,6 +73,7 @@ import { HealthModule } from './health/health.module';
     NotificationsModule,
     QuotasModule,
     HealthModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [
@@ -82,6 +85,10 @@ import { HealthModule } from './health/health.module';
     {
       provide: APP_GUARD,
       useClass: MaintenanceGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: SuspensionGuard,
     },
   ],
 })

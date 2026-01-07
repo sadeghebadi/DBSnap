@@ -42,6 +42,11 @@ export function UserList() {
                                         }`}>
                                         {user.role?.name || 'MEMBER'}
                                     </span>
+                                    {(user as any).isSuspended && (
+                                        <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                            Suspended
+                                        </span>
+                                    )}
                                 </td>
                                 <td className="p-4 align-middle">
                                     {user.isVerified ? (
@@ -83,6 +88,31 @@ export function UserList() {
                                             className="text-xs border border-amber-500 text-amber-500 px-2 py-1 rounded hover:bg-amber-50 transition-colors"
                                         >
                                             Reset MFA
+                                        </button>
+                                        <button
+                                            onClick={async () => {
+                                                const isSuspended = !(user as any).isSuspended;
+                                                const reason = isSuspended ? prompt('Reason for suspension (customer-facing):') : null;
+                                                const internalNote = isSuspended ? prompt('Internal note:') : null;
+
+                                                try {
+                                                    await api.patch(`/admin/suspension/users/${user.id}`, {
+                                                        isSuspended,
+                                                        reason: reason || undefined,
+                                                        internalNote: internalNote || undefined
+                                                    });
+                                                    alert(`User ${isSuspended ? 'suspended' : 'reactivated'} successfully`);
+                                                    window.location.reload();
+                                                } catch (e) {
+                                                    alert('Failed to update suspension status');
+                                                }
+                                            }}
+                                            className={`text-xs px-2 py-1 rounded transition-colors ${(user as any).isSuspended
+                                                ? 'bg-green-600 text-white hover:bg-green-700'
+                                                : 'bg-red-600 text-white hover:bg-red-700'
+                                                }`}
+                                        >
+                                            {(user as any).isSuspended ? 'Reactivate' : 'Suspend'}
                                         </button>
                                         <button className="ghost h-8 w-8 p-0">
                                             <span className="sr-only">Open menu</span>

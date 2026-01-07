@@ -1,5 +1,5 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
-import { PrismaClient } from '@dbsnap/database';
+import { PrismaService } from '../prisma/prisma.service';
 import { S3Client, ListBucketsCommand } from '@aws-sdk/client-s3';
 import { Redis } from 'ioredis';
 import { REDIS_CLIENT } from '../common/redis/redis.module';
@@ -10,7 +10,7 @@ export class HealthService {
     private s3: S3Client;
 
     constructor(
-        private prisma: PrismaClient,
+        private prisma: PrismaService,
         @Inject(REDIS_CLIENT) private redis: Redis,
     ) {
         this.s3 = new S3Client({

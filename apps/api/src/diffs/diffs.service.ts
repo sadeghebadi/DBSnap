@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException, ForbiddenException, InternalServerErrorException } from '@nestjs/common';
-import { PrismaClient, DiffStatus } from '@dbsnap/database';
+import { PrismaService } from '../prisma/prisma.service';
+import { DiffStatus } from '@dbsnap/database';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { EncryptionService } from '../encryption/encryption.service';
 import { Readable } from 'stream';
@@ -15,7 +16,7 @@ export class DiffsService {
     private bucketName: string;
 
     constructor(
-        private prisma: PrismaClient,
+        private prisma: PrismaService,
         private encryptionService: EncryptionService,
         @InjectQueue(DIFF_QUEUE) private diffQueue: Queue,
     ) {

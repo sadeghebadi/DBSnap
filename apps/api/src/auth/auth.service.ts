@@ -44,7 +44,14 @@ export class AuthService {
 
         const sessionId = await this.sessionsService.createSession(user.id, ipAddress, userAgent);
 
-        const payload = { email: user.email, sub: user.id, sid: sessionId, role: user.role?.name };
+        const payload = {
+            email: user.email,
+            sub: user.id,
+            sid: sessionId,
+            role: user.role?.name,
+            isSuspended: user.isSuspended,
+            suspensionReason: user.suspensionReason
+        };
         return {
             access_token: this.jwtService.sign(payload),
         };
@@ -192,7 +199,13 @@ export class AuthService {
 
         const sessionId = await this.sessionsService.createSession(user.id, ipAddress, userAgent);
 
-        const payload = { email: user.email, sub: user.id, sid: sessionId };
+        const payload = {
+            email: user.email,
+            sub: user.id,
+            sid: sessionId,
+            isSuspended: user.isSuspended,
+            suspensionReason: user.suspensionReason
+        };
         return {
             access_token: this.jwtService.sign(payload),
         };
@@ -228,7 +241,9 @@ export class AuthService {
             email: user.email,
             sub: user.id,
             role: user.role?.name,
-            impersonatorId: adminId
+            impersonatorId: adminId,
+            isSuspended: user.isSuspended,
+            suspensionReason: user.suspensionReason
         };
 
         return {

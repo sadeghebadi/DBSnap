@@ -5,7 +5,7 @@ import { EncryptionService } from '../encryption/encryption.service';
 @Injectable()
 export class AuditLogsService {
     constructor(
-        private prisma: any,
+        private prisma: PrismaService,
         private encryptionService: EncryptionService
     ) { }
 

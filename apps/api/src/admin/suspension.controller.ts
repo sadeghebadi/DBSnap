@@ -21,10 +21,10 @@ export class SuspensionController {
         @Param('id') id: string,
         @Body() body: { isSuspended: boolean; reason?: string; internalNote?: string }
     ) {
-        const user = await this.prisma.user.findUnique({ where: { id } });
+        const user = await (this.prisma as any).user.findUnique({ where: { id } });
         if (!user) throw new NotFoundException('User not found');
 
-        const updatedUser = await this.prisma.user.update({
+        const updatedUser = await (this.prisma as any).user.update({
             where: { id },
             data: {
                 isSuspended: body.isSuspended,
@@ -33,7 +33,7 @@ export class SuspensionController {
             }
         });
 
-        await this.auditLogs.createLog({
+        await this.auditLogs.log({
             userId: id, // Target user
             action: body.isSuspended ? 'USER_SUSPENDED' : 'USER_REACTIVATED',
             resourceType: 'User',
@@ -61,13 +61,13 @@ export class SuspensionController {
         @Param('id') id: string,
         @Body() body: { isSuspended: boolean; reason?: string; internalNote?: string }
     ) {
-        const project = await this.prisma.project.findUnique({
+        const project = await (this.prisma as any).project.findUnique({
             where: { id },
             include: { user: true }
         });
         if (!project) throw new NotFoundException('Project not found');
 
-        const updatedProject = await this.prisma.project.update({
+        const updatedProject = await (this.prisma as any).project.update({
             where: { id },
             data: {
                 isSuspended: body.isSuspended,
@@ -76,7 +76,7 @@ export class SuspensionController {
             }
         });
 
-        await this.auditLogs.createLog({
+        await this.auditLogs.log({
             userId: project.userId,
             action: body.isSuspended ? 'PROJECT_SUSPENDED' : 'PROJECT_REACTIVATED',
             resourceType: 'Project',

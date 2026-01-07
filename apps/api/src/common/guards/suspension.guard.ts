@@ -11,7 +11,7 @@ export class SuspensionGuard implements CanActivate {
         if (!user) return true;
 
         // 1. Check User Suspension
-        const dbUser = await this.prisma.user.findUnique({
+        const dbUser = await (this.prisma as any).user.findUnique({
             where: { id: user.sub || user.id },
             select: { isSuspended: true, suspensionReason: true }
         });
@@ -23,7 +23,7 @@ export class SuspensionGuard implements CanActivate {
         // 2. Check Project Suspension (if projectId is in params)
         const projectId = params.projectId || params.id;
         if (projectId && context.switchToHttp().getRequest().url.includes('projects')) {
-            const project = await this.prisma.project.findUnique({
+            const project = await (this.prisma as any).project.findUnique({
                 where: { id: projectId },
                 select: { isSuspended: true, suspensionReason: true }
             });

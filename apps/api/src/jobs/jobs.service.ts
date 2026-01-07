@@ -1,5 +1,5 @@
-import { Injectable, Inject } from '@nestjs/common';
-import { PrismaClient } from '@dbsnap/database';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 
 export type JobActivity = {
     id: string;
@@ -13,7 +13,7 @@ export type JobActivity = {
 @Injectable()
 export class JobsService {
     constructor(
-        @Inject('PRISMA_CLIENT') private prisma: PrismaClient
+        private prisma: PrismaService
     ) { }
 
     async getRecentActivity(projectId: string, limit: number = 20): Promise<JobActivity[]> {

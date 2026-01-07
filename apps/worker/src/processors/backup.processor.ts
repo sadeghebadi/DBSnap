@@ -37,13 +37,29 @@ export class BackupProcessor extends WorkerHost {
                 });
             }
 
-            // 1. Fetch Database Details
+            // 1. Fetch Database Details with suspension info
             const database = await this.prisma.database.findUnique({
-                where: { id: databaseId }
+                where: { id: databaseId },
+                include: {
+                    project: {
+                        include: {
+                            user: true
+                        }
+                    }
+                }
             });
 
             if (!database) {
                 throw new Error(`Database not found: ${databaseId}`);
+            }
+
+            // 1b. Check for Suspension
+            if (database.project.isSuspended) {
+                throw new Error(`Project "${database.project.name}" is suspended: ${database.project.suspensionReason || 'No reason provided'}`);
+            }
+
+            if (database.project.user.isSuspended) {
+                throw new Error(`Account suspended: ${database.project.user.suspensionReason || 'Reason not specified'}`);
             }
 
             // 2. Decrypt Connection String

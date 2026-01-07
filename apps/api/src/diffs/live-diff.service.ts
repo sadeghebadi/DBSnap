@@ -1,5 +1,5 @@
-import { Injectable, NotFoundException, Inject } from '@nestjs/common';
-import { PrismaClient } from '@dbsnap/database';
+import { Injectable, Inject, Logger, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { v4 as uuidv4 } from 'uuid';
@@ -8,7 +8,7 @@ import { BACKUP_QUEUE, DIFF_QUEUE } from '../queues/queue.constants';
 @Injectable()
 export class LiveDiffService {
     constructor(
-        @Inject('PRISMA_CLIENT') private prisma: PrismaClient,
+        private prisma: PrismaService,
         @InjectQueue(BACKUP_QUEUE) private backupQueue: Queue,
         @InjectQueue(DIFF_QUEUE) private diffQueue: Queue,
     ) { }
