@@ -15,7 +15,12 @@ export class ProjectsService {
         });
     }
 
-    async findAll(userId: string) {
+    async findAll(userId: string, role?: string) {
+        if (role === 'ADMIN') {
+            return this.prisma.project.findMany({
+                include: { user: true } // Helpful for admin to see who owns what
+            });
+        }
         return this.prisma.project.findMany({
             where: { userId },
         });
