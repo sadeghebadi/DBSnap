@@ -1,13 +1,13 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Logger, Inject } from '@nestjs/common';
-import { BACKUP_QUEUE_NAME } from '../queues/backup.queue';
+import { BACKUP_QUEUE } from '../queues/queue.constants';
 import { DumperFactory } from '../dumpers/dumper.factory';
 import { EncryptionService } from '../encryption/encryption.service';
 import { StorageService } from '../storage/storage.service';
 import { PrismaClient } from '@dbsnap/database';
 
-@Processor(BACKUP_QUEUE_NAME)
+@Processor(BACKUP_QUEUE)
 export class BackupProcessor extends WorkerHost {
     private readonly logger = new Logger(BackupProcessor.name);
 
@@ -20,17 +20,26 @@ export class BackupProcessor extends WorkerHost {
         super();
     }
 
-    async process(job: Job<{ databaseId: string }, any, string>): Promise<any> {
+    async process(job: Job<{ databaseId: string, backupId?: string, isEphemeral?: boolean, expiresAt?: string }, any, string>): Promise<any> {
         this.logger.log(`Processing job ${job.id} for database ${job.data.databaseId}`);
+        const { databaseId, backupId, isEphemeral, expiresAt } = job.data;
 
         try {
+            // 0. Update Backup Status to InProgress (if ID provided)
+            if (backupId) {
+                await this.prisma.backup.update({
+                    where: { id: backupId },
+                    data: { status: 'InProgress' }
+                });
+            }
+
             // 1. Fetch Database Details
             const database = await this.prisma.database.findUnique({
-                where: { id: job.data.databaseId }
+                where: { id: databaseId }
             });
 
             if (!database) {
-                throw new Error(`Database not found: ${job.data.databaseId}`);
+                throw new Error(`Database not found: ${databaseId}`);
             }
 
             // 2. Decrypt Connection String
@@ -53,7 +62,6 @@ export class BackupProcessor extends WorkerHost {
             const { writeStream, done } = this.storageService.uploadStream(key);
 
             // 6. Pipeline: Dumper -> Encrypt -> S3
-            // EncryptStream pipes to S3 WriteStream
             encryptStream.pipe(writeStream);
 
             this.logger.log(`Starting backup pipeline...`);
@@ -68,21 +76,55 @@ export class BackupProcessor extends WorkerHost {
             const authTag = encryptStream.getAuthTag();
 
             this.logger.log(`Backup complete. Rows: ${metadata.totalRows}. S3 Key: ${key}`);
-            this.logger.log(`Encryption IV: ${iv.toString('hex')}, AuthTag: ${authTag.toString('hex')}`);
 
-            // 7. Update Backup Record (Mocked / TODO)
+            // 7. Update/Create Backup Record
+            const backupData = {
+                databaseId: database.id,
+                status: 'Completed' as const, // Fix enum type issue
+                s3Key: key,
+                sizeBytes: 0, // TODO: Get actual size from stream/storage service
+                schemaVersion: '1.0',
+                totalRows: BigInt(metadata.totalRows),
+                collectionCounts: metadata.collectionCounts || {},
+                metadata: {
+                    encryption: {
+                        iv: iv.toString('hex'),
+                        authTag: authTag.toString('hex')
+                    },
+                    schema: metadata.schema,
+                    indexes: metadata.indexes
+                },
+                isEphemeral: isEphemeral || false,
+                expiresAt: expiresAt ? new Date(expiresAt) : null,
+                completedAt: new Date()
+            };
+
+            if (backupId) {
+                await this.prisma.backup.update({
+                    where: { id: backupId },
+                    data: backupData
+                });
+            } else {
+                await this.prisma.backup.create({
+                    data: backupData
+                });
+            }
+
             return {
                 success: true,
-                metadata,
-                key,
-                encryption: {
-                    iv: iv.toString('hex'),
-                    authTag: authTag.toString('hex')
-                }
+                backupId: backupId || 'new',
+                key
             };
 
         } catch (error: any) {
             this.logger.error(`Backup failed: ${error.message}`, error.stack);
+
+            if (backupId) {
+                await this.prisma.backup.update({
+                    where: { id: backupId },
+                    data: { status: 'Failed' }
+                });
+            }
             throw error;
         }
     }

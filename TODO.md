@@ -738,7 +738,7 @@
         - Input: Snapshot A
         - Input: Snapshot B
         - Output: DiffResult
-- [ ] **Mongo Document Diff**
+- [x] **Mongo Document Diff**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
@@ -757,7 +757,7 @@
         - Detect: Added
         - Detect: Removed
         - Detect: Modified fields
-- [ ] **SQL Table Diff**
+- [x] **SQL Table Diff**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
@@ -776,7 +776,7 @@
         - Detect: Table changes
         - Detect: Column changes
         - Detect: Row count delta
-- [ ] **Diff Summary Generator**
+- [x] **Diff Summary Generator**
     - Folder: `/`
     - Goal: Human-readable diff summary.
     - Technical Details (PRD/ARD):
@@ -792,7 +792,7 @@
         - SQL Strategy: PK-based Ordered Stream Comparison (requires PK, constant O(1) memory)
         - Stack: Next.js (App Router), Tailwind CSS, React Query
         - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
-- [ ] **Diff Persistence**
+- [x] **Diff Persistence**
     - Folder: `/`
     - Goal: Store diff results for later viewing.
     - Technical Details (PRD/ARD):
@@ -808,7 +808,7 @@
         - SQL Strategy: PK-based Ordered Stream Comparison (requires PK, constant O(1) memory)
         - Stack: Next.js (App Router), Tailwind CSS, React Query
         - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
-- [ ] **Live Diff Mode**
+- [x] **Live Diff Mode**
     - Folder: `packages/database`
     - Goal: Compare backup against current database state.
     - Technical Details (PRD/ARD):
@@ -834,7 +834,7 @@
         - Requirements: No impact on live DB performance
     - Acceptance Criteria:
         - Accurate diff between static snapshot and live data
-- [ ] **Paginated Diff Results**
+- [x] **Paginated Diff Results**
     - Folder: `/`
     - Goal: Support visual diff for large datasets.
     - Technical Details (PRD/ARD):
@@ -859,7 +859,7 @@
         - Requirements: Search/Filter within diff result
     - Acceptance Criteria:
         - Loading a diff with 10k changes remains snappy in UI
-- [ ] **Index & Schema Constraint Comparison**
+- [x] **Index & Schema Constraint Comparison**
     - Folder: `/`
     - Goal: Detect changes beyond just the data.
     - Technical Details (PRD/ARD):
@@ -881,7 +881,7 @@
         - Requirements: Compare views and stored procedures (Optional)
     - Acceptance Criteria:
         - System reports missing or modified indexes
-- [ ] **Visual JSON Delta Representation**
+- [x] **Visual JSON Delta Representation**
     - Folder: `/`
     - Goal: Better visual clarity for modified documents.
     - Technical Details (PRD/ARD):
@@ -909,7 +909,7 @@
 
 # Phase 5: Worker & Queue
 
-- [ ] **Job Queue Setup**
+- [x] **Job Queue Setup**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - Components: Responsive dashboard, backup timeline, and status indicators
@@ -925,7 +925,7 @@
     - Functional Details:
         - Requirements: BullMQ or equivalent
         - Requirements: Retry logic
-- [ ] **Snapshot Job Worker**
+- [x] **Snapshot Job Worker**
     - Folder: `/`
     - Goal: Execute snapshot creation jobs.
     - Technical Details (PRD/ARD):
@@ -944,7 +944,7 @@
         - Scalability: Isolated from API server; concurrency honors user/plan limits
         - Stack: Next.js (App Router), Tailwind CSS, React Query
         - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
-- [ ] **Diff Job Worker**
+- [x] **Diff Job Worker**
     - Folder: `/`
     - Goal: Execute diff engine jobs.
     - Technical Details (PRD/ARD):
@@ -963,7 +963,7 @@
         - Scalability: Isolated from API server; concurrency honors user/plan limits
         - Stack: Next.js (App Router), Tailwind CSS, React Query
         - UX: Side-by-side color-coded view (Green=Added, Red=Removed, Yellow=Modified)
-- [ ] **Job Status API**
+- [x] **Job Status API**
     - Folder: `/`
     - Technical Details (PRD/ARD):
         - API: JWT + refresh tokens, GitHub/Google OAuth integration

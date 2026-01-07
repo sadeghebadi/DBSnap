@@ -13,7 +13,8 @@ export class MongoDumper implements IDumper {
 
             const metadata: DumpMetadata = {
                 totalRows: 0,
-                collectionCounts: {}
+                collectionCounts: {},
+                indexes: []
             };
 
             for (const col of collections) {
@@ -23,6 +24,12 @@ export class MongoDumper implements IDumper {
                 const count = await collection.countDocuments();
                 metadata.collectionCounts[name] = count;
                 metadata.totalRows += count;
+
+                // Fetch Indexes
+                const indexes = await collection.indexes();
+                indexes.forEach(idx => {
+                    metadata.indexes!.push({ collection: name, key: idx.key, name: idx.name });
+                });
 
                 // Stream documents
                 const cursor = collection.find();

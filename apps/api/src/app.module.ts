@@ -11,6 +11,8 @@ import { DatabaseModule } from './database/database.module';
 import { BullModule } from '@nestjs/bullmq';
 import { SchedulerModule } from './scheduler/scheduler.module';
 import { BackupsModule } from './backups/backups.module';
+import { DiffsModule } from './diffs/diffs.module';
+import { JobsModule } from './jobs/jobs.module';
 
 @Module({
   imports: [
@@ -41,6 +43,8 @@ import { BackupsModule } from './backups/backups.module';
     }),
     SchedulerModule,
     BackupsModule,
+    DiffsModule,
+    JobsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

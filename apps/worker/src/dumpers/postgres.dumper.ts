@@ -19,8 +19,28 @@ export class PostgresDumper implements IDumper {
 
             const metadata: DumpMetadata = {
                 totalRows: 0,
-                collectionCounts: {}
+                collectionCounts: {},
+                schema: {
+                    indexes: [],
+                    constraints: []
+                }
             };
+
+            // Fetch Indexes
+            const indexesRes = await client.query(`
+                SELECT indexname, indexdef 
+                FROM pg_indexes 
+                WHERE schemaname = 'public'
+            `);
+            metadata.schema!.indexes = indexesRes.rows.map(r => r.indexdef);
+
+            // Fetch Constraints (Basic)
+            const constraintsRes = await client.query(`
+                SELECT conname, pg_get_constraintdef(oid) as condef 
+                FROM pg_constraint 
+                WHERE connamespace = 'public'::regnamespace
+            `);
+            metadata.schema!.constraints = constraintsRes.rows.map(r => `${r.conname}: ${r.condef}`);
 
             for (const table of tables) {
                 // Stream each table

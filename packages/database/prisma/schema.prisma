@@ -164,6 +164,8 @@ model Backup {
   sizeBytes   BigInt    @default(0)
   startedAt   DateTime  @default(now())
   completedAt DateTime?
+  isEphemeral Boolean   @default(false)
+  expiresAt   DateTime?
 
   // Snapshot Metadata
   schemaVersion    String?
@@ -188,6 +190,9 @@ model Diff {
   snapshotAId String
   snapshotBId String
   status      DiffStatus
+  added       Int       @default(0)
+  removed     Int       @default(0)
+  modified    Int       @default(0)
   summary     Json?    // Compressed summary
   s3DetailKey String?  // Full detail path
   createdAt   DateTime @default(now())

@@ -3,14 +3,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BullModule } from '@nestjs/bullmq';
 import { BackupProcessor } from './processors/backup.processor';
-import { BACKUP_QUEUE_NAME } from './queues/backup.queue';
 import { EncryptionModule } from './encryption/encryption.module';
 import { DumperModule } from './dumpers/dumper.module';
 import { StorageModule } from './storage/storage.module';
 import { RestorerModule } from './restorers/restorer.module';
 import { RestoreProcessor } from './processors/restore.processor';
-import { RESTORE_QUEUE_NAME } from './queues/restore.queue';
 import { PrismaClient } from '@dbsnap/database';
+import { DiffProcessor } from './processors/diff.processor';
+import { BACKUP_QUEUE, RESTORE_QUEUE, DIFF_QUEUE } from './queues/queue.constants';
 
 @Module({
   imports: [
@@ -20,12 +20,11 @@ import { PrismaClient } from '@dbsnap/database';
         port: parseInt(process.env.REDIS_PORT || '6379'),
       },
     }),
-    BullModule.registerQueue({
-      name: BACKUP_QUEUE_NAME,
-    }),
-    BullModule.registerQueue({
-      name: RESTORE_QUEUE_NAME,
-    }),
+    BullModule.registerQueue(
+      { name: BACKUP_QUEUE },
+      { name: RESTORE_QUEUE },
+      { name: DIFF_QUEUE },
+    ),
     EncryptionModule,
     DumperModule,
     StorageModule,
@@ -36,6 +35,7 @@ import { PrismaClient } from '@dbsnap/database';
     AppService,
     BackupProcessor,
     RestoreProcessor,
+    DiffProcessor,
     {
       provide: 'PRISMA_CLIENT',
       useFactory: () => {

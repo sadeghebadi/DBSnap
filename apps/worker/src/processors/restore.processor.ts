@@ -1,13 +1,13 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Logger, Inject } from '@nestjs/common';
-import { RESTORE_QUEUE_NAME } from '../queues/restore.queue';
+import { RESTORE_QUEUE } from '../queues/queue.constants';
 import { RestorerFactory } from '../restorers/restorer.factory';
 import { EncryptionService } from '../encryption/encryption.service';
 import { StorageService } from '../storage/storage.service';
 import { PrismaClient } from '@dbsnap/database';
 
-@Processor(RESTORE_QUEUE_NAME)
+@Processor(RESTORE_QUEUE)
 export class RestoreProcessor extends WorkerHost {
     private readonly logger = new Logger(RestoreProcessor.name);
 
