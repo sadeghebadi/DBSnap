@@ -1,0 +1,47 @@
+
+Running 1 test using 1 worker
+
+[1A[2K[1/1] [chromium] › tests/compliance.spec.ts:52:9 › GDPR Compliance & Admin Tools › Admin can toggle legal hold and delete user
+[1A[2K[chromium] › tests/compliance.spec.ts:52:9 › GDPR Compliance & Admin Tools › Admin can toggle legal hold and delete user
+User ID Target: d4a3b940-bbba-4bd4-a91a-3d88d6b8553f
+
+[1A[2KUser Email Target: gdpr-victim-1767789991529@example.com
+
+[1A[2KNavigating to: /admin/users/d4a3b940-bbba-4bd4-a91a-3d88d6b8553f
+
+[1A[2KPage Text: DBSnap Admin
+Dashboard
+User Management
+Organizations
+Queues & Workers
+Resource Browser
+Billing
+Promo Codes
+Settings
+Admin User
+AD
+Loading...
+
+[1A[2KDialog Message: Failed to update Legal Hold
+
+[1A[2K  1) [chromium] › tests/compliance.spec.ts:52:9 › GDPR Compliance & Admin Tools › Admin can toggle legal hold and delete user 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
+
+    Expected substring: [32m"Legal Hold Applied"[39m
+    Received string:    [31m"Failed to update Legal Hold"[39m
+
+      79 |         const legalHoldDialog = await legalHoldPromise;
+      80 |         console.log('Dialog Message:', legalHoldDialog.message());
+    > 81 |         expect(legalHoldDialog.message()).toContain('Legal Hold Applied');
+         |                                           ^
+      82 |         await legalHoldDialog.dismiss();
+      83 |
+      84 |         // 2. Safety Check: Delete should be disabled
+        at /home/sadpc/Documents/DBSnap/apps/e2e/tests/compliance.spec.ts:81:43
+
+
+[1A[2K  1 failed
+    [chromium] › tests/compliance.spec.ts:52:9 › GDPR Compliance & Admin Tools › Admin can toggle legal hold and delete user 
+
+[36m  Serving HTML report at http://localhost:38857. Press Ctrl+C to quit.[39m

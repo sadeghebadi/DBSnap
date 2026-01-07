@@ -1,0 +1,29 @@
+{
+    "name": "@dbsnap/config",
+    "version": "0.0.0",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": "./dist/index.js",
+        "./eslint": "./eslint.config.mjs",
+        "./prettier": "./prettier.config.js"
+    },
+    "scripts": {
+        "build": "tsc",
+        "lint": "eslint \"src/**/*.ts*\""
+    },
+    "dependencies": {
+        "dotenv": "^16.4.7",
+        "eslint-config-next": "latest",
+        "eslint-config-prettier": "latest",
+        "ts-node": "latest",
+        "typescript": "latest",
+        "zod": "^3.24.1"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.39.2",
+        "eslint-plugin-prettier": "^5.5.4",
+        "globals": "^16.5.0",
+        "typescript-eslint": "^8.52.0"
+    }
+}

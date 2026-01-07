@@ -1,3 +1,5 @@
+// packages/database/prisma/schema.prisma
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,43 +9,303 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  ADMIN
-  MEMBER
-  READ_ONLY
-}
-
 model User {
-  id             String        @id @default(uuid())
-  email          String        @unique
-  passwordHash   String
-  role           Role          @default(MEMBER)
-  createdAt      DateTime      @default(now())
-  organizationId String?
-  organization   Organization? @relation(fields: [organizationId], references: [id])
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String?
+  plan          UserPlan  @default(FREE)
+  roleId        String?
+  role          Role?     @relation(fields: [roleId], references: [id])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  isVerified        Boolean   @default(false)
+  verificationToken String?
+  resetToken        String?
+  resetTokenExpires DateTime?
+  
+  provider      AuthProvider @default(EMAIL)
+  providerId    String?
+  mfaSecret     String?
+  mfaEnabled    Boolean   @default(false)
+  backupCodes   String[]  @default([])
 
-  @@map("users")
+  isSuspended           Boolean   @default(false)
+  suspensionReason      String?
+  suspensionInternalNote String?
+
+  projects      Project[]
+  sessions      Session[]
+  apiKeys       ApiKey[]
+  auditLogs     AuditLog[]
+  quota         UserQuota?
+  complianceExports ComplianceExport[]
+  
+  isLegalHold       Boolean   @default(false)
+  lastExportAt      DateTime?
 }
 
-model Organization {
-  id        String    @id @default(uuid())
+model ApiKey {
+  id        String    @id @default(cuid())
   name      String
+  keyHash   String    @unique
+  prefix    String
+  scopes    String[]  @default([])
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastUsedAt DateTime?
+  expiresAt DateTime?
   createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  users     User[]
-  projects  Project[]
 
-  @@map("organizations")
+  @@index([userId])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  expiresAt DateTime?
+
+  @@index([userId])
+}
+
+enum AuthProvider {
+  EMAIL
+  GOOGLE
+  GITHUB
+}
+
+enum UserPlan {
+  FREE
+  PRO
+  TEAM
+}
+
+model Role {
+  id          String       @id @default(uuid())
+  name        String       @unique // ROOT, ADMIN, CUSTOMER_DEVELOPER
+  permissions Permission[]
+  users       User[]
+}
+
+model Permission {
+  id        String   @id @default(uuid())
+  action    String   // e.g. "backup:create", "db:read"
+  roles     Role[]
+}
+
+enum Environment {
+  DEV
+  STAGING
+  PROD
 }
 
 model Project {
-  id             String       @id @default(uuid())
-  name           String
-  organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id])
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  id          String      @id @default(uuid())
+  name        String
+  environment Environment @default(DEV)
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
+  databases   Database[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  
+  isSuspended           Boolean   @default(false)
+  suspensionReason      String?
+  suspensionInternalNote String?
+  isLegalHold           Boolean   @default(false)
 
-  @@map("projects")
+  notificationChannels NotificationChannel[]
 }
+
+model Database {
+  id             String   @id @default(uuid())
+  name           String
+  projectId      String
+  // Encrypted connection details
+  // Encrypted connection details
+  connectionStringEnc String   // AES-256-GCM Encrypted
+  iv                  String   // Initialization Vector (12 bytes/16 chars usually for GCM, but string storage)
+  authTag             String   // GCM Auth Tag
+  type           DbType
+  version        String?
+  isStaticIp     Boolean  @default(false)
+  isSshTunnel          Boolean  @default(false)
+  sshHost              String?
+  sshPort              Int?     @default(22)
+  sshUsername          String?
+  sshPrivateKeyEnc     String?
+  sshPrivateKeyIV      String?
+  sshPrivateKeyAuthTag String?
+
+  isProxy              Boolean  @default(false)
+  proxyHost            String?
+  proxyPort            Int?
+  proxyUsername        String?
+  proxyPasswordEnc     String?
+  proxyPasswordIV      String?
+  proxyPasswordAuthTag String?
+
+  sslMode              String?  // 'require', 'verify-full', 'disable'
+  sslCaEnc             String?
+  sslCaIV              String?
+  sslCaAuthTag         String?
+  sslCertEnc           String?
+  sslCertIV            String?
+  sslCertAuthTag       String?
+  sslKeyEnc            String?
+  sslKeyIV             String?
+  sslKeyAuthTag        String?
+  sslRejectUnauthorized Boolean? @default(true)
+  
+  createdAt            DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  project        Project  @relation(fields: [projectId], references: [id])
+  backups        Backup[]
+}
+
+enum DbType {
+  Postgres
+  MongoDB
+  MySQL
+}
+
+model Backup {
+  id          String    @id @default(uuid())
+  databaseId  String
+  status      BackupStatus
+  s3Key       String?
+  sizeBytes   BigInt    @default(0)
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  isEphemeral Boolean   @default(false)
+  expiresAt   DateTime?
+
+  // Snapshot Metadata
+  schemaVersion    String?
+  totalRows        BigInt?   @default(0)
+  collectionCounts Json?     // { "users": 100, "posts": 500 }
+  metadata         Json?     // { "compression": "gzip", "engine": "pg_dump" }
+  
+  database    Database  @relation(fields: [databaseId], references: [id])
+  diffsAsA    Diff[]    @relation("SnapshotA")
+  diffsAsB    Diff[]    @relation("SnapshotB")
+}
+
+enum BackupStatus {
+  Pending
+  InProgress
+  Completed
+  Failed
+}
+
+model Diff {
+  id          String   @id @default(uuid())
+  snapshotAId String
+  snapshotBId String
+  status      DiffStatus
+  added       Int       @default(0)
+  removed     Int       @default(0)
+  modified    Int       @default(0)
+  summary     Json?    // Compressed summary
+  s3DetailKey String?  // Full detail path
+  createdAt   DateTime @default(now())
+  
+  snapshotA   Backup   @relation("SnapshotA", fields: [snapshotAId], references: [id])
+  snapshotB   Backup   @relation("SnapshotB", fields: [snapshotBId], references: [id])
+}
+
+enum DiffStatus {
+  Pending
+  Processing
+  Completed
+  Failed
+}
+
+model AuditLog {
+  id             String   @id @default(uuid())
+  userId         String?
+  user           User?    @relation(fields: [userId], references: [id])
+  action         String   // e.g. "USER_LOGIN", "BACKUP_TRIGGERED"
+  resourceType   String?  // e.g. "Backup", "Project"
+  resourceId     String?
+  metadata       Json?    // { "ip": "...", "details": "..." }
+  createdAt      DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+model PromoCode {
+  id            String       @id @default(uuid())
+  code          String       @unique
+  discountType  DiscountType @default(PERCENT)
+  discountValue Float
+  expiresAt     DateTime?
+  usageLimit    Int?
+  usageCount    Int          @default(0)
+  isActive      Boolean      @default(true)
+  eligiblePlans UserPlan[]   @default([FREE, PRO, TEAM])
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+enum DiscountType {
+  PERCENT
+  AMOUNT
+}
+
+model NotificationChannel {
+  id        String                @id @default(uuid())
+  projectId String
+  type      NotificationChannelType
+  config    Json                  // { "url": "...", "email": "..." }
+  events    String[]              @default(["BACKUP_SUCCESS", "BACKUP_FAILURE", "DIFF_READY"])
+  isEnabled Boolean               @default(true)
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
+
+  project   Project               @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+enum NotificationChannelType {
+  EMAIL
+  SLACK
+  WEBHOOK
+}
+
+model UserQuota {
+  id               String   @id @default(uuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  maxProjects      Int?
+  maxDatabases     Int?
+  maxStorageGB     Float?
+  retentionDays    Int?
+  ignorePlanLimits Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model ComplianceExport {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status    ExportStatus
+  s3Key     String?
+  expiresAt DateTime?
+  createdAt DateTime @default(now())
+}
+
+enum ExportStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
 

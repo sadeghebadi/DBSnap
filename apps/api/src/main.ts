@@ -1,20 +1,24 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module.js';
-import { getConfig, createLogger } from "@dbsnap/shared";
+import { NestFactory, HttpAdapterHost } from '@nestjs/core';
+import { AppModule } from './app.module';
 
-const logger = createLogger('api');
+import { env } from '@dbsnap/config';
+
+import { Logger } from 'nestjs-pino';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
+import { ContextInterceptor } from './common/interceptors/context.interceptor';
 
 async function bootstrap() {
-  const config = getConfig();
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { bufferLogs: true });
+  app.useLogger(app.get(Logger));
 
-  const port = config.API_PORT || 3000;
+  const httpAdapterHost = app.get(HttpAdapterHost);
+  app.setGlobalPrefix('api');
+  app.enableCors();
+  app.useGlobalFilters(new AllExceptionsFilter(httpAdapterHost));
+  app.useGlobalInterceptors(new ContextInterceptor());
 
-  await app.listen(port);
-  logger.info(`DBSnap API running on port ${port}`);
+  await app.listen(env.PORT);
+  const logger = app.get(Logger);
+  logger.log(`API running on ${env.API_URL}`);
 }
-
-bootstrap().catch((err) => {
-  logger.error("Failed to bootstrap API", { error: err.message });
-  process.exit(1);
-});
+bootstrap();

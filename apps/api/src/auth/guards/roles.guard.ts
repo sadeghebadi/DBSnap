@@ -1,21 +1,27 @@
+
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { UserRole } from '@dbsnap/shared';
-import { ROLES_KEY } from '../decorators/roles.decorator.js';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
     constructor(private reflector: Reflector) { }
 
     canActivate(context: ExecutionContext): boolean {
-        const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>(ROLES_KEY, [
-            context.getHandler(),
-            context.getClass(),
-        ]);
-        if (!requiredRoles) {
+        const roles = this.reflector.get<string[]>('roles', context.getHandler());
+        if (!roles) {
             return true;
         }
-        const { user } = context.switchToHttp().getRequest();
-        return requiredRoles.some((role) => user.role === role);
+        const request = context.switchToHttp().getRequest();
+        const user = request.user;
+
+        // Assuming user.role is a string (Role name) or user.roles is an array
+        // Based on our schema, User has optional Role. 
+        // We will normalize in JwtStrategy or AuthService to put role name in 'role' or 'roles'
+        if (!user || !user.role) {
+            return false;
+        }
+
+        // If roles array contains the user's role
+        return roles.includes(user.role);
     }
 }
