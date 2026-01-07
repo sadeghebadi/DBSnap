@@ -1,0 +1,54 @@
+
+Running 1 test using 1 worker
+
+[1A[2K[1/1] [chromium] › tests/compliance.spec.ts:52:9 › GDPR Compliance & Admin Tools › Admin can toggle legal hold and delete user
+[1A[2K[chromium] › tests/compliance.spec.ts:52:9 › GDPR Compliance & Admin Tools › Admin can toggle legal hold and delete user
+User ID Target: 67605e94-d579-4717-a52b-aaf4fad5bf38
+
+[1A[2KUser Email Target: gdpr-victim-1767789670826@example.com
+
+[1A[2KNavigating to: /admin/users/67605e94-d579-4717-a52b-aaf4fad5bf38
+
+[1A[2KPage Text: DBSnap Admin
+Dashboard
+User Management
+Organizations
+Queues & Workers
+Resource Browser
+Billing
+Promo Codes
+Settings
+Admin User
+AD
+Loading...
+
+[1A[2K  1) [chromium] › tests/compliance.spec.ts:52:9 › GDPR Compliance & Admin Tools › Admin can toggle legal hold and delete user 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('button:has-text("Delete User Data")')[22m
+    [2m    - locator resolved to <button class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed">Delete User Data</button>[22m
+    [2m  - attempting click action[22m
+    [2m    - waiting for element to be visible, enabled and stable[22m
+    [2m    - element is visible, enabled and stable[22m
+    [2m    - scrolling into view if needed[22m
+    [2m    - done scrolling[22m
+    [2m    - performing click action[22m
+
+
+      88 |         const confirmPromise = page.waitForEvent('dialog');
+      89 |         const deleteBtn = page.locator('button:has-text("Delete User Data")');
+    > 90 |         await deleteBtn.click();
+         |                         ^
+      91 |         const confirmDialog = await confirmPromise;
+      92 |         expect(confirmDialog.message()).toContain('PERMANENTLY DELETE USER');
+      93 |         await confirmDialog.accept();
+        at /home/sadpc/Documents/DBSnap/apps/e2e/tests/compliance.spec.ts:90:25
+
+
+[1A[2K  1 failed
+    [chromium] › tests/compliance.spec.ts:52:9 › GDPR Compliance & Admin Tools › Admin can toggle legal hold and delete user 
+
+[36m  Serving HTML report at http://localhost:42989. Press Ctrl+C to quit.[39m

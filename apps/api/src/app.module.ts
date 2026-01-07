@@ -17,6 +17,7 @@ import { QueueAdminModule } from './queues/queue-admin.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { BillingModule } from './billing/billing.module';
 import { AuditLogsModule } from './audit-logs/audit-logs.module';
+import { ComplianceModule } from './compliance/compliance.module';
 
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
@@ -74,6 +75,7 @@ import { SuspensionGuard } from './common/guards/suspension.guard';
     QuotasModule,
     HealthModule,
     AdminModule,
+    ComplianceModule,
   ],
   controllers: [AppController],
   providers: [

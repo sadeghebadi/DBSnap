@@ -1,0 +1,45 @@
+
+Running 1 test using 1 worker
+
+[1A[2K[1/1] [chromium] › tests/compliance.spec.ts:52:9 › GDPR Compliance & Admin Tools › Admin can toggle legal hold and delete user
+[1A[2K[chromium] › tests/compliance.spec.ts:52:9 › GDPR Compliance & Admin Tools › Admin can toggle legal hold and delete user
+Page Text: 404
+This page could not be found.
+
+[1A[2K  1) [chromium] › tests/compliance.spec.ts:52:9 › GDPR Compliance & Admin Tools › Admin can toggle legal hold and delete user 
+
+    TimeoutError: locator.waitFor: Timeout 5000ms exceeded.
+    Call log:
+    [2m  - waiting for getByText('Legal Hold').first() to be visible[22m
+
+
+      66 |         console.log('Page Text:', await page.locator('body').innerText());
+      67 |
+    > 68 |         await page.getByText('Legal Hold').first().waitFor({ timeout: 5000 });
+         |                                                    ^
+      69 |         await page.locator('input[type="checkbox"]').click({ force: true });
+      70 |         const legalHoldDialog = await legalHoldPromise;
+      71 |         expect(legalHoldDialog.message()).toContain('Legal Hold');
+        at /home/sadpc/Documents/DBSnap/apps/e2e/tests/compliance.spec.ts:68:52
+
+    Error: page.waitForEvent: Test ended.
+    =========================== logs ===========================
+    waiting for event "dialog"
+    ============================================================
+
+      61 |
+      62 |         // 1. Enable Legal Hold
+    > 63 |         const legalHoldPromise = page.waitForEvent('dialog');
+         |                                       ^
+      64 |         // Check for content
+      65 |         // console.log(await page.content()); // Too verbose
+      66 |         console.log('Page Text:', await page.locator('body').innerText());
+        at /home/sadpc/Documents/DBSnap/apps/e2e/tests/compliance.spec.ts:63:39
+
+    Error Context: test-results/compliance-GDPR-Compliance-0e84f--legal-hold-and-delete-user-chromium/error-context.md
+
+
+[1A[2K  1 failed
+    [chromium] › tests/compliance.spec.ts:52:9 › GDPR Compliance & Admin Tools › Admin can toggle legal hold and delete user 
+
+[36m  Serving HTML report at http://localhost:38535. Press Ctrl+C to quit.[39m
