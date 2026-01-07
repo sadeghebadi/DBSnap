@@ -41,6 +41,7 @@ model User {
   complianceExports ComplianceExport[]
   
   isLegalHold       Boolean   @default(false)
+  lastExportAt      DateTime?
 }
 
 model ApiKey {
@@ -306,3 +307,5 @@ enum ExportStatus {
   COMPLETED
   FAILED
 }
+
+

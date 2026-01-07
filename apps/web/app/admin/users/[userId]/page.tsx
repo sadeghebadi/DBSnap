@@ -48,7 +48,7 @@ export default function UserDetailsPage() {
 
     async function fetchExports() {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/compliance/user/${userId}/exports`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/compliance/${userId}/exports`, {
                 headers: { Authorization: `Bearer ${token}` }
             })
             if (res.ok) {
@@ -62,7 +62,7 @@ export default function UserDetailsPage() {
 
     async function handleExport() {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/compliance/user/${userId}/export`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/compliance/${userId}/export`, {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${token}` }
             })
@@ -76,7 +76,7 @@ export default function UserDetailsPage() {
 
     async function toggleLegalHold(checked: boolean) {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/compliance/user/${userId}/legal-hold`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/compliance/legal-hold/${userId}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                 body: JSON.stringify({ isHeld: checked })
@@ -93,7 +93,7 @@ export default function UserDetailsPage() {
         if (!confirm('PERMANENTLY DELETE USER? This action cannot be undone and deletes all backups immediately.')) return
 
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/compliance/user/${userId}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/compliance/${userId}/data`, {
                 method: 'DELETE',
                 headers: { Authorization: `Bearer ${token}` }
             })

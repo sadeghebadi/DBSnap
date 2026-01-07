@@ -68,6 +68,7 @@ import { SuspensionGuard } from './common/guards/suspension.guard';
     AuditLogsModule,
     MaintenanceModule,
     BackupsModule,
+    ComplianceModule,
     DiffsModule,
     JobsModule,
     QueueAdminModule,
