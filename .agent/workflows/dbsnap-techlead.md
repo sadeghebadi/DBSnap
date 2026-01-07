@@ -12,6 +12,12 @@ Iteratively review `TODO-DONE.md` until every single task is verified with a che
 -   Tasks marked `[✓]` are "Verified".
 -   If a task fails verification, it triggers the creation of a `TODO.md` for rework.
 
+## Critical Priority: Admin Panel Precision
+> [!IMPORTANT]
+> **Admin Panel tasks require extreme meticulousness.**
+> Most parts of the Admin Panel are currently unfinished. You must have **ZERO TOLERANCE** for partial implementations.
+> Verify EVERY single UI element, action button, data table, and modal. If a page displays placeholder data or a button does nothing, it is a FAIL.
+
 ## Rigorous Verification Process
 
 ### 1. The Audit Loop
@@ -19,13 +25,13 @@ Continue this process until **zero** `[x]` items remain in `TODO-DONE.md`. You a
 
 ### 2. Deep Inspection (High Scepticism)
 Do not take "Done" at face value. Inspect the codebase, tests, and UI behavior.
--   **Example (Admin Panel)**: If the Admin Panel is marked as done, verify all sub-pages, data flows, and edge cases. (Note: The Admin Panel currently has many unfinished elements. Be extremely thorough here).
 -   **Criteria**: Code must be clean, secure (encrypted), memory-efficient (streaming), and fully functional.
+-   **Verification Source**: Check actual files, run local build/test commands if necessary, and use the browser tool to verify UI tasks.
 
 ### 3. Decisive Actions
 
 #### Case A: Task is Pass (High Quality)
-If the implementation is flawless:
+If the implementation is flawless and meets production standards:
 -   Update `TODO-DONE.md`: Change the item's status from `[x]` to `[✓]`.
 
 #### Case B: Task is Fail (Incomplete or Broken)
