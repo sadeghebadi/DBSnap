@@ -1895,7 +1895,7 @@
         - Requirements: Verify that hex dumps are random/garbage without Master Key
     - Acceptance Criteria:
         - Acceptance Criteria: 100% of samples are encrypted with AES-256-GCM
-- [ ] **Production Deployment Scripts**
+- [x] **Production Deployment Scripts**
     - Folder: `/`
     - Goal: Prepare the system for cloud deployment.
     - Technical Details (PRD/ARD):
